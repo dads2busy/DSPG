@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor msdt:dt="string">Mahoney-Nair, Devika Tara (dtn2ep)</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor>
+<mso:Order msdt:dt="string">16503700.0000000</mso:Order>
+<mso:ComplianceAssetId msdt:dt="string"></mso:ComplianceAssetId>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author msdt:dt="string">Mahoney-Nair, Devika Tara (dtn2ep)</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author>
+<mso:ContentTypeId msdt:dt="string">0x0101006DCC2F98E9817A45A6AD9E25AF1B0AE4</mso:ContentTypeId>
+<mso:_SourceUrl msdt:dt="string"></mso:_SourceUrl>
+<mso:_SharedFileIndex msdt:dt="string"></mso:_SharedFileIndex>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">VT Census Case Studies</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="64427367.html">Housing Data Profiling, Preparation Process, and Benchmarking</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="WMLS_64427369.html">WMLS</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            VT Census Case Studies : Preparation WMLS
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created and last modified by <span class='author'> molfe</span> on 31 Dec 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<ul><li>Separate into three tables (Location, Characteristics, and Selling).</li></ul></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h1 id="PreparationWMLS-Location">Location</h1></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="PreparationWMLS-Cleaning">Cleaning</h2><ul><li><p>“Parcel.ID”</p><ul><li>Finding missing parcel ID's on county real estate website</li><li><p>In order to find missing parcel id’s the addresses given were manually entered into a James City County database. Once the address was found, the parcel id was copy and pasted into code that entered the entry into the data set. Each entry, due to internet speed and website bandwidth, took about 90 seconds to enter. With large numbers of data entries, in this case around 700, this quickly becomes a very lengthy process. For this reason, we entered in 450 as a preliminary to get a better data set, but have the capability to complete in the future, if desired.</p></li><li><p>&quot;st_direction&quot; &quot;Street.Name&quot; &quot;Street.Suffix&quot;</p><ul><li>Originally while there was values assigned under each variable, there were numerous occasions where the rules were not followed. In order to properly cleaned, these rules needed to be followed. So these were combined then coded to pull out the suffix and direction properly. This way there are no &quot;st&quot;, &quot;ln&quot;, &quot;rd&quot;, &quot;way&quot;, &quot;N&quot;, &quot;S&quot;, &quot;E&quot;, or &quot;W&quot; in the &quot;Street.Name&quot; Category.</li></ul></li></ul></li><li>Multiply geo coordinates by .000001 to make them into correct format</li><li>Remove duplicated row (<span>22010704)</span></li><li><span>For the 18 missing geocodes, looked up address on google maps and filled it in between 2009 to 2013 (4 of these were not geo-codable due to bad address)</span></li></ul></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="PreparationWMLS-Transformation">Transformation</h2><ul><li>Paste together part of address to create new address variable</li><li>Merge coordinates to census tract to get each property's census tract.</li><li>Kept only those for time period of interest</li><li>Remove those that are not in James City County (e.g Williamsburg City)<ul><li>21 were outside the JCC PUMA</li><li>56 were outside of JCC</li></ul></li></ul></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="PreparationWMLS-Restructuring">Restructuring</h2><ul><li>Aggregated up to address</li></ul><p> </p></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h1 id="PreparationWMLS-Housing">Housing</h1></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="PreparationWMLS-Cleaning.1">Cleaning</h2><ul><li>Remove duplicated row (22010704)</li><li>Reformat Year.Built years from YY to YYYY. Replaced 0's with correct year.</li><li>Filled in missing type values</li><li>Checked and corrected Total.Bedrooms, total_baths and total_bedrooms for values that were outliers and out of the typical range.</li></ul></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="PreparationWMLS-Transformation.1">Transformation</h2><ul><li>Recode type to include condo ownership</li><li>Recode year built</li><li>Recode number of bedrooms</li><li>Recode number of bathrooms</li></ul></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h1 id="PreparationWMLS-Selling">Selling</h1></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="PreparationWMLS-Cleaning.2">Cleaning</h2><ul><li>Remove duplicated row (22010704)</li><li>Make NA original list price of 3</li></ul></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="PreparationWMLS-Transformation.2">Transformation</h2><ul><li>Put into constant 2013 dollars original and sold price</li></ul></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/64428184/64622419.png">image2015-11-11 13:19:19.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on 04 Jan 2016 11:04</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

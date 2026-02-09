@@ -1,0 +1,70 @@
+#THIS FILE CAN BE SOURCES IN LENS with <source Beta2WorksWellNoHiddneUnits.in> but must be in directory listed on next line and must comment same line out if sourcing
+#cd Google\ Drive/2016\ Summer\ Projects\ for\ SDAL\ Fellows/NSF_NCS/
+
+deleteNets * 
+
+addNet "CAN encoder (necker)" -i 3.0 -t 3 CONTINUOUS
+
+addGroup Input 22 -RESET_ON_EXAMPLE INPUT OUTPUT SOFT_CLAMP BIASED 
+
+#addGroup Hidden 5 -RESET_ON_EXAMPLE
+
+#connectGroups Input Hidden -bidirectional
+connectGroups Input Input
+
+#Remove Input->Input self connections
+repeat u [getObj Input.numUnits] {
+  disconnectUnits Input:$u Input:$u
+
+}
+
+#CHARACTERISTICS OF NETWORK
+setObj Input.initOutput	  0.0
+#setObj Hidden.initOutput  0.0
+setObj Input.maxOutput	  1.0
+#setObj Hidden.maxOutput  1.0
+setObj Input.minOutput	 -1.0
+#setObj Hidden.minOutput  -0.2
+
+deleteExampleSets *
+
+#EXAMPLE SETS
+#loadExamples ReaganInputsZeroIsNeg1.1.ex -s train -exmode PERMUTED
+loadExamples ReaganInputs.1.ex -s train -exmode PERMUTED 
+
+setObj train.graceTime  2.0
+setObj train.minTime    3.0
+setObj train.maxTime    3.0
+
+setObj learningRate     0.025
+setObj momentum         0.5
+setObj clampStrength 	0.70
+setObj randRange        0.25
+
+resetNet
+
+#LOAD WEIGHTS--NONE USED 
+#loadWeights WgtFiles/wgt$w.wt
+
+#NO LEARNING ALLOWED--TURNED OFF
+#freezeWeights
+
+#MAKE DATA AND SIMULATE
+openNetOutputFile Output.out -a
+train 300
+closeNetOutputFile
+
+
+#EXPORT THE NETWORK STRUCTURE 
+proc printStuff {g1 u1 g2 u2 b l} {
+           format "%s->%s %.3f\n" [getObj $u1.name] [getObj $u2.name] \
+             [getObj $u2.incoming($l).weight]
+         }
+
+#TO STANDARD OUTPUT
+#printLinkValues - printStuff {Input Input} *
+#TO A FILE <tmp.txt>
+printLinkValues tmp.txt printStuff {Input Input} *
+
+#exit 
+#EOF

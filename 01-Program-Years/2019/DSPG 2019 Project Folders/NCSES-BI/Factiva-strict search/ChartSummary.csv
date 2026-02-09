@@ -1,0 +1,24 @@
+﻿Document Distribution By Date
+Distribution: Yearly
+1392 documents  for All Dates
+
+Date,Document Count
+Start Date: 1 January 2013 End Date: 31 December 2013,461
+Start Date: 1 January 2014 End Date: 31 December 2014,536
+Start Date: 1 January 2015 End Date: 31 December 2015,207
+Start Date: 1 January 2016 End Date: 31 December 2016,188
+
+
+Search Summary,
+Text,ns=C22 and (hlp=((new device or new devices or new drug or new drugs or new product or new products) and (announced the launch or announces the launch or launch or launches or launched or announced new or announces new or announces launch or introduce or introduces or introduced)) or ns=(CDINN or CGVFIL)) and in=(I257 or I372) and fmt=article and date from 01/01/2013 to 12/31/2016 and roo=USA and re=USA and la=en not (ns=(CMARKR or c01 or CIPROF or C41 or C18 or C133 or NRMF or NNAM or NOBT or NLIST or NHOC or C1521 or NAMT) or in=IDDTECH or Drug Administration announced approval)
+Date,All Dates
+Source,Not US Food and Drug Administration News (Abstracts)
+Author,All Authors
+Company, Not U.S. Food and Drug Administration
+Subject,All Subjects
+Industry,All Industries
+Region,United States Not China Not Japan Not Europe
+Language,English
+Results Found,"1,392"
+Timestamp,30 April 2019 15:14
+"© 2019 Factiva, Inc.  All rights reserved."

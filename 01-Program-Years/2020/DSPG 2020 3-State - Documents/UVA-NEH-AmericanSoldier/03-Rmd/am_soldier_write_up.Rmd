@@ -1,0 +1,24 @@
+---
+pdf_document: default
+author: "Morgan Stockham"
+date: "6/11/2020"
+output: pdf_document
+title: "American Soldier Write-Up"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Expectations
+
+This project's data is filled with racism and prejudice. It would be blind of me to say that I didn't have bleak expectations for the sentiment analysis and topic modelling. I mean bleak in the sense that topics haven't changed, only words have. I would be naive to think that our society has progressed so much so that our current racist rhetoric doesn't parallel the survey answers from the 1940s.  
+
+In my opinion, I expect that the historical context of the survey will impact the responses and we'll see large variation in word-selection and sentiment across race and state of origin. The survey focuses on two groups of people: white and black soldiers, and includes information about their age and state of origin. I expect their survey responses to vary across race because their reasons for or against segregation will have completely different meanings for each group. A white solider who believes in desegregation may not still fully want to emancipate black soldiers, but the black soldier will inherently know what it means to be oppressed and will have different notions of desegregation. This battle between progressive whites and true allyship continues today. This doesn't include the overtly racist white southerners (the group I expect to have the most racist responses), who may not believe in desegregation at all. My true focus is on the responses of black soldiers. Many of them might be driven by fear of the unknown, of desegregation, as such they may prefer segregation because it is all they have known and perhaps are afraid of the retaliation. This is all speculation, so I am excited to be proven wrong.  
+
+In terms of historical context segregation existed in the military. In the Army and Army Air Force, black soldiers had their own outfits and were not intermingled with white soldiers. In the Navy and Coast Guard, black soliders were only able to work on ships and were not soldiers in any capacity. Within the military there were race riots and heavy violence across bases because of the friction between groups of people. This violence was not only seen in a white versus black context, but also in a north versus south context. This is also speculation driven by a quick overview of survey answers in which some soldiers didn't mind desegregation but would rather be caught dead than fight with a soldier from the north.
+
+In addition to the violence and segregation within the military, there were race riots in the continental US and also a campaign to end segregation at home while black soldiers fought fascism abroad. The campaign to end segregation began in 1942, before the survey, and was dubbed the "Double Victory Campaign". It signified how black people felt about fighting for a country that treated them as second-class citizens when they were home.  
+
+The survey was administered in March of 1943 which was smack-dab in the middle of racial tensions in America and abroad. I believe that the survey responses will mimic the tumultuousness of racial tension, and as I said before, my expectations are bleak in terms of our findings. I am excited to be able to visualize the differences in word use and sentiment across all groups of soldiers, and this novel data set is a data set that I may never come across again. Therefore, although my expectations are bleak, my hopes are high.
+

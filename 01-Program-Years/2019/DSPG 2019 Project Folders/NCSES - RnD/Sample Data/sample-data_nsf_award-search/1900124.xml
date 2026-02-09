@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rootTag>
+<Award>
+<AwardTitle>Research Catalyst: Environmental Quality Assurance using Ion Mobility Spectrometry</AwardTitle>
+<AwardEffectiveDate>06/01/2019</AwardEffectiveDate>
+<AwardExpirationDate>05/31/2021</AwardExpirationDate>
+<AwardTotalIntnAmount>200000.00</AwardTotalIntnAmount>
+<AwardAmount>200000</AwardAmount>
+<AwardInstrument>
+<Value>Standard Grant</Value>
+</AwardInstrument>
+<Organization>
+<Code>11060000</Code>
+<Directorate>
+<Abbreviation>EHR</Abbreviation>
+<LongName>Direct For Education and Human Resources</LongName>
+</Directorate>
+<Division>
+<Abbreviation>HRD</Abbreviation>
+<LongName>Division Of Human Resource Development</LongName>
+</Division>
+</Organization>
+<ProgramOfficer>
+<SignBlockName>Claudia Rankins</SignBlockName>
+</ProgramOfficer>
+<AbstractNarration>Research Catalyst projects provide support for Historically Black Colleges and Universities to work towards establishing research capacity of faculty to strengthen science, technology, engineering and mathematics undergraduate education and research. It is expected that the award will further the faculty member's research capability, improve research and teaching at the institution, and involve undergraduate students in research experiences. The project at Winston Salem State University will investigate novel approaches to ion mobility spectrometry (IMS) when coupled with a membrane sampler for the separation, detection and identification of different classes of compounds in complex matrices. This work will provide research opportunities for undergraduate chemistry majors, while preparing them for careers in STEM.&lt;br/&gt;&lt;br/&gt;The goal of this project is to utilize a novel sample introduction sampler system (SIS) as a single unit using polydimethylsilicone (PDMS) membranes and nanoparticle materials. This will allow sampling, isolation, pre-concentration, separation, and desorption of key environmental pollutants in a single step. The uniqueness of this study is the use of temperature programming similar to a gas chromatography oven, to analyze solid, liquid, and gas samples. Interfacing the unit to an ion mobility spectrometry (IMS) will allow the detection of volatile organic compounds (VOCs) and semi-volatile organic compounds (semi-VOCs) of extreme environmental concern. This project has the potential to develop a sampling and sample introduction approach that requires little or no preparation and use of less or no solvent, is not labor intensive, and has greater analytical reliability. The long-term goal is to use this method for collecting samples in indoor buildings and sites suspected to have been exposed to contaminants and for analyzing water contaminated with VOCs.&lt;br/&gt;&lt;br/&gt;This award reflects NSF's statutory mission and has been deemed worthy of support through evaluation using the Foundation's intellectual merit and broader impacts review criteria.</AbstractNarration>
+<MinAmdLetterDate>05/05/2019</MinAmdLetterDate>
+<MaxAmdLetterDate>05/05/2019</MaxAmdLetterDate>
+<ARRAAmount/>
+<AwardID>1900124</AwardID>
+<Investigator>
+<FirstName>A Bakarr</FirstName>
+<LastName>Kanu</LastName>
+<EmailAddress>kanuabb@wssu.edu</EmailAddress>
+<StartDate>05/05/2019</StartDate>
+<EndDate/>
+<RoleCode>Principal Investigator</RoleCode>
+</Investigator>
+<Institution>
+<Name>Winston-Salem State University</Name>
+<CityName>Winston Salem</CityName>
+<ZipCode>271100003</ZipCode>
+<PhoneNumber>3367502413</PhoneNumber>
+<StreetAddress>601 S Martin Luther King Jr Dr</StreetAddress>
+<CountryName>United States</CountryName>
+<StateName>North Carolina</StateName>
+<StateCode>NC</StateCode>
+</Institution>
+<ProgramElement>
+<Code>1594</Code>
+<Text>Hist Black Colleges and Univ</Text>
+</ProgramElement>
+<ProgramReference>
+<Code>9178</Code>
+<Text>UNDERGRADUATE EDUCATION</Text>
+</ProgramReference>
+</Award>
+</rootTag>

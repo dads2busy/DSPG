@@ -1,0 +1,33 @@
+Agenda
+
+Intros:
+-- interests, coding, hoping to get? learn?
+
+Trainings:
+* Rivanna
+* git, ohmygit.org - SEND ME GitHub Usernames!
+* DataCamp
+
+2020 Videos
+https://www.youtube.com/playlist?list=PLb9ze_qoBeG2-9IfbDmGJ8YaTK_-dycCz
+
+Training Repo: https://github.com/DSPG-Young-Scholars-Program
+
+Website template:
+https://github.com/DSPG-Young-Scholars-Program/dspg23_website_template
+
+Projects:
+* Green Innovation (NCSES)
+-- comparison of AI platforms for data generation
+-- RSS feed hit rate improvement
+-- learn to setup and use Llama3
+* NCR Social Impact Data Commons (MC)
+-- How-To paper on creating sub-county longitudinal datasets for custom geographic boundaries  
+* Virginia Rural Health Data Commons (VDH)
+-- Health Opportunity Index Modeling
+-- Automated Metadata Construction
+-- Life Expectancy Calculator
+* ARI3 - Manpower Planning using​ U.S. Army Administrative Data (ARI)
+-- Creating latent class analysis approach (clustering) to office career modeling (everyone will be on to some extent)
+
+Meetings: Mondays plus project meeting days

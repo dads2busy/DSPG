@@ -1,0 +1,49 @@
+MEETINGS
+Weekly meetings 11 Chelsea, 11:30 Jaden, 12 Ava
+
+Friday wrap-up, Fri 3:00
+
+PROJECT ASSIGNMENTS*
+Chelsea (stats and econ): 
+-- Green Inno (design/describe the approach, design validation approach, comparison of different platforms, rss hit rate, calculate stats)
+-- VDH Data Commons (Tuning HOI and Incarceration Models)
+		
+Jaden (commerce and cs): 
+-- ARI3 (Design methodological approach, simulate data)
+-- VDH Data Commons (Life Expectancy Calculator/Visualizer, tract distance app)
+
+Ava (psychology and government): 
+-- ARI3 (Design methodological approach, simulate data)
+-- NCR Data Commons (Data pipeline to support local decision-making - IJPDS)
+
+TRAININGS
+Will create individualized training schedule
+
+Website with Quarto (for each project)
+https://quarto.org/docs/websites/
+-- create basic quarto website, deploy to github
+
+Spatial Data Analysis and Visualization with R
+http://www.geo.hunter.cuny.edu/~ssun/R-Spatial/
+
+PROJECT REVIEWS
+VDH
+Green Innovation
+ARI3
+MC
+
+PROJECT MEETINGS
+Mon VDH 2:30
+Chelsea, Jaden, Sneha meeting today at 2:30
+NEXT WEEK Stake FRI
+
+Tue ARI3 11:00 - THIS WEEK Stake THU or FRI!
+Wed NCSES 9:00 - NEXT WEEK Stake
+Mon NCR-MC 12:30
+
+GitHub Repos: I will create today
+
+
+
+
+

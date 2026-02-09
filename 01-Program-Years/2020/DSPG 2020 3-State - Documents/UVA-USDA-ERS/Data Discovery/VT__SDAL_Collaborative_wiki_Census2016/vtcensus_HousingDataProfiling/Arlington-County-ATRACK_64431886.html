@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor msdt:dt="string">Mahoney-Nair, Devika Tara (dtn2ep)</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor>
+<mso:Order msdt:dt="string">16497900.0000000</mso:Order>
+<mso:ComplianceAssetId msdt:dt="string"></mso:ComplianceAssetId>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author msdt:dt="string">Mahoney-Nair, Devika Tara (dtn2ep)</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author>
+<mso:ContentTypeId msdt:dt="string">0x0101006DCC2F98E9817A45A6AD9E25AF1B0AE4</mso:ContentTypeId>
+<mso:_SourceUrl msdt:dt="string"></mso:_SourceUrl>
+<mso:_SharedFileIndex msdt:dt="string"></mso:_SharedFileIndex>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">VT Census Case Studies</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="64427367.html">Housing Data Profiling, Preparation Process, and Benchmarking</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            VT Census Case Studies : Arlington County ATRACK
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created and last modified by <span class='author'> molfe</span> on 31 Dec 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="ArlingtonCountyATRACK-Profiling">Profiling</h2></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p><u><strong>Codebook:</strong></u></p><ul><li>See data dictionary <strong><a href="attachments/64431886/64621545.docx">here</a>.</strong></li></ul><p><strong><u><strong>Overall Data Description:</strong></u></strong></p><ul><li>This original data came in .shapefile (ATRACK) and csv (FEATURES) format. <ul><li>For the shapefile, the corresponding table with data was then extracted into .csv format.</li><li>Fore the .csv, the data was reshaped into long form.</li></ul></li></ul></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p><strong>Note: This profiling only is for ATRACK data.</strong>  <strong>Non-ATRACK rows (e.g. single families/commercial) were removed from data profiling.</strong></p><p>Year: 2015</p><p>Unit of analysis: Apartment Complex parcel</p><p>Number of observations: 410</p><p> </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="5" class="confluenceTh">Quality:ATRACK</th></tr><tr><th colspan="1" class="confluenceTh">Duplications</th><td colspan="4" class="confluenceTd">No duplicated rows</td></tr><tr><th colspan="1" class="confluenceTh">&quot; <strong>RealProper</strong>&quot;   </th><td colspan="4" class="confluenceTd">1 duplicated (Same Apartment Complex/Different information</td></tr><tr><th class="confluenceTh">Variables</th><th class="confluenceTh">Completeness</th><th class="confluenceTh">Validity</th><th class="confluenceTh">Uniqueness</th><th class="confluenceTh">Consistency</th></tr><tr><th colspan="1" class="confluenceTh"><p>&quot;<strong>StatusDsc</strong>”</p></th><td colspan="1" class="confluenceTd">1 missing</td><td colspan="1" class="confluenceTd">100%</td><td colspan="1" class="confluenceTd">Levels: &quot;Active&quot;, &quot;Under Renovation&quot;</td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;StreetAddr&quot;</th><td colspan="1" class="confluenceTd">100%</td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd">Some are not all CAPS</td></tr><tr><th colspan="1" class="confluenceTh">&quot;ZipCode&quot;</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>Affordabil&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd">Levels: <span style="line-height: 1.42857;">&quot;CAF Only&quot;,&quot;Market Only&quot;,&quot;Mixed&quot;</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>BuildingTy&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd">Levels: <span style="line-height: 1.42857;">&quot;Elevator&quot;, &quot;Garden&quot; </span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>YearBuiltD&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd">25 listed as 0</td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;TotalUnitC&quot;</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;OneBedroom&quot;</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;TwoBedroom&quot;</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;ThreeBedro&quot;</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;FourBedroo&quot;</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>Efficiency&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>OneBedro_1&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>TwoBedro_1&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>ThreeBed_1&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;AverageRen&quot;</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>62% missing</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd">100%</td></tr><tr><th colspan="1" class="confluenceTh">&quot;VacantUnit&quot;</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd">100%</td><td colspan="1" class="confluenceTd">70% listed as 0</td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>AMI_Effici&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>69% listed as 0</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>AMI_Four_B&quot;</strong></th><td colspan="1" class="confluenceTd"><span>99% missing</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>AMI_One_Be&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>24% listed as 0</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;AMI_One__1<strong>&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>90% listed as 0</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;AMI_Three_<strong>&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>81% listed as 0</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>AMI_Three1&quot;</strong></th><td colspan="1" class="confluenceTd">All but two are missing</td><td colspan="1" class="confluenceTd">2 listed as &quot;#Value!&quot;</td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>AMI_Two_Be&quot;</strong></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>48% listed as 0</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;<strong>AMI_Two_1&quot;</strong></th><td colspan="1" class="confluenceTd"><span>93% missing</span></td><td colspan="1" class="confluenceTd"><span>3 listed as &quot;#Value!&quot;</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;YearBuiltD</th><td colspan="1" class="confluenceTd">100%</td><td colspan="1" class="confluenceTd">25 list as 0</td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr></tbody></table></div><p>**<strong> 23 properties do not have a &quot;ToalUnitC&quot; that matches the sum of the room breakdown. Of these, 20 have no information on room breakdown.</strong></p></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/64431886/64621545.docx">Data list table.docx</a> (application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on 04 Jan 2016 11:03</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

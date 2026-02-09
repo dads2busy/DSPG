@@ -1,0 +1,84 @@
+﻿Most Mentioned Regions
+1392 documents  for All Dates
+
+Region,Document Count
+United States,1276
+Northeast U.S.,204
+New York State,62
+California,45
+New Jersey,39
+Southern U.S.,38
+North America,36
+Pennsylvania,35
+Florida,23
+Western U.S.,22
+Tennessee,17
+Israel,14
+Indiana,13
+Iowa,12
+Massachusetts,10
+Nevada,10
+Los Angeles,9
+Maryland,9
+Illinois,7
+Michigan,7
+Washington State,7
+Boston,6
+Connecticut,6
+Utah,6
+India,5
+Las Vegas,5
+Alabama,5
+Minnesota,5
+Missouri,5
+Ohio,5
+Oregon,5
+Virginia,5
+Canada,4
+Colorado,4
+Georgia (US),4
+Chicago,3
+Louisiana,3
+North Carolina,3
+West Virginia,3
+Houston,2
+Miami,2
+New Orleans,2
+Pacific Islands,2
+Seattle,2
+Washington DC,2
+Hawaii,2
+Kentucky,2
+Vancouver,2
+Australia,1
+Brazil,1
+British Columbia,1
+Latin America,1
+New York City,1
+Orlando,1
+San Antonio,1
+San Francisco,1
+South Korea,1
+Sao Paulo,1
+Sydney,1
+Taiwan,1
+Arizona,1
+Delaware,1
+Oklahoma,1
+South Dakota,1
+Texas,1
+
+
+Search Summary,
+Text,ns=C22 and (hlp=((new device or new devices or new drug or new drugs or new product or new products) and (announced the launch or announces the launch or launch or launches or launched or announced new or announces new or announces launch or introduce or introduces or introduced)) or ns=(CDINN or CGVFIL)) and in=(I257 or I372) and fmt=article and date from 01/01/2013 to 12/31/2016 and roo=USA and re=USA and la=en not (ns=(CMARKR or c01 or CIPROF or C41 or C18 or C133 or NRMF or NNAM or NOBT or NLIST or NHOC or C1521 or NAMT) or in=IDDTECH or Drug Administration announced approval)
+Date,All Dates
+Source,Not US Food and Drug Administration News (Abstracts)
+Author,All Authors
+Company, Not U.S. Food and Drug Administration
+Subject,All Subjects
+Industry,All Industries
+Region,United States Not China Not Japan Not Europe
+Language,English
+Results Found,"1,392"
+Timestamp,30 April 2019 15:14
+"© 2019 Factiva, Inc.  All rights reserved."

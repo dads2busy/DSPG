@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor msdt:dt="string">Mahoney-Nair, Devika Tara (dtn2ep)</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor>
+<mso:Order msdt:dt="string">16502200.0000000</mso:Order>
+<mso:ComplianceAssetId msdt:dt="string"></mso:ComplianceAssetId>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author msdt:dt="string">Mahoney-Nair, Devika Tara (dtn2ep)</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author>
+<mso:ContentTypeId msdt:dt="string">0x0101006DCC2F98E9817A45A6AD9E25AF1B0AE4</mso:ContentTypeId>
+<mso:_SourceUrl msdt:dt="string"></mso:_SourceUrl>
+<mso:_SharedFileIndex msdt:dt="string"></mso:_SharedFileIndex>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">VT Census Case Studies</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="64427367.html">Housing Data Profiling, Preparation Process, and Benchmarking</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            VT Census Case Studies : WMLS
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+    
+            Created and last modified by <span class='author'> molfe</span> on 31 Dec 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="WMLS-Profiling">Profiling</h2></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p><strong style="line-height: 1.4285715;"><u>Codebook created</u></strong> (Data came with no documentation, so had to create a codebook in order to proceed)</p><ul><li>See codebook here: <a href="attachments/64427369/64620210.docx">WMLS Codebook</a></li></ul><p>Each variable profiled for quality (completeness, validity, consistency, and uniqueness). This is documented in the codebook.</p><p><u><strong>Overall Data Description:</strong></u></p><ul><li>Number of observations: 10,674</li><li>10 complete years of data (2005:2014) and 2015 up to about June.</li><li>Unique Identifier:  “Parcel I.D&quot; (see data preparation page to see more about quality of this identifier)</li></ul></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p><strong><u>Profiling summary</u></strong></p><ul><li>Duplications: <span style="line-height: 1.4285715;">1 duplicated entry (Listing.ID 22010703 and 22010704)</span><ul><li>All variables the same besides Listing ID</li></ul></li><li>For each table, a row is a selling transaction of a housing unit. Housing units can repeat. <ul><li>Need to clean parcel.ID variable to have a unique identifier.</li></ul></li></ul><p>The tables below contain the results of the data profiling of key variables. To see more details and profiling for all variables, see codebook. </p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="5" class="confluenceTh">Quality: Location</th></tr><tr><th colspan="1" class="confluenceTh">PUMA</th><td colspan="4" class="confluenceTd"><p>21 of the sellings occurred outside of the JCC PUMA</p></td></tr><tr><th colspan="1" class="confluenceTh"><p>“List.Number”</p></th><td colspan="4" class="confluenceTd"><span>No duplications</span></td></tr><tr><th class="confluenceTh">Variables</th><th class="confluenceTh">Completeness</th><th class="confluenceTh">Validity</th><th class="confluenceTh">Uniqueness</th><th class="confluenceTh">Consistency</th></tr><tr><th colspan="1" class="confluenceTh"><p>“str_number”</p></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“st_direction”</p></th><td colspan="1" class="confluenceTd">currently updating these as seen</td><td colspan="1" class="confluenceTd"><p>Invalid entries (e.g. numbers)</p></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><p>Inconsistent levels (e.g. E., East, E)</p></td></tr><tr><th colspan="1" class="confluenceTh"><p>“Street.Name”</p></th><td colspan="1" class="confluenceTd">100%</td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><p>Some streets are combined with suffix</p></td></tr><tr><th colspan="1" class="confluenceTh"><p>“Street.Suffix”</p></th><td colspan="1" class="confluenceTd"><p>45% missing (Some are with Street.Name) -fixing these as seen</p></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><p>Inconsistent NA coding</p></td></tr><tr><th colspan="1" class="confluenceTh"><p>“City”</p></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><p>Levels: “Lanexa, Newport News, Toano, Williamsburg”</p></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“Parcel.ID”</p></th><td colspan="1" class="confluenceTd">2.7% missing (starting at about 680, currently down to about 255)</td><td colspan="1" class="confluenceTd"><p>Three TBD categories</p></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><p><span>Inconsistent NA coding </span>Inconsistent labeling (e.g. with or without dashes).</p><p>There are different rules for the parcel ids, but all are acceptable. First step is to fill in missing then go back and clean codes entered that do not follow the four rules. (10 consecutive numbers, 11 consecutive numbers, 10 continuous followed with 1 letter, 10 digits with one letter in between)</p></td></tr><tr><th colspan="1" class="confluenceTh"><p>“geo_lat”</p></th><td colspan="1" class="confluenceTd">11 (&lt;1%) missing, addresses can not be matched with any current address in google maps</td><td colspan="1" class="confluenceTd"><p>Need to be multiplied by <span style="line-height: 1.4285715;">.000001</span></p></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“geo_lon”</p></th><td colspan="1" class="confluenceTd"><p>11 (&lt;1%) missing (same ones as above) (process for collection is the same as lat)</p></td><td colspan="1" class="confluenceTd"> <p>Need to be multiplied by <span style="line-height: 1.4285715;">.000001</span></p></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr></tbody></table></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="5" class="confluenceTh">Quality: Housing</th></tr><tr><th colspan="1" class="confluenceTh"><p>“List.Number”</p></th><td colspan="4" class="confluenceTd"><span>No duplications</span></td></tr><tr><th class="confluenceTh">Variables</th><th class="confluenceTh">Completeness</th><th class="confluenceTh">Validity</th><th class="confluenceTh">Uniqueness</th><th class="confluenceTh">Consistency</th></tr><tr><th colspan="1" class="confluenceTh"><p>“Assessed.Value”</p></th><td colspan="1" class="confluenceTd">60% Missing</td><td colspan="1" class="confluenceTd"><p>Assessed values 0 or nearly 0</p></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">“Year.Built</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><p>2 Invalid entries (e.g. 0, 3, 19, 2942)</p></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“Total.Rooms”</p></th><td colspan="1" class="confluenceTd"><span>9% Missing</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“Total.Bedrooms”</p></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“total_bath”</p></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“Type”</p></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><p><span><span>Levels: </span></span><span style="line-height: 1.4285715;">“Mobile Home, </span>Single Family Detach/Single Family Attach, Other”</p></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh">&quot;Ownership”</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>Levels: &quot;Fee simple, Condominium, Coop”</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr></tbody></table></div><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th colspan="5" class="confluenceTh">Quality: Selling</th></tr><tr><th colspan="1" class="confluenceTh"><p>“List.Number”</p></th><td colspan="4" class="confluenceTd"><span>No duplications</span></td></tr><tr><th class="confluenceTh">Variables</th><th class="confluenceTh">Completeness</th><th class="confluenceTh">Validity</th><th class="confluenceTh">Uniqueness</th><th class="confluenceTh">Consistency</th></tr><tr><th colspan="1" class="confluenceTh">&quot;Sold.Date”</th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“Sold.Price”</p></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“Occupied.By”</p></th><td colspan="1" class="confluenceTd">13% missing</td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><p>Levels: &quot;Owner, Tenant, Vacant&quot;</p></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr><tr><th colspan="1" class="confluenceTh"><p>“How.Sold”</p></th><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><span>100%</span></td><td colspan="1" class="confluenceTd"><p>Levels: <span style="line-height: 1.4285715;">&quot;Assumption&quot; ,&quot;Cash&quot;,&quot;Contract For Deed&quot;</span><span style="line-height: 1.4285715;">, </span><span style="line-height: 1.4285715;">&quot;Conventional&quot;,&quot;Farmers Home&quot;,</span>&quot;FHA&quot;,&quot;Other&quot;,&quot;OwnerHeld&quot;,&quot;VA&quot;</p></td><td colspan="1" class="confluenceTd"><span>100%</span></td></tr></tbody></table></div></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/64427369/64620210.docx">WMLS Data Dictionary.docx</a> (application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on 04 Jan 2016 11:04</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,127 @@
+Received: from SN4PR13MB5696.namprd13.prod.outlook.com (2603:10b6:806:1ef::7)
+ by SJ0PR13MB5570.namprd13.prod.outlook.com with HTTPS; Fri, 18 Nov 2022
+ 00:20:10 +0000
+Received: from BN6PR13MB3025.namprd13.prod.outlook.com (2603:10b6:405:82::35)
+ by SN4PR13MB5696.namprd13.prod.outlook.com (2603:10b6:806:1ef::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.18; Fri, 18 Nov
+ 2022 00:20:09 +0000
+Received: from BN6PR13MB3025.namprd13.prod.outlook.com
+ ([fe80::cde7:67c0:e3ae:f0f2]) by BN6PR13MB3025.namprd13.prod.outlook.com
+ ([fe80::cde7:67c0:e3ae:f0f2%3]) with mapi id 15.20.5813.018; Fri, 18 Nov 2022
+ 00:20:09 +0000
+From: "Linehan, Kathryn Joyce (kjl5t)" <kjl5t@virginia.edu>
+To: "Shipp, Stephanie S (sss5sc)" <sss5sc@virginia.edu>, "Thurston, Joel
+ (jt9sz)" <jt9sz@virginia.edu>, "Lancaster, Vicki Ann (val7zv)"
+	<val7zv@virginia.edu>, "Montalvo, Cesar P (cpm9w)" <cpm9w@virginia.edu>
+Subject: speaker I mentioned at today's meeting
+Thread-Topic: speaker I mentioned at today's meeting
+Thread-Index: Adj641cnSMAPjmILREqlU6I7sjjMog==
+Date: Fri, 18 Nov 2022 00:20:09 +0000
+Message-ID:
+	<BN6PR13MB302505F5EB4CDFD66C43C41A89099@BN6PR13MB3025.namprd13.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Exchange-Organization-AuthAs: Internal
+X-MS-Exchange-Organization-AuthMechanism: 04
+X-MS-Exchange-Organization-AuthSource: BN6PR13MB3025.namprd13.prod.outlook.com
+X-MS-Has-Attach:
+X-MS-Exchange-Organization-Network-Message-Id:
+	1590f3cb-fb6a-43f2-6dac-08dac8faa6d1
+X-MS-Exchange-Organization-SCL: -1
+X-MS-TNEF-Correlator:
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1590f3cb-fb6a-43f2-6dac-08dac8faa6d1
+x-ms-traffictypediagnostic: BN6PR13MB3025:EE_|SN4PR13MB5696:EE_
+x-forefront-antispam-report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:-1;SRV:;IPV:NLI;SFV:SKI;H:BN6PR13MB3025.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:;DIR:INB;
+x-microsoft-antispam: BCL:0;
+x-ms-exchange-crosstenant-network-message-id:
+	1590f3cb-fb6a-43f2-6dac-08dac8faa6d1
+x-ms-exchange-crosstenant-originalarrivaltime: 18 Nov 2022 00:20:09.2312 (UTC)
+x-ms-exchange-crosstenant-fromentityheader: Hosted
+x-ms-exchange-crosstenant-id: 7b3480c7-3707-4873-8b77-e216733a65ac
+x-ms-exchange-transport-crosstenantheadersstamped: SN4PR13MB5696
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=virginia.edu;
+x-ms-exchange-crosstenant-mailboxtype: HOSTED
+x-ms-exchange-crosstenant-userprincipalname:
+	Vof0JNEMDHx9hnYI1yTZFPUZ5oZnFPDdYD0Lv4HlR5CZK/gIme2dgt+Hgux7oBJRjCCT3bbZeeqXq8BEKQ7KEA==
+x-ms-exchange-transport-endtoendlatency: 00:00:00.8037939
+x-ms-exchange-atpmessageproperties: SA
+x-ms-exchange-processed-by-bccfoldering: 15.20.5813.020
+x-ms-exchange-crosstenant-authas: Internal
+x-ms-exchange-crosstenant-authsource: BN6PR13MB3025.namprd13.prod.outlook.com
+X-Microsoft-Antispam-Mailbox-Delivery:
+	ucf:0;jmr:0;auth:0;dest:I;ENG:(910001)(944506478)(944626604)(920097)(425001)(930097);
+X-Microsoft-Antispam-Message-Info:
+	5G7P8I9OB37Ix9rRPsoVCtEu529VingQSoWpQbQLpD/BcdvxtEfvXCHGIPKyvX94mICLFLu6cT60UDxiJwMLspW1BjxcbNPJpiiqak1ugqtqANbLNhEfOEmaDaS4GnU0BT2txEft8z0ezztQX/rkV8A9HAtbjd/7SHGE7xAxMrxnLEfYn2XkHDmVDXe+zIoRt4Sxtq0ZVq1is02fEQ3urFErrZglQf6gWH5NJk65r027s1WT4D+5ZGGfkK549MhR2AC5yh9HSvfQrqyMODHunU00vXl6Te4ZhKj7V2ME/DvBvGVu3O49L5I/utcrTh9zdPtA8fYL8IO5mSW+/jxM+T+ri1wz7tF/SP+fDNAGeeol2SfXmpLDKsV8rc7AP47x7QHk25nXnDbo1xmtu3t8GyyL5bqzqUdTXfjvYMX7a77tcBKIIeSNXIrK6Pih5Ep6lFA8b0EQIKtcazwmml3lx5c96hbk3axoyW2Kt4IGM3OkzfPYo0zCnHl288oMO1isKxrubAjL3dsI0ax3yhyb22STD1xmKdq24JZNuDEtle25QD+VxnxyQMCDF35DSDKEQK3V8zICvhdOy9iW2CSEQiYSqXaS5r00aFazBsX09w59XOuqApDWYG9WTR2zG9n8ocsB9jfYcLIR+uVLsJSe9sElNTK15xgnbplxPDOUrRjjinrOp6Y6kxPl1DsUI6tYoR7aPtRHgczQJyT3P1G3hw==
+Content-Type: multipart/alternative;
+	boundary="_000_BN6PR13MB302505F5EB4CDFD66C43C41A89099BN6PR13MB3025namp_"
+MIME-Version: 1.0
+
+--_000_BN6PR13MB302505F5EB4CDFD66C43C41A89099BN6PR13MB3025namp_
+Content-Type: text/plain; charset="us-ascii"
+
+DEI folks,
+
+The potential speaker I mentioned today for next summer's DSPG is Ana Vivas from Norfolk St.  I met her two weeks ago and she gave a great talk on recidivism and math modeling.
+
+Thanks,
+
+Kathryn
+
+--_000_BN6PR13MB302505F5EB4CDFD66C43C41A89099BN6PR13MB3025namp_
+Content-Type: text/html; charset="us-ascii"
+
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="Generator" content="Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext="edit" spidmax="1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext="edit">
+<o:idmap v:ext="edit" data="1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang="EN-US" link="#0563C1" vlink="#954F72" style="word-wrap:break-word">
+<div class="WordSection1">
+<p class="MsoNormal">DEI folks,<o:p></o:p></p>
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class="MsoNormal">The potential speaker I mentioned today for next summer&#8217;s DSPG is Ana Vivas from Norfolk St. &nbsp;I met her two weeks ago and she gave a great talk on recidivism and math modeling.<o:p></o:p></p>
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class="MsoNormal">Thanks,<o:p></o:p></p>
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class="MsoNormal">Kathryn<o:p></o:p></p>
+</div>
+</body>
+</html>
+
+--_000_BN6PR13MB302505F5EB4CDFD66C43C41A89099BN6PR13MB3025namp_--

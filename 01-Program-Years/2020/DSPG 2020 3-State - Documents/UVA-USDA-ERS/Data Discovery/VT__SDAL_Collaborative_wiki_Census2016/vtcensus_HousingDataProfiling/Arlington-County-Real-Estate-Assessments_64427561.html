@@ -1,0 +1,2919 @@
+<!DOCTYPE html>
+<html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+  <title></title>
+  <link rel="stylesheet" href="styles/site.css" type="text/css" />
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor msdt:dt="string">Mahoney-Nair, Devika Tara (dtn2ep)</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor>
+<mso:Order msdt:dt="string">16505600.0000000</mso:Order>
+<mso:ComplianceAssetId msdt:dt="string"></mso:ComplianceAssetId>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author msdt:dt="string">Mahoney-Nair, Devika Tara (dtn2ep)</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author>
+<mso:ContentTypeId msdt:dt="string">0x0101006DCC2F98E9817A45A6AD9E25AF1B0AE4</mso:ContentTypeId>
+<mso:_SourceUrl msdt:dt="string"></mso:_SourceUrl>
+<mso:_SharedFileIndex msdt:dt="string"></mso:_SharedFileIndex>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+
+<body class="theme-default aui-theme-default">
+  <div id="page">
+    <div id="main" class="aui-page-panel">
+      <div id="main-header">
+        <div id="breadcrumb-section">
+          <ol id="breadcrumbs">
+            <li class="first">
+              <span><a href="index.html">VT Census Case Studies</a></span>
+            </li>
+            <li>
+              <span><a href="64427367.html">Housing Data Profiling, Preparation Process, and Benchmarking</a></span>
+            </li>
+          </ol>
+        </div>
+        <h1 id="title-heading" class="pagetitle">
+          <span id="title-text">
+            VT Census Case Studies : Arlington County Real Estate Assessments
+          </span>
+        </h1>
+      </div>
+
+      <div id="content" class="view">
+        <div class="page-metadata">
+
+
+
+
+
+
+
+          Created and last modified by
+          <span class='author'> molfe</span> on 31 Dec 2015
+        </div>
+        <div id="main-content" class="wiki-content group">
+          <div class="contentLayout2">
+            <div class="columnLayout single" data-layout="single">
+              <div class="cell normal" data-type="normal">
+                <div class="innerCell">
+                  <h3 id="ArlingtonCountyRealEstateAssessments-Codebooks">Codebooks</h3>
+                  <ul>
+                    <li>API Data came with no documentation, so had to create a codebook in order to proceed.
+                      <ul>
+                        <li>See API codebook here: <a href="attachments/64427561/64620315.docx">AC Real Estate Assessment Codebook</a></li>
+                        <li>Each variable profiled for quality (completeness, validity, consistency, and uniqueness). This is documented in the codebook.</li>
+                      </ul>
+                    </li>
+                    <li>Following the profiling of the API data, data CDs were received from the county (one for each year form 2009 to 2013).
+                      <br />
+                      <ul>
+                        <li>See Year data here:<a href="attachments/64427561/64620806.pdf">&nbsp;Data Dictionary County Real Estate&nbsp;</a>.</li>
+                        <li>Using the variables chosen from the API data, similar tables were constructed from the database to ensure direct comparability. The key variables were profiled for quality (completeness, validity, consistency, and uniqueness)—See
+                          below.
+                          <br />
+                          <br />
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="columnLayout single" data-layout="single">
+              <div class="cell normal" data-type="normal">
+                <div class="innerCell">
+                  <h3 id="ArlingtonCountyRealEstateAssessments-DataDescription">Data Description</h3>
+                  <p>The tables below show the overall description of the various data tables used for this study. The information provided here was conducted on the original data before any data preparation. Data that is marked with &quot;API&quot; or 2015
+                    came from the API and are current as of when they were pulled (July 1, 2015).</p>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="3" class="confluenceTh">Property:
+                            <span style="line-height: 1.42857;"> Basics information. such as primary address, owners, etc., about all parcels (identified by RealEstatePropertyCode)</span>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Year</th>
+                          <th class="confluenceTh">N</th>
+                          <th class="confluenceTh">Unit of Analysis</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2009</th>
+                          <td colspan="1" class="confluenceTd">64,827</td>
+                          <td colspan="1" class="confluenceTd">Active Properties</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2010</th>
+                          <td colspan="1" class="confluenceTd">65,201</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Active Properties</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2011</th>
+                          <td colspan="1" class="confluenceTd">65,242</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Active Properties</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2012</th>
+                          <td colspan="1" class="confluenceTd">65,364</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Active Properties</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2013</th>
+                          <td colspan="1" class="confluenceTd">65,443</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Active Properties</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2015</th>
+                          <td colspan="1" class="confluenceTd">68,949</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Properties (Active or Inactive)</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="3" class="confluenceTh">
+                            <p>Improvement Dwelling: Information, such as year built and heating type, about each dwelling on a parcel (identified by RealEstatePropertyCode) </p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Year</th>
+                          <th class="confluenceTh">N</th>
+                          <th class="confluenceTh">Unit of Analysis</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2009</th>
+                          <td colspan="1" class="confluenceTd">62,081</td>
+                          <td colspan="1" class="confluenceTd">Dwelling</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2010</th>
+                          <td colspan="1" class="confluenceTd">62,091</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Dwelling</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2011</th>
+                          <td colspan="1" class="confluenceTd">62,265</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Dwelling</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2012</th>
+                          <td colspan="1" class="confluenceTd">62,400</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Dwelling</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2013</th>
+                          <td colspan="1" class="confluenceTd">62,478</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Dwelling</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2015</th>
+                          <td colspan="1" class="confluenceTd">60,730</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Dwelling</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p>
+                    <strong>** Note:
+                      <span>Each property (defined by RPC - RealEstatePropertyCode) can have one or more dwellings (typically 1). Dwellings are uniquely identified by the DwellingKey or a combination of RPC and ExtensionNbr.</span>
+                    </strong>
+                  </p>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr style="text-align: left;">
+                          <th colspan="3" class="confluenceTh">
+                            <p>Improvement Interior: Information about the interior of a dwelling, such as number of bedrooms or bathrooms, on a parcel (identified by RealEstatePropertyCode)
+                              <span> </span>
+                            </p>
+                          </th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th style="text-align: left;" class="confluenceTh">Year</th>
+                          <th style="text-align: left;" class="confluenceTh">N</th>
+                          <th style="text-align: left;" class="confluenceTh">Unit of Analysis</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">2009</th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">62,081</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">Dwelling</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">2010</th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>62,091</span>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>Dwelling</span>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">2011</th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>62,265</span>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>Dwelling</span>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">2012</th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">62,400</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>Dwelling</span>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">2013</th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">62,478</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>Dwelling</span>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">2015</th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">134,698</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>Each floor of a dwelling*</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p>
+                    <strong>** Note:
+                      <span> For 2015, </span>
+                      <span>t</span>
+                      <span>he key is FloorKey or a combination of  RealEstatePropertyCode, DwellingKey, ExtensionNbr, FloorNbr (this can have values like B for basement and 2.5 for a second floor with sloped ceiling). </span>
+                    </strong>
+                  </p>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="3" class="confluenceTh">Assessment History (FROM DATA CDs) </th>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Year</th>
+                          <th class="confluenceTh">N</th>
+                          <th class="confluenceTh">Unit of Analysis</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2009</th>
+                          <td colspan="1" class="confluenceTd">324,966</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Assessment history up to 2013 for a parcel (One a year)</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2010</th>
+                          <td colspan="1" class="confluenceTd">317,535</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Assessment history up to 2013 for a parcel
+                              <span>(One a year)</span>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2011</th>
+                          <td colspan="1" class="confluenceTd">321,547</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Assessment history up to 2013 for a parcel
+                              <span>(One a year)</span>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2012</th>
+                          <td colspan="1" class="confluenceTd">323,734</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Assessment history up to 2013 for a parcel
+                              <span>(One a year)</span>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">2013</th>
+                          <td colspan="1" class="confluenceTd">324,966</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Assessment history up to 2013 for a parcel
+                              <span>(One a year)</span>
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="4" class="confluenceTh">API Data
+                            <span>*</span>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">
+                            <p>
+                              <strong>Table</strong>
+                            </p>
+                          </th>
+                          <th class="confluenceTh">
+                            <p>N</p>
+                          </th>
+                          <th class="confluenceTh">
+                            <p>
+                              <strong>Years</strong>
+                            </p>
+                          </th>
+                          <th colspan="1" class="confluenceTh">Unit of Observation</th>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">
+                            <p>Assessment</p>
+                          </th>
+                          <td class="confluenceTd">
+                            <p>410,570</p>
+                          </td>
+                          <td class="confluenceTd">
+                            <p>
+                              <span>2009 - 2015</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Assessment event for a parcel</td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">
+                            <p>Assessment Payment History</p>
+                          </th>
+                          <td class="confluenceTd">
+                            <p>1,635,898</p>
+                          </td>
+                          <td class="confluenceTd">
+                            <p>
+                              <span>2009 - 2015</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Tax event for a parcel</td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">
+                            <p>Sales History</p>
+                          </th>
+                          <td class="confluenceTd">
+                            <p>42,552</p>
+                          </td>
+                          <td class="confluenceTd">
+                            <p>
+                              <span>2009 - 2015</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Transaction where ownership changed for a parcel</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p>
+                    <strong>** Past Years are available off the API, but only profiled here those for the time period of interest</strong>
+                  </p>
+                  <hr />
+                  <p>
+                    <strong>
+                      <br />
+                    </strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="columnLayout single" data-layout="single">
+              <div class="cell normal" data-type="normal">
+                <div class="innerCell">
+                  <h3 id="ArlingtonCountyRealEstateAssessments-DataQuality">Data Quality</h3>
+                  <p>The tables below contain the results of the data profiling of key variables for the the following tables (click to jump to that section):</p>
+                  <ul>
+                    <li><a href="Arlington-County-Real-Estate-Assessments_64427561.html#ArlingtonCountyRealEstateAssessments-Property">Property</a></li>
+                    <li><a href="Arlington-County-Real-Estate-Assessments_64427561.html#ArlingtonCountyRealEstateAssessments-ImprovementDwelling">Improvement Dwelling</a></li>
+                    <li><a href="Arlington-County-Real-Estate-Assessments_64427561.html#ArlingtonCountyRealEstateAssessments-ImprovementInterior">Improvement Interior</a></li>
+                    <li><a href="Arlington-County-Real-Estate-Assessments_64427561.html#ArlingtonCountyRealEstateAssessments-Assessment">Assessment</a></li>
+                    <li><a href="Arlington-County-Real-Estate-Assessments_64427561.html#ArlingtonCountyRealEstateAssessments-PaymentHistory">Payment History</a></li>
+                    <li><a href="Arlington-County-Real-Estate-Assessments_64427561.html#ArlingtonCountyRealEstateAssessments-SellingHistory">Selling History</a></li>
+                  </ul>
+                  <p>Note: &quot;Real.Estate.Property.Code&quot; is the property Code (parcel) for the Property assessed. &quot;Master.
+                    <span>Real.Estate.Property.Code&quot;</span> is specific for condo and primarily used for GIS </p>
+                  <p>
+                    <span class="confluence-anchor-link" id="ArlingtonCountyRealEstateAssessments-Property"></span>
+                  </p>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Quality: Property 2009</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;realEstatePropertyCode&quot;   </th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;masterRealEstatePropertyCode”</th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyClassTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">56 levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbr”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>4% listed as 0</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbrSuffixCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Levels coded with spaces</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot; F &quot; &quot; G &quot; &quot; H &quot; &quot; I &quot; &quot; J &quot; &quot; K &quot; &quot;A &quot; &quot;B &quot; &quot;BK &quot; &quot;C &quot; &quot;D &quot; &quot;E &quot; &quot;F &quot; &quot;G &quot;
+                              &quot;H &quot; &quot;I &quot; &quot;J &quot; &quot;K &quot; &quot;L &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>
+                              <span>NA coding: &quot; &quot;, &quot; &quot;</span>
+                            </p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyStreetDirectionPrefixCode</th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Levels coded with spaces</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">NA Coding: &quot; &quot;</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Levels coded with spaces</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Inconsistent coding in regards to suffix, eg: TH, th</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetTypeCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Levels coded with spaces</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;AVE &quot; &quot;BLVD&quot; &quot;CIR &quot; &quot;CT &quot; &quot;DR &quot; &quot;HWY &quot; &quot;LN &quot; &quot;PIKE&quot; &quot;PKWY&quot; &quot;PL &quot; &quot;RD &quot; &quot;ST &quot; &quot;TER &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetDirectionSuffixCode&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>
+                              <span>Levels coded with spaces</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: NA, “ ”</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyUnitNbr&quot;  </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>
+                              <span>Levels coded with spaces</span>
+                            </p>
+                            <p>
+                              <span>Some unit numbers are proceeded with 4 &quot;0000&quot;</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">6,371 levels</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>NA coding: &quot; &quot;, &quot; &quot;</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyCityName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyZipCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span style="line-height: 1.42857;">&quot;22101&quot; &quot;22201&quot; &quot;22202&quot; &quot;22203&quot; &quot;22204&quot; &quot;22205&quot; &quot;22206&quot; &quot;22207&quot; &quot;22209&quot; &quot;22211&quot; &quot;22213&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyYearBuilt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">5% missing</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>1% are invalid entries: 0 and 1000</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;numberOfUnitsCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">95%</td>
+                          <td colspan="1" class="confluenceTd">Invalid &quot;0&quot; (4%)</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Quality: Property 2010</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;realEstatePropertyCode&quot;   </th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;masterRealEstatePropertyCode”</th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyClassTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">56 levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbr”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">4% listed as 0</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbrSuffixCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot; F &quot; &quot; G &quot; &quot; H &quot; &quot; I &quot; &quot; J &quot; &quot; K &quot; &quot;A &quot; &quot;B &quot; &quot;BK &quot; &quot;C &quot; &quot;D &quot; &quot;E &quot; &quot;F &quot; &quot;G &quot;
+                              &quot;H &quot; &quot;I &quot; &quot;J &quot; &quot;K &quot; &quot;L &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: &quot; &quot;, &quot; &quot;</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyStreetDirectionPrefixCode</th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">NA Coding: &quot; &quot;</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Inconsistent coding in regards to suffix, eg: TH, th</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetTypeCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Levels coded with spaces</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;AVE &quot; &quot;BLVD&quot; &quot;CIR &quot; &quot;CT &quot; &quot;DR &quot; &quot;HWY &quot; &quot;LN &quot; &quot;PIKE&quot; &quot;PKWY&quot; &quot;PL &quot; &quot;RD &quot; &quot;ST &quot; &quot;TER &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetDirectionSuffixCode&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels coded with spaces</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: NA, “ ”</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyUnitNbr&quot;  </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels coded with spaces</p>
+                            <p>Some unit numbers are proceeded with 4 &quot;0000&quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">6,412 levels</td>
+                          <td colspan="1" class="confluenceTd">NA coding: &quot; &quot;, &quot; &quot;</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyCityName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyZipCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>
+                              <span>Some are outside of Arlington</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span style="line-height: 1.42857;">&quot;22101&quot; &quot;22201&quot; &quot;22202&quot; &quot;22203&quot; &quot;22204&quot; &quot;22205&quot; &quot;22206&quot; &quot;22207&quot; &quot;22208&quot; &quot;22209&quot; &quot;22211&quot; &quot;22213&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyYearBuilt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">5% missing</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>1% are invalid entries: 0 and 1000</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;numberOfUnitsCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">95%</td>
+                          <td colspan="1" class="confluenceTd">Invalid &quot;0&quot; (4%)</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Quality: Property 2011</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;realEstatePropertyCode&quot;   </th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;masterRealEstatePropertyCode”</th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyClassTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">56 levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbr”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">5 missing</td>
+                          <td colspan="1" class="confluenceTd">4% listed as 0</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbrSuffixCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot; F &quot; &quot; G &quot; &quot; H &quot; &quot; I &quot; &quot; J &quot; &quot; K &quot; &quot;A &quot; &quot;B &quot; &quot;BK &quot; &quot;C &quot; &quot;D &quot; &quot;E &quot; &quot;F &quot; &quot;G &quot;
+                              &quot;H &quot; &quot;I &quot; &quot;J &quot; &quot;K &quot; &quot;L &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: &quot; &quot;, &quot; &quot;</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyStreetDirectionPrefixCode</th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">NA Coding: &quot; &quot;</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>5 missing</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Inconsistent coding in regards to suffix, eg: TH, th</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetTypeCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">5 missing</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Levels coded with spaces</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;AVE &quot; &quot;BLVD&quot; &quot;CIR &quot; &quot;CT &quot; &quot;DR &quot; &quot;HWY &quot; &quot;LN &quot; &quot;PIKE&quot; &quot;PKWY&quot; &quot;PL &quot; &quot;RD &quot; &quot;ST &quot; &quot;TER &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetDirectionSuffixCode&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels coded with spaces</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: NA, “ ”</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyUnitNbr&quot;  </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels coded with spaces</p>
+                            <p>Some unit numbers are proceeded with 4 &quot;0000&quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">6,419 levels</td>
+                          <td colspan="1" class="confluenceTd">NA coding: &quot; &quot;, &quot; &quot;</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyCityName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyZipCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>5 missing</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>
+                              <span>Some are outside of Arlington</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span style="line-height: 1.42857;">&quot;22101&quot; &quot;22201&quot; &quot;22202&quot; &quot;22203&quot; &quot;22204&quot; &quot;22205&quot; &quot;22206&quot; &quot;22207&quot; &quot;22208&quot; &quot;22209&quot; &quot;22211&quot; &quot;22213&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyYearBuilt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">5% missing</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>1% are invalid entries: 0 and 1000</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;numberOfUnitsCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">95%</td>
+                          <td colspan="1" class="confluenceTd">Invalid &quot;0&quot; (4%)</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Quality: Property 2012</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;realEstatePropertyCode&quot;   </th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;masterRealEstatePropertyCode”</th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyClassTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">56 levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbr”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">4% listed as 0</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbrSuffixCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot; F &quot; &quot; G &quot; &quot; H &quot; &quot; I &quot; &quot; J &quot; &quot; K &quot; &quot;A &quot; &quot;B &quot; &quot;BK &quot; &quot;C &quot; &quot;D &quot; &quot;E &quot; &quot;F &quot; &quot;G &quot;
+                              &quot;H &quot; &quot;I &quot; &quot;J &quot; &quot;K &quot; &quot;L &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: &quot; &quot;, &quot; &quot;</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyStreetDirectionPrefixCode</th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">NA Coding: &quot; &quot;</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Inconsistent coding in regards to suffix, eg: TH, th</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetTypeCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Levels coded with spaces</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels:&quot;AVE &quot; &quot;BLVD&quot; &quot;CIR &quot; &quot;CT &quot; &quot;DR &quot; &quot;HWY &quot; &quot;LN &quot; &quot;PIKE&quot; &quot;PKWY&quot; &quot;PL &quot; &quot;RD &quot; &quot;ST &quot; &quot;TER &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetDirectionSuffixCode&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels coded with spaces</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: NA, “ ”</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyUnitNbr&quot;  </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels coded with spaces</p>
+                            <p>Some unit numbers are proceeded with 4 &quot;0000&quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">6,487 levels</td>
+                          <td colspan="1" class="confluenceTd">NA coding: &quot; &quot;, &quot; &quot;</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyCityName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyZipCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Some are outside of Arlington</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span style="line-height: 1.42857;">&quot;20003&quot; &quot;22003&quot; &quot;22004&quot; &quot;22101&quot; &quot;22201&quot; &quot;22202&quot; &quot;22203&quot; &quot;22204&quot; &quot;22205&quot; &quot;22206&quot; &quot;22207&quot; &quot;22208&quot; &quot;22209&quot;
+                              &quot;22211&quot; &quot;22213&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyYearBuilt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">5% missing</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>1% are invalid entries: 0 and 1000</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;numberOfUnitsCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">95%</td>
+                          <td colspan="1" class="confluenceTd">Invalid &quot;0&quot; (4%)</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Quality: Property 2013</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;realEstatePropertyCode&quot;   </th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;masterRealEstatePropertyCode”</th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyClassTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">55 levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbr”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">5 missing</td>
+                          <td colspan="1" class="confluenceTd">4% listed as 0</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbrSuffixCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot; F &quot; &quot; G &quot; &quot; H &quot; &quot; I &quot; &quot; J &quot; &quot; K &quot; &quot;A &quot; &quot;B &quot; &quot;BK &quot; &quot;C &quot; &quot;D &quot; &quot;E &quot; &quot;F &quot; &quot;G &quot;
+                              &quot;H &quot; &quot;I &quot; &quot;J &quot; &quot;K &quot; &quot;L &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: &quot; &quot;, &quot; &quot;, NA</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyStreetDirectionPrefixCode</th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">NA Coding: &quot; &quot;</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>5 missing</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels coded with spaces</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Inconsistent coding in regards to suffix, eg: TH, th</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetTypeCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>5 missing</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>Levels coded with spaces</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels:&quot;AVE &quot; &quot;BLVD&quot; &quot;CIR &quot; &quot;CT &quot; &quot;DR &quot; &quot;HWY &quot; &quot;LN &quot; &quot;PIKE&quot; &quot;PKWY&quot; &quot;PL &quot; &quot;RD &quot; &quot;ST &quot; &quot;TER &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetDirectionSuffixCode&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels coded with spaces</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;N &quot; &quot;S &quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: NA, “ ”</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyUnitNbr&quot;  </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels coded with spaces</p>
+                            <p>Some unit numbers are proceeded with 4 &quot;0000&quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">6,490 levels</td>
+                          <td colspan="1" class="confluenceTd">NA coding: &quot; &quot;, &quot; &quot;</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyCityName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>5 missing</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyZipCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>5 missing</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Some are outside of Arlington</p>
+                            <p>Levels with spaces</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span style="line-height: 1.42857;"> &quot;20003 &quot; &quot;20011 &quot; &quot;22003 &quot; &quot;22004 &quot; &quot;22101 &quot; &quot;22201 &quot; &quot;22202 &quot; &quot;22203 &quot; &quot;22204 &quot; &quot;22205 &quot; &quot;22206 &quot; &quot;22207 &quot;
+                              &quot;22208 &quot; &quot;22209 &quot;</span>
+                            <span style="line-height: 1.42857;">&quot;22211 &quot; &quot;22213 &quot; &quot;2224 &quot; &quot;222O2 &quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyYearBuilt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">5% missing</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>1% are invalid entries: 0 and 1000</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;numberOfUnitsCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">99% missing</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Invalid &quot;0&quot; (9)</p>
+                            <p>
+                              <span>Invalid</span> greater than 2,000 (9)</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Quality: Property 2015 ***</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span>&quot;realEstatePropertyCode&quot;   </span>
+                          </th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span>&quot;masterRealEstatePropertyCode”</span>
+                          </th>
+                          <td colspan="4" class="confluenceTd">No duplications</td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;reasPropertyStatusCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;A&quot;, &quot;T&quot;</p>
+                            <p>Active/Inactive</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyClassTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">58 levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbr”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">6% are missing</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetNbrSuffixCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;A&quot;  &quot;B&quot;  &quot;BK&quot; &quot;C&quot;  &quot;D&quot;  &quot;E&quot;  &quot;F&quot;  &quot;G&quot;  &quot;H&quot;  &quot;I&quot;  &quot;J&quot;  &quot;K&quot;  &quot;L&quot;  &quot;N&quot;  &quot;S&quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyStreetDirectionPrefixCode</th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: “N”, “S”</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">753 missing</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Inconsistent coding: 12<sup>th</sup>, 12<sup>TH</sup>, 19<sup>th</sup>, 19<sup>TH</sup>, 20<sup>th</sup>, 20<sup>TH</sup>,8<sup>th</sup>, 8<sup>TH</sup></td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetTypeCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">753 missing</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: &quot;AVE&quot;,&quot;BLVD&quot;,&quot;CIR&quot;, &quot;CT&quot; ,&quot;DR&quot; , &quot;HWY&quot;, &quot;LN&quot;,  &quot;PIKE”, &quot;PKWY&quot;, &quot;PL&quot;,   &quot;RD&quot;,  &quot;ST&quot;,  &quot;TER&quot;</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyStreetDirectionSuffixCode&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Levels: “N ”, “S ”</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>NA coding: NA, “ ”</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;propertyUnitNbr&quot;  </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">6,501 levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyCityName”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">753 missing</td>
+                          <td colspan="1" class="confluenceTd">“Clarendon&quot;</td>
+                          <td colspan="1" class="confluenceTd">100% in Arlington</td>
+                          <td colspan="1" class="confluenceTd">Multiple Spellings of Arlington</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyZipCode”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">754 missing</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>Zip codes out of Arlington or invalid</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span style="line-height: 1.42857;">&quot;12201&quot; &quot;20003&quot; &quot;20009&quot; &quot;20011&quot; &quot;22003&quot; &quot;22004&quot; &quot;2207&quot; &quot;22101&quot; &quot;222004&quot; &quot;22201&quot; &quot;22202&quot; &quot;22203&quot; &quot;22204&quot;
+                              &quot;22205&quot; &quot;22206&quot; &quot;22207&quot; &quot;22208&quot; &quot;22209&quot; &quot;2221&quot; &quot;22211&quot; </span>
+                            <span style="line-height: 1.42857;">&quot;22213&quot; &quot;2224&quot; &quot;222O2&quot; &quot;970000&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;propertyYearBuilt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>9% missing</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>
+                              <span>Invalid years: “0”, “1000”</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;numberOfUnitsCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">Invalid &quot;0&quot; (9)</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p>
+                    <strong>*** No time stamp
+                      <span class="confluence-anchor-link" id="ArlingtonCountyRealEstateAssessments-ImprovementDwelling"></span>
+                    </strong>
+                  </p>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Improvement Dwelling 2009</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span>&quot;realEstatePropertyCode”</span>
+                          </th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>35 properties appear more than one</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;heatingTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">43% missing</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">23 different levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>dwellingYearBuiltDate”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>5% listed as 0 or 1000</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr style="text-align: left;">
+                          <th colspan="5" style="text-align: left;" class="confluenceTh">Improvement Dwelling 2010</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">Duplications</th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <span>&quot;realEstatePropertyCode”</span>
+                          </th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">
+                            <p>25 properties appear more than one</p>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th style="text-align: left;" class="confluenceTh">Variables</th>
+                          <th style="text-align: left;" class="confluenceTh">Completeness</th>
+                          <th style="text-align: left;" class="confluenceTh">Validity</th>
+                          <th style="text-align: left;" class="confluenceTh">Uniqueness</th>
+                          <th style="text-align: left;" class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;heatingTypeDsc”</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">43% missing</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">22 different levels</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>dwellingYearBuiltDate”</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <p>4% listed as 0 or 1000</p>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd"> </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Improvement Dwelling 2011</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;realEstatePropertyCode”</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>47 properties appear more than one</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;heatingTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">43% missing</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">23 different levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>dwellingYearBuiltDate”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>4% listed as 0 or 1000</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Improvement Dwelling 2012</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;realEstatePropertyCode”</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>57 properties appear more than one</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;heatingTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">43% missing</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">23 different levels</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>dwellingYearBuiltDate”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>4% listed as 0 or 1000</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr style="text-align: left;">
+                          <th colspan="5" style="text-align: left;" class="confluenceTh">Improvement Dwelling 2013</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">Duplications</th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">No duplicated rows</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">&quot;realEstatePropertyCode”</th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">
+                            <p>69 properties appear more than one</p>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th style="text-align: left;" class="confluenceTh">Variables</th>
+                          <th style="text-align: left;" class="confluenceTh">Completeness</th>
+                          <th style="text-align: left;" class="confluenceTh">Validity</th>
+                          <th style="text-align: left;" class="confluenceTh">Uniqueness</th>
+                          <th style="text-align: left;" class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;heatingTypeDsc”</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">43% missing</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">24 different levels</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>dwellingYearBuiltDate”</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <p>4% listed as 0 or 1000</p>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd"> </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">
+                            <span>Improvement Dwelling 2015 ***</span>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">66 are duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;realEstatePropertyCode”</p>
+                          </th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>167 are duplications</p>
+                            <p>160 properties appear more than once</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;dwellingKey&quot;</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>66 are duplications</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;heatingTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">13 missing</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">24 different levels</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>dwellingYearBuiltDate”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>67 listed
+                              <span>as 0 or 1000</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;extensionNbr&quot;</th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p> </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>levels: </span>
+                            <span>&quot;R01&quot; &quot;R02&quot; &quot;R03&quot; &quot;R04&quot; &quot;R05&quot; &quot;R06&quot; &quot;R07&quot; &quot;R10&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p>
+                    <strong>** No time stamp
+                      <span class="confluence-anchor-link" id="ArlingtonCountyRealEstateAssessments-ImprovementInterior"></span>
+                    </strong>
+                  </p>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr style="text-align: left;">
+                          <th colspan="5" style="text-align: left;" class="confluenceTh">Improvement Interior 2009</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">Duplications</th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">
+                            <p>No duplicated rows</p>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;realEstatePropertyCode”</p>
+                          </th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">
+                            <p>25 of properties appear more than once</p>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th style="text-align: left;" class="confluenceTh">Variables</th>
+                          <th style="text-align: left;" class="confluenceTh">Completeness</th>
+                          <th style="text-align: left;" class="confluenceTh">Validity</th>
+                          <th style="text-align: left;" class="confluenceTh">Uniqueness</th>
+                          <th style="text-align: left;" class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;bedroomCnt”</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd"> </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;FullBathroomCnt”</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd"> </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;HalfBathroomCnt&quot;  </p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd"> </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" class="confluenceTh">&quot;Extension&quot;</th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span style="line-height: 1.42857;">&quot;R01&quot; &quot;R02&quot; &quot;R03&quot; &quot;R04&quot; &quot;R05&quot; &quot;R06&quot; &quot;R07&quot; &quot;R10&quot; &quot;VAC&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Improvement Interior 2010</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>No duplicated rows</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span>&quot;realEstatePropertyCode”</span>
+                          </th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>35 of properties appear more than once</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;bedroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;FullBathroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;HalfBathroomCnt&quot;  </p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Extension&quot;</th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span>&quot;R01&quot; &quot;R02&quot; &quot;R03&quot; &quot;R04&quot; &quot;R05&quot; &quot;R06&quot; &quot;R07&quot; &quot;R10&quot; &quot;VAC&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Improvement Interior 2011</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>No duplicated rows</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span>&quot;realEstatePropertyCode”</span>
+                          </th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>47 of properties appear more than once</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;bedroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;FullBathroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;HalfBathroomCnt&quot;  </p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Extension&quot;</th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span>&quot;R01&quot; &quot;R02&quot; &quot;R03&quot; &quot;R04&quot; &quot;R05&quot; &quot;R06&quot; &quot;R07&quot; &quot;R10&quot; &quot;VAC&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Improvement Interior 2012</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>No duplicated rows</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span>&quot;realEstatePropertyCode”</span>
+                          </th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>57 of properties appear more than once</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;bedroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;FullBathroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;HalfBathroomCnt&quot;  </p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Extension&quot;</th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span>&quot;R01&quot; &quot;R02&quot; &quot;R03&quot; &quot;R04&quot; &quot;R05&quot; &quot;R06&quot; &quot;R07&quot; &quot;R10&quot; &quot;VAC&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Improvement Interior 2013</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>No duplicated rows</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span>&quot;realEstatePropertyCode”</span>
+                          </th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>69 of properties appear more than once</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;bedroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;FullBathroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;HalfBathroomCnt&quot;  </p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Extension&quot;</th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span>&quot;R01&quot; &quot;R02&quot; &quot;R03&quot; &quot;R04&quot; &quot;R05&quot; &quot;R06&quot; &quot;R07&quot; &quot;R10&quot; &quot;VAC&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Improvement Interior 2015 ***</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>No duplicated rows</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;realEstatePropertyCode”</p>
+                          </th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>80% are duplicated</p>
+                            <p>
+                              <span>64% of properties appear more than once</span>
+                            </p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;floorKey&quot;</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>None are duplicated</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;dwellingKey</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>55% are duplicated</p>
+                            <p>
+                              <span>64% of dwellings appear more than once</span>
+                            </p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;bedroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;twoFixtureBathroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;threeFixtureBathroomCnt&quot;  </p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;fourFixtureBathroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;fiveFixtureBathroomCnt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p class="GJRPLCSDNIB">&quot;extensionNbr&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span style="line-height: 1.42857;">&quot;R01&quot; &quot;R02&quot; &quot;R03&quot; &quot;R04&quot; &quot;R05&quot; &quot;R06&quot; &quot;R07&quot; &quot;R10&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p>
+                    <strong>** No time stamp
+                      <span class="confluence-anchor-link" id="ArlingtonCountyRealEstateAssessments-Assessment"></span>
+                    </strong>
+                  </p>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Assessments 2009 (Data CD)</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">None are duplicated</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Parcel_ID&quot;</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>205 appear once and the rest are appear multiple times</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Year_Assessed&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%
+                            <p> </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p> </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Impr&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">5% list as 0 (no structure on land)</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Land”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">1% list as 0</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Totl</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">220 are listed as 0</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr style="text-align: left;">
+                          <th colspan="5" style="text-align: left;" class="confluenceTh">Assessments 2010 (Data CD)</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">Duplications</th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">None are duplicated</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">&quot;Parcel_ID&quot;</th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">
+                            <p>220 appear once and the rest are appear multiple times</p>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th style="text-align: left;" class="confluenceTh">Variables</th>
+                          <th style="text-align: left;" class="confluenceTh">Completeness</th>
+                          <th style="text-align: left;" class="confluenceTh">Validity</th>
+                          <th style="text-align: left;" class="confluenceTh">Uniqueness</th>
+                          <th style="text-align: left;" class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;Year_Assessed&quot;</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%
+                            <p> </p>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <p> </p>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;Impr&quot;</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">5% list as 0 (no structure on land)</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;Land”</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">1% list as 0</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;Totl</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">212 are listed as 0</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd"> </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr style="text-align: left;">
+                          <th colspan="5" style="text-align: left;" class="confluenceTh">Assessments 2011 (Data CD)</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">Duplications</th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">None are duplicated</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">&quot;Parcel_ID&quot;</th>
+                          <td colspan="4" style="text-align: left;" class="confluenceTd">
+                            <p>117 appear once and the rest are appear multiple times</p>
+                          </td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th style="text-align: left;" class="confluenceTh">Variables</th>
+                          <th style="text-align: left;" class="confluenceTh">Completeness</th>
+                          <th style="text-align: left;" class="confluenceTh">Validity</th>
+                          <th style="text-align: left;" class="confluenceTh">Uniqueness</th>
+                          <th style="text-align: left;" class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;Year_Assessed&quot;</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%
+                            <p> </p>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <p> </p>
+                          </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;Impr&quot;</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">5% list as 0 (no structure on land)</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;Land”</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">1% list as 0</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                          <th colspan="1" style="text-align: left;" class="confluenceTh">
+                            <p>&quot;Totl</p>
+                          </th>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">100%</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">167 are listed as 0</td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd"> </td>
+                          <td colspan="1" style="text-align: left;" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Assessments 2012 (Data CD)</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">None are duplicated</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Parcel_ID&quot;</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>236 appear once and the rest are appear multiple times</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Year_Assessed&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%
+                            <p> </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p> </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Impr&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">4% list as 0 (no structure on land)</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Land”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">1% list as 0</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Totl</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">173 are listed as 0</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Assessments 2013 (Data CD)</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">None are duplicated</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Parcel_ID&quot;</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>205 appear once and the rest are appear multiple times</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Year_Assessed&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%
+                            <p> </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p> </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Impr&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">4% list as 0 (no structure on land)</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Land”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">1% list as 0</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Totl</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">220 are listed as 0</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>100%</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Assessments (API)</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">21% are duplicated rows</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Assessment.Key”</th>
+                          <td colspan="4" class="confluenceTd">21% are duplicated</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Real.Estate.Property.Code”</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>83% are duplications</p>
+                            <p>99% of the properties appear more than once</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Assessment.Date&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">
+                            <p>YYYY-01-01 for all years have high frequencies as compared to other days</p>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Improvement.Value.Amount&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">4% list as 0 (no structure on land)</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Land.Value.Amount”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">1% list as 0</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>&quot;Total.Value.Amount&quot;</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">331 are listed as 0</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">&quot;Assessment.Change.Reason.Type.Dsc&quot;</th>
+                          <td colspan="1" class="confluenceTd">199 are missing</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">Levels:
+                            <span style="line-height: 1.42857;">&quot;01- Annual&quot;, &quot;02- Permit&quot;, &quot;03- Board of Equalization&quot; &quot;04- Court Order&quot;, &quot;05- Review&quot; ,&quot;09- New Construction&quot; ,</span>
+                            <span style="line-height: 1.42857;">&quot;16- Tax to Exempt&quot; ,&quot;18- Exempt to Tax&quot;</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p>
+                    <span class="confluence-anchor-link" id="ArlingtonCountyRealEstateAssessments-PaymentHistory"></span>
+                  </p>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Assessment Payment History (API)</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>354 are duplicated rows</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span>&quot;realEstatePropertyCode”</span>
+                          </th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>96% are duplicated</p>
+                            <p>100% of properties appear more than once</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>“taxDueDate”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>YYYY-06-15 and YYY-10-05 for all years have high frequencies as compared to other days</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">“displayLabelTypeName”</th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">&quot;Adjustment&quot;, &quot;Deferral&quot;, &quot;Levy&quot;,  &quot;Payment&quot;, &quot;Relief&quot;</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span>“totalAmt”</span>
+                          </th>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                          <td colspan="1" class="confluenceTd">1 equals 0</td>
+                          <td colspan="1" class="confluenceTd">100%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p>
+                    <span class="confluence-anchor-link" id="ArlingtonCountyRealEstateAssessments-SellingHistory"></span>
+                  </p>
+                  <div class="table-wrap">
+                    <table class="confluenceTable">
+                      <tbody>
+                        <tr>
+                          <th colspan="5" class="confluenceTh">Sales History (API)</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">Duplications</th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>473 (1%) of rows duplicated</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <span style="color: rgb(102,0,0);">&quot;realEstatePropertyCode&quot;</span>
+                          </th>
+                          <td colspan="4" class="confluenceTd">
+                            <p>36% are duplicated</p>
+                            <p>36% properties are listed more than once</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="confluenceTh">Variables</th>
+                          <th class="confluenceTh">Completeness</th>
+                          <th class="confluenceTh">Validity</th>
+                          <th class="confluenceTh">Uniqueness</th>
+                          <th class="confluenceTh">Consistency</th>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>“salesTypeDsc”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>41% missing</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">26 levels</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>“saleAmt”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd">47% list at 0</td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th colspan="1" class="confluenceTh">
+                            <p>“saleDate”</p>
+                          </th>
+                          <td colspan="1" class="confluenceTd">
+                            <p>
+                              <span>100%</span>
+                            </p>
+                          </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                          <td colspan="1" class="confluenceTd"> </td>
+                          <td colspan="1" class="confluenceTd">
+                            <span>100%</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columnLayout single" data-layout="single">
+              <div class="cell normal" data-type="normal">
+                <div class="innerCell">
+                  <h3 id="ArlingtonCountyRealEstateAssessments-AcrosstheYearsChecks">Across the Years Checks</h3>
+                  <p>
+                    <strong>Address</strong>
+                  </p>
+                  <ul>
+                    <li>872 properties have at least one different address in 2009, 2010, 2011, 2013,and 2015</li>
+                    <li>191 properties have at lest one different address
+                      <span> in 2009, 2010, 2011, and 2013</span>
+                    </li>
+                  </ul>
+                  <p>
+                    <strong style="line-height: 1.42857;">Number of Units</strong>
+                  </p>
+                  <ul>
+                    <li>206 properties change unit counts across the years</li>
+                    <li>9 have differences in the 20,000+ range due to errors in year 2013 data
+                      <br />
+                      <img class="confluence-embedded-image" width="500" src="attachments/64427561/65470600.png" data-image-src="attachments/64427561/65470600.png">
+                    </li>
+                  </ul>
+                  <p>
+                    <strong>Heating Type</strong>
+                  </p>
+                  <ul>
+                    <li>1,189 properties have at least one different heating type listed between 2009 to 2013.</li>
+                  </ul>
+                  <p>
+                    <strong>Year Built</strong>
+                  </p>
+                  <ul>
+                    <li>No year built occurred after that year's data (i.e. Year Built of 2012 in 2009 data)</li>
+                    <li>830 properties have at least 1 year built that is different than the rest between 2009, 2010, 2011, 2012, 2013, and 2015.</li>
+                    <li>403 properties have at least 1
+                      <span>year built that is different than the rest between 2009, 2010, 2011, 2012, and 2013.</span>
+                    </li>
+                    <li>Large difference may indicate a new construction where original building was demolished.</li>
+                  </ul>
+                  <p>
+                    <img class="confluence-embedded-image" width="500" src="attachments/64427561/65470599.png" data-image-src="attachments/64427561/65470599.png">
+                  </p>
+                  <p> </p>
+                  <p>Note: These figures do not include the difference where the minimum value was 0 or 1,000.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pageSection group">
+          <div class="pageSectionHeader">
+            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+          </div>
+
+          <div class="greybox" align="left">
+            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt="" />
+            <a href="attachments/64427561/64620315.docx">Arlington County Real Estate Data Dictionary.docx</a> (application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+            <br/>
+            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt="" />
+            <a href="attachments/64427561/64620806.pdf">DataDictionary-2015.pdf</a> (application/pdf)
+            <br/>
+            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt="" />
+            <a href="attachments/64427561/64620851.png">image2015-9-18 15:51:17.png</a> (image/png)
+            <br/>
+            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt="" />
+            <a href="attachments/64427561/64620858.png">image2015-9-18 16:14:19.png</a> (image/png)
+            <br/>
+            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt="" />
+            <a href="attachments/64427561/64620861.png">image2015-9-19 16:10:3.png</a> (image/png)
+            <br/>
+            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt="" />
+            <a href="attachments/64427561/65470599.png">YearBuiltDiff.png</a> (image/png)
+            <br/>
+            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt="" />
+            <a href="attachments/64427561/65470600.png">UnitDifference.png</a> (image/png)
+            <br/>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+    <div id="footer">
+      <section class="footer-body">
+        <p>Document generated by Confluence on 04 Jan 2016 18:29</p>
+      </section>
+    </div>
+  </div>
+</body>
+
+</html>

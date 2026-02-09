@@ -1,0 +1,518 @@
+Timestamp,Please copy and paste the Document ID of the article you are submitting responses for. ,Does this article mention a new or improved drug that differs from the company’s previous drugs (regardless of whether or not a similar drug is already being sold by another company)?,"Based on the article, what is the current stage of the drug?","Please copy and paste the names of any new drugs mentioned in the article. Be sure that the commas separate the products. If a product name contains a comma, please remove it. ","Please copy and paste the names of any companies that introduced the new drug(s). Be sure that the commas separate the company names. If a company name contains a comma, please remove it. ","Based on the article, is the drug new to the market? (The company introduced the drug before other companies, and no similar drugs are already being sold either by this company or by other companies)",Based on the article is this drug new only to the company? (The company introduced a drug that was already available from other companies with little or no additional modification)
+7/24/2019 11:16:24,ATPATN0020150601eb610000g,No,,,,,
+7/24/2019 11:16:50,CHPR000020151123ebbc0000k,No,,,,,
+7/24/2019 11:17:29,MHWK000020150612eb6f0001v,Yes,Available to consumers (has been launched on the market),Guanfacine Extended-Release Tablets,Teva Pharmaceutical Industries Ltd,Yes,No
+7/24/2019 11:17:35,FLYWAL0020150623eb6n0019g,Unsure,Undergoing clinical trials,AZD2811,,,
+7/24/2019 11:17:37,PRESSA0020151008eba8003uy ,Yes,Available to consumers (has been launched on the market), Provenge,Dendreon,Yes,Yes
+7/24/2019 11:17:38,DALTNC0020150715eb7e00008,No,,,,,
+7/24/2019 11:17:41,DJDN000020151012ebac0001t ,No,,,,,
+7/24/2019 11:17:53,BIOELSE020151117ebb90001r,No,,,,,
+7/24/2019 11:17:56,LFSW000020150130eb23001n2 ,No,,,,,
+7/24/2019 11:18:15,DJDN000020150930eb9u001fg,Yes,Undergoing clinical trials,Relday,Zogenix Inc,Yes,No
+7/24/2019 11:18:35,PBRELS0020151112ebb500001,No,,,,,
+7/24/2019 11:18:36,CNEWAS0020151020ebak001s0,No,,,,,
+7/24/2019 11:18:39,BIOELSE020151117ebb90001r,No,,,,,
+7/24/2019 11:18:59,CONGDP0020150514eb5d00063 ,No,,,,,
+7/24/2019 11:19:00,ATPHAM0020151112ebbb0000b,No,,,,,
+7/24/2019 11:19:17,PZON000020151124ebbo0000y ,Yes,Undergoing clinical trials,"IV/IM meloxicam, Dex-IN",Recro Pharma Inc.,Unsure,Unsure
+7/24/2019 11:19:18,KANECC0020150513eb5d00003,No,,,,,
+7/24/2019 11:19:24,HOU0000020150623eb6k00027,Yes,Undergoing clinical trials,TKM-Ebola-Guinea,Tekmira Pharmaceuticals Corp.,Yes,Yes
+7/24/2019 11:19:26,DESR000020150815eb8f0003e,No,,,,,
+7/24/2019 11:19:40,BHLD000020151023eban0003h ,Yes,Unsure,,Merrimack,Unsure,Unsure
+7/24/2019 11:19:41,CHPR000020151023ebag00008 ,No,,,,,
+7/24/2019 11:19:46,MTEU000020150414eb4e000gp,No,,,,,
+7/24/2019 11:19:57,BIWK000020150417eb4m000ps,No,,,,,
+7/24/2019 11:20:03,DRGW000020151127ebbr0002q ,No,,,,,
+7/24/2019 11:20:03,PRESSA0020150504eb54000jh,Yes,Available to consumers (has been launched on the market),Nevisense,SciBase,Unsure,Yes
+7/24/2019 11:20:20,DJDN000020150615eb6f003t8,Yes,Undergoing clinical trials,Rhopressa,Aerie Pharmaceuticals,No,Yes
+7/24/2019 11:20:41,PBRELS0020150811eb8400007,No,,,,,
+7/24/2019 11:20:44,FLYWAL0020150304eb340033j,No,,,,,
+7/24/2019 11:20:46,OKLD000020151215ebc9000b6,Unsure,Unsure,Peninsula Wellness Centre in Mountain View,,,
+7/24/2019 11:20:49,PZON000020150128eb1s0002p,Yes,Undergoing clinical trials,APC-5000 DPI,Adamis Pharmaceuticals Corporation,Unsure,Unsure
+7/24/2019 11:21:16,BIWK000020150306eb3b000hh,No,,,,,
+7/24/2019 11:21:26,NBPPBS0020150508eb5900043,No,,,,,
+7/24/2019 11:21:42,HAMW000020151106ebb6000jz,No,,,,,
+7/24/2019 11:21:45,ATPHAM0020151009eba80008e,Yes,Undergoing clinical trials,N/A,N/A,Yes,No
+7/24/2019 11:22:00,PBRELS0020150811eb8400007,No,,,,,
+7/24/2019 11:22:08,BOSBJO0020151002eba20008e ,No,,,,,
+7/24/2019 11:22:22,XNWP000020160212ebcj001hj ,No,,,,,
+7/24/2019 11:22:22,DJDN000020151124ebbo0048a,Yes,Undergoing clinical trials,EPI-506,ESSA Pharma Inc.,Yes,No
+7/24/2019 11:22:32,DATMON0020150114eb1c003gl,No,,,,,
+7/24/2019 11:22:40,PHBW000020150612eb6f00037,Yes,Available to consumers (has been launched on the market),guanfacine,teva,No,Yes
+7/24/2019 11:22:49,DJDN000020150805eb85003sc ,No,,,,,
+7/24/2019 11:22:58,PCWI000020150815eb8f0002y,Yes,Unsure,OxyContin,Purdue Pharma,Unsure,Unsure
+7/24/2019 11:23:00,HAMW000020150130eb26001ab,Yes,Undergoing clinical trials,ThermoDox,Celsion,Unsure,Unsure
+7/24/2019 11:23:09,LFSW000020150130eb23001n2,No,Undergoing clinical trials,,,No,No
+7/24/2019 11:23:09,STLBJO0020150611eb6b0002w,Yes,Undergoing clinical trials,No name yet,NeuroLutions,Unsure,Unsure
+7/24/2019 11:23:17,PRGRSS0020150725eb7p0001h,Unsure,,,,,
+7/24/2019 11:23:18,BIWK000020150909eb99000fr,No,,,,,
+7/24/2019 11:23:36,RTTNEW0020151027ebar001ur,Yes,Undergoing clinical trials,"KEYTRUDA, Fovista, IV Meloxicam, YELIVA ","Merck, Ophthotech Corp., Recro Pharma Inc., RedHill Biopharma Ltd.'s",Unsure,Unsure
+7/24/2019 11:23:51,PZON000020150630eb6u0003c,No,,,,,
+7/24/2019 11:23:55,HAMW000020150820eb8k000bg,No,,,Hollister Incorporated,,
+7/24/2019 11:24:01,MPRMPR0020150929eb9s0000b,,Approved by FDA and scheduled to be launched,Betaconnect autoinjector,Bayer,Yes,Unsure
+7/24/2019 11:24:11,DJDN000020150331eb3v003pl ,No,,,,,
+7/24/2019 11:24:12,DJDN000020150108eb18001mg,Yes,Unsure,"Tri-Moxi, Pred-Moxi",Imprimis Pharmaceuticals Inc.,Yes,No
+7/24/2019 11:24:12,WSJO000020151215ebcf003s7,No,,,,,
+7/24/2019 11:24:19,BWR0000020151019ebaj000g3,Yes,FDA application submission and/or FDA testing,Cotempla XR-ODT,Neos Therapeutics,Unsure,Unsure
+7/24/2019 11:24:23,DJDN000020150713eb7d0021i,No,,,,,
+7/24/2019 11:24:37,INDFED0020150805eb850020a,Unsure,Unsure,CoolSculpting System,ZELTIQ Aesthetics Inc.,Unsure,Unsure
+7/24/2019 11:24:40, HTACCF0020150319eb3j000a1,No,,,,,
+7/24/2019 11:24:41,PZON000020150803eb830005r,No,,,,,
+7/24/2019 11:24:50,CTRW000020150529eb6100017,No,,,,,
+7/24/2019 11:24:51,BNZNGA0020150610eb6a000jh,Unsure,Available to consumers (has been launched on the market),"Praluent, Repatha ","Regeron, Sanofi, Amgen",Unsure,Unsure
+7/24/2019 11:24:53,MRKWN00020151106ebb60006x,No,,,,,
+7/24/2019 11:24:58,KHALEJ0020151106ebb50005q,Yes,Approved by FDA and scheduled to be launched,Phentolamine,Hikma,No,Yes
+7/24/2019 11:25:03,ALRAQNEG20151001eb9u0002u,No,,,,,
+7/24/2019 11:25:12,BHLD000020150518eb5d00011,Yes,FDA application submission and/or FDA testing,Orkambi,Vertex,Unsure,Unsure
+7/24/2019 11:25:14,MPRMPR0020150929eb9s0000b ,No,,,,,
+7/24/2019 11:25:20,BTBW000020150206eb290001v,No,,,,,
+7/24/2019 11:25:32,DJDN000020151104ebb400426,No,,,,,
+7/24/2019 11:25:32,ATPHAM0020150902eb910008k,No,,,,,
+7/24/2019 11:25:50,HAMW000020150213eb2k00405,No,,,,,
+7/24/2019 11:25:52,CCT0000020150520eb5i0000a,Yes,Undergoing clinical trials,Glaxo vaccine,Merck ,Yes,No
+7/24/2019 11:25:55,DJDN000020151005eba5001ap,No,,,,,
+7/24/2019 11:26:15,OBWK000020150730eb7u001j0,Unsure,Undergoing clinical trials,N/A,UQ's Institute for Molecular Bioscience (IMB),Unsure,Unsure
+7/24/2019 11:26:16,KRTDR00020150715eb7f0005l,No,,,,,
+7/24/2019 11:26:39,ENPNEW0020150914eb9e00078,Yes,Available to consumers (has been launched on the market),DaTscan,GE Healthcare,Yes,Yes
+7/24/2019 11:26:51,MAWK000020150102eb1500004,No,,,,,
+7/24/2019 11:26:54,BNZNGA0020150326eb3q0005m,No,,,,,
+7/24/2019 11:26:55,CTRW000020150619eb6m000g9,No,,,,,
+7/24/2019 11:26:59,LONGNJ0020151117ebbg0002w,No,,,,,
+7/24/2019 11:27:13,PZON000020150917eb9h0002q ,Yes,Available to consumers (has been launched on the market),QSpex blu-bloQ,QSpex,Unsure,Unsure
+7/24/2019 11:27:19,DJDN000020150707eb77002sk,No,,,,,
+7/24/2019 11:27:22,NCIW000020150515eb5j00055 ,No,,,,,
+7/24/2019 11:27:29,BHLD000020151023eban0003h,Yes,Undergoing clinical trials,,Dana Farber's gastrointestinal cancer center,Yes,No
+7/24/2019 11:27:32,GLOMCP0020151105ebb500ky4,No,,,,,
+7/24/2019 11:27:33,ATPHAB0020151019ebaj00036,No,,,,,
+7/24/2019 11:27:36,BOSBJO0020150508eb580002u,Yes,FDA application submission and/or FDA testing,lumacaftor and Kalydeco,Vertex,Yes,No
+7/24/2019 11:27:37,NCIW000020150709eb79000dw,Unsure,Unsure,Formula I,,Unsure,Unsure
+7/24/2019 11:27:49,GRAY000020150901eb910002v,Yes,Approved by FDA but not scheduled to be launched,,Augment,Yes,No
+7/24/2019 11:28:06,CTRW000020150424eb4r000ga,No,,,,,
+7/24/2019 11:28:09,LBA0000020151106ebb600nel,Unsure,,,,,
+7/24/2019 11:28:13,ECTDEL0020151027ebar0000r,Yes,Undergoing clinical trials,"no name - new generic drugs, marketed products, pipeline products",Cipla,No,Unsure
+7/24/2019 11:28:15,OBWK000020150522eb5u000dt,No,,,,,
+7/24/2019 11:28:20,ATPHAM0020151030ebat0006f,No,,,,,
+7/24/2019 11:28:30,PBRELS0020150601eb5p00002,No,,,,,
+7/24/2019 11:28:34,KRTLM00020150927eb9r00002,No,,,,,
+7/24/2019 11:28:55,INDFED0020150805eb850020a,No,,,,,
+7/24/2019 11:28:57,BWR0000020151030ebau0000k ,Yes,Approved by FDA and scheduled to be launched,"Utibron Neohaler, Seebri Neohaler",Sosei Group Corporation,Yes,No
+7/24/2019 11:29:08,NEWSTMES20150806eb750003a,No,,,,,
+7/24/2019 11:29:16,ATPHAM0020151030ebat0006f,No,,,,,
+7/24/2019 11:29:17,MHWK000020150612eb6f0001v,Yes,Available to consumers (has been launched on the market),"Guanfacine,",Teva Pharmaceutical Industries,No,Yes
+7/24/2019 11:29:32,DRGW000020150417eb4o000f5,No,,,,,
+7/24/2019 11:29:37,MHWK000020150612eb6f0001v,Yes,Unsure,INTUNIV(R),North America Generic Medicines,Unsure,Yes
+7/24/2019 11:29:46,HAMW000020150130eb26001ab,No,Available to consumers (has been launched on the market),,,No,Yes
+7/24/2019 11:29:47,BIWK000020150612eb6h00021,No,,,,,
+7/24/2019 11:29:53,HAMW000020150529eb65001p3 ,Yes,Undergoing clinical trials,SB010,,Unsure,Unsure
+7/24/2019 11:30:04,SFBJO00020150408eb4700001,Yes,Undergoing clinical trials,F/TAF,"Gilead, Janssen Sciences Ireland UC",Yes,No
+7/24/2019 11:30:04,RTTNEW0020151130ebbu00461,No,,,,,
+7/24/2019 11:30:08,ENPNEW0020150914eb9e00078,Yes,Approved by FDA and scheduled to be launched,DaTscan,GE Healthcare,Yes,Yes
+7/24/2019 11:30:11,CTRW000020150109eb1c000bj,Unsure,Undergoing clinical trials,Adaptive CRT Algorithm,Harvard School of Medicine,Yes,No
+7/24/2019 11:30:13,GRAY000020150901eb910002v,Yes,FDA application submission and/or FDA testing,human bone morphogenetic protein,"BioMimetic Therapeutics Inc., Medtronic",No,Unsure
+7/24/2019 11:30:17,DJDN000020150123eb1n002vd,No,,,,,
+7/24/2019 11:30:22,PHBW000020150709eb790000o,No,,,,,
+7/24/2019 11:30:23,ATPHAM0020150115eb1e000eq ,Yes,Approved by FDA and scheduled to be launched,Maestro System and VBLOC Therapy ,EnteroMedics Inc.,Yes,No
+7/24/2019 11:30:24,ATPHAM0020150206eb24000eq,No,,,,,
+7/24/2019 11:30:37,ATPHAM0020151023ebal000bg,No,,,,,
+7/24/2019 11:30:46,MTPW000020150911eb9a001xj,No,,,,,
+7/24/2019 11:30:54,WSJO000020151216ebcg000p3,No,,,,,
+7/24/2019 11:31:03,UWIR000020151023eban000z2,No,,,,,
+7/24/2019 11:31:08,MTPW000020151207ebc7004ph ,No,,,,,
+7/24/2019 11:31:22,GLOMCP0020151103ebb30004l,Yes,Undergoing clinical trials,AZ-002,"Alexza Pharmaceuticals, Inc.",Yes,No
+7/24/2019 11:31:22,DJDN000020151012ebac0001t,No,,,,,
+7/24/2019 11:31:24,BWR0000020150305eb350006b,Yes,Approved by FDA and scheduled to be launched,Akynzeo ,,Yes,Yes
+7/24/2019 11:31:25,NBPPBS0020151217ebci001lp,No,,,,,
+7/24/2019 11:31:25,ATPHAM0020150115eb1c0008g,No,,,,,
+7/24/2019 11:31:30,WSJO000020151215ebcf003s7,No,Unsure,,,No,Unsure
+7/24/2019 11:31:50,MPRMPR0020150401eb3v00006,Yes,Approved by FDA but not scheduled to be launched,Movantic,Nektar Therapeutics,No,Unsure
+7/24/2019 11:31:59,DJDN000020150604eb64003sw,Yes,Approved by FDA but not scheduled to be launched,Flibanserin,,No,No
+7/24/2019 11:32:01,CTRW000020150626eb6t000a0,No,,,,,
+7/24/2019 11:32:09,DRGW000020150417eb4o000f5,No,,,,,
+7/24/2019 11:32:17,ATPHAB0020150415eb4f0005n ,Yes,Approved by FDA but not scheduled to be launched,Cefixime,,No,Unsure
+7/24/2019 11:32:19,APRS000020151119ebbj00acv,No,,,,,
+7/24/2019 11:32:21,DJDN000020150609eb69001qd,Yes,Available to consumers (has been launched on the market),AccuPoint(R) ATP Hygiene Monitoring System,Neogen ,Yes,No
+7/24/2019 11:32:29,DJDN000020150430eb4u0027o,No,,,,,
+7/24/2019 11:32:33,WSJO000020150612eb6c008et,No,,,,,
+7/24/2019 11:32:34,DJDN000020150707eb77002sk,No,,,,,
+7/24/2019 11:32:39,BIOELSE020150831eb8o0000e,Yes,Undergoing clinical trials,,Epizyme,Unsure,Unsure
+7/24/2019 11:33:00,MDST000020151120ebbk0001r,Yes,Available to consumers (has been launched on the market),EMPOWR 3D Knee,DJO Global,Yes,Yes
+7/24/2019 11:33:15,DRIDY00020150623eb6n00002,Yes,Available to consumers (has been launched on the market),Fycompa,Eisai,Unsure,Unsure
+7/24/2019 11:33:18,MDST000020150529eb67000iw,Yes,Undergoing clinical trials,Lithoplasty(R) System ,Shockwave Medical ,Unsure,Unsure
+7/24/2019 11:33:28,SEPI000020150113eb1c0000g,Yes,Undergoing clinical trials,SGM-1019,Second Genome,Unsure,Unsure
+7/24/2019 11:33:36,PZON000020150402eb420000l,No,,,,,
+7/24/2019 11:33:40,CTRW000020150501eb54000m3,Unsure,Unsure,,,,
+7/24/2019 11:33:41,AMHL000020150513eb5d00005,Yes,Undergoing clinical trials,Cimavax,Center for Molecular Immunology,Yes,Unsure
+7/24/2019 11:33:43,DJDN000020150806eb86003ei,No,,,,,
+7/24/2019 11:33:46,PZON000020150917eb9h0002q,No,Unsure,,,No,Yes
+7/24/2019 11:33:48,RAUNEW0020150406eb4300003,Yes,Undergoing clinical trials,SpaceOAR ,Augmenix,Unsure,Unsure
+7/24/2019 11:33:50,HAMW000020150508eb5f0049t,Yes,Unsure,lactobacillus acidophilus and lactobacillus bulgaricus,Becton Dickinson,Unsure,Unsure
+7/24/2019 11:33:50,PHBW000020150709eb790000o,No,,,,,
+7/24/2019 11:34:01,ATPHAM0020150515eb5e0007f,No,,,,,
+7/24/2019 11:34:04,RTTNEW0020151130ebbu00461,Yes,Available to consumers (has been launched on the market),Proclaim Elite SCS system,St. Jude Medical,Unsure,Unsure
+7/24/2019 11:34:06,DTMNTR0020150616eb6f0004l ,Yes,Unsure,Precision Novi SCS System,Boston Scientific,Yes,No
+7/24/2019 11:34:19,CHPR000020150713eb770001c,No,,,,,
+7/24/2019 11:34:24,DJDN000020150812eb8c001oy ,Yes,Undergoing clinical trials,Thymosin beta 4,RegeneRx Biopharmaceuticals Inc,Yes,No
+7/24/2019 11:34:31,ATPHAM0020150515eb5e0007f,No,,,,,
+7/24/2019 11:34:36,RDFN000020150718eb7e0001q,Yes,FDA application submission and/or FDA testing,Cabozantinib,Dana-Farber Cancer Institute,Yes,No
+7/24/2019 11:34:43,STHST00020160410ebcd004eb,Yes,Approved by FDA and scheduled to be launched,Alecensa,Pfizer,Yes,Yes
+7/24/2019 11:34:56,DJDN000020150520eb5k00188,No,,,,,
+7/24/2019 11:35:08,ATPHAM0020150121eb1l000e1,No,,,,,
+7/24/2019 11:35:09,GLOMCP0020150730eb7u004vk ,,,,"Joyant Pharmaceuticals, Sanderling Ventures, ",No,
+7/24/2019 11:35:21,JACBJO0020151023eban00005,No,,,,,
+7/24/2019 11:35:38,PZON000020151103ebb300021,Yes,Undergoing clinical trials,OTIPRIO,Otonomy,Yes,No
+7/24/2019 11:35:41,DRGW000020151127ebbr0002q,No,,,,,
+7/24/2019 11:35:45,DJDN000020151012ebac0024y,No,,,,,
+7/24/2019 11:35:46,GLOMCP0020151112ebbc001dj,No,,,,,
+7/24/2019 11:35:50,MTPW000020150330eb3u0066b,Yes,Undergoing clinical trials,Medtronic CoreValve system ,Medtronic,Yes,No
+7/24/2019 11:35:57,OKLD000020151215ebc9000b6,Yes,Available to consumers (has been launched on the market),whole-body cryotherapy,The Performist,No,Yes
+7/24/2019 11:35:57,FNWIR00020150618eb6i000mc,Yes,Approved by FDA and scheduled to be launched,SAPIEN 3,,Yes,Yes
+7/24/2019 11:35:59,POLGOV0020150320eb3q002jy,No,,,,,
+7/24/2019 11:36:01,MDST000020151120ebbk0001r,Yes,Available to consumers (has been launched on the market),"EMPOWR 3D Knee(TM), EMPOWR 3D Knee, 3DKnee(TM), 3DKnee",DJO Surgical,Unsure,Unsure
+7/24/2019 11:36:04,CTRW000020150306eb39000ad ,No,,,,,
+7/24/2019 11:36:06,BWR0000020150609eb69000gh,No,,,,,
+7/24/2019 11:36:11,DJDN000020151214ebce001wg,No,,,,,
+7/24/2019 11:36:12,DJDN000020150512eb5c002r8,No,,,,,
+7/24/2019 11:36:13,ATPHAM0020150627eb6p00093,No,,,,,
+7/24/2019 11:36:29,ATPHAM0020150602eb5t00030,No,,,,,
+7/24/2019 11:36:32,HNFRDSNT20150502eb35000qq,Yes,Available to consumers (has been launched on the market),contrave,,Unsure,Yes
+7/24/2019 11:36:36,NANLEB0020150807eb85000q2,Yes,Available to consumers (has been launched on the market),Ovation iX ,"TriVascular Technologies, Inc",Yes,Yes
+7/24/2019 11:36:44,BNZNGA0020150326eb3q0005m,No,,,,,
+7/24/2019 11:36:46,DRGW000020150619eb6q00057 ,No,,,,,
+7/24/2019 11:36:52,DJDN000020150310eb3a000ok,No,,,,,
+7/24/2019 11:36:53,HAMW000020150529eb65001p3,Yes,Undergoing clinical trials,SB010,,Yes,No
+7/24/2019 11:36:58,ECTDEL0020151027ebar0000r,No,,,,,
+7/24/2019 11:37:01,PHBW000020150612eb6f00037,Yes,Unsure,Guanfacine extended-release tablets,Teva Pharmaceutical Industries Ltd.,No,Unsure
+7/24/2019 11:37:03,PZON000020150630eb6u0003c,No,,,,,
+7/24/2019 11:37:27,HAMW000020150306eb3d0029j,No,,,,,
+7/24/2019 11:37:29,ATPHAM0020151112ebba0005o ,Yes,Available to consumers (has been launched on the market),PRX302 ,,Unsure,Yes
+7/24/2019 11:37:35,HAMW000020150723eb7n000ai ,No,,,,,
+7/24/2019 11:37:38,LBA0000020150814eb8e00dej,No,,,,,
+7/24/2019 11:37:38,HAMW000020151002eba20010j,Unsure,Unsure,,Diagnostics Operations,No,No
+7/24/2019 11:37:55,DJDN000020150812eb8c001oy,Yes,Undergoing clinical trials,"Thymosin beta 4, RGN-259","RegeneRx Biopharmaceuticals Inc
+",Yes,No
+7/24/2019 11:38:00,APRS000020151116ebbg00a3k,No,,,,,
+7/24/2019 11:38:04,MTPW000020150911eb9a001xj,No,,,,,
+7/24/2019 11:38:13,DEALNEW020150316eb390000a,No,,,,,
+7/24/2019 11:38:15,ATPHAM0020150831eb8u000bn,No,,,,,
+7/24/2019 11:38:42,JNWP000020150325eb3p0000f ,No,,,,,
+7/24/2019 11:38:47,ATPHAM0020150115eb1e000eq,Yes,Approved by FDA and scheduled to be launched,Maestro System,EnteroMedics,Yes,No
+7/24/2019 11:39:04,LFSW000020150213eb2h0034x,Unsure,Unsure,,,Unsure,Unsure
+7/24/2019 11:39:18,WDAN000020150828eb8s0001w,Yes,Approved by FDA and scheduled to be launched,Synjardy ,,Yes,No
+7/24/2019 11:39:32,BOSBJO0020150319eb3j0008e,Yes,FDA application submission and/or FDA testing,remicade,Epirus,No,Yes
+7/24/2019 11:39:32,ATPHAM0020150521eb5j0003c,No,,,,,
+7/24/2019 11:39:35,ATPHAB0020150415eb4f0005n,Yes,Available to consumers (has been launched on the market),Cefixime,,No,No
+7/24/2019 11:39:37,MPRMPR0020150903eb9200006,Yes,Undergoing clinical trials,Simponi Aria,,Unsure,Unsure
+7/24/2019 11:39:38,BSFLVO0020151030ebau0005m ,Yes,,IMLYGIC,Amgen,Yes,Yes
+7/24/2019 11:39:39,SEPI000020150113eb1c0000g,Yes,Undergoing clinical trials,SGM-1019,Second Genome,Unsure,Yes
+7/24/2019 11:39:48,DJDN000020150728eb7s002si,Yes,Unsure,Senza(R) SCS system,Nevro,Yes,No
+7/24/2019 11:40:01,PBRELS0020150424eb4l00001,No,,,,,
+7/24/2019 11:40:11,GNVL000020160213ebbo000hp,No,,,,,
+7/24/2019 11:40:12,APRS000020150513eb5d00d72,No,,,,,
+7/24/2019 11:40:16,DJDN000020151228ebcs00258 ,No,,,,,
+7/24/2019 11:40:20,DJDN000020150311eb3b004c0,Yes,FDA application submission and/or FDA testing,Nuplazid,Acadia ,Yes,Yes
+7/24/2019 11:40:36,DJDN000020151102ebb2001w5,No,,,,,
+7/24/2019 11:40:37,GLOMCP0020151218ebci00i2y,No,,,,,
+7/24/2019 11:40:39,FREG000020151222ebcm00023,Yes,Unsure,na,na,Unsure,Unsure
+7/24/2019 11:40:40,ATPHAM0020150701eb6u0009g,Yes,Unsure,Cogenzia,Innocoll,Yes,No
+7/24/2019 11:40:43,KUWNA00020151215ebce000b8,Yes,Available to consumers (has been launched on the market),NINLARO ,Takeda Oncology,Yes,No
+7/24/2019 11:40:54,PHBW000020150619eb6m000ho,No,Unsure,,,,
+7/24/2019 11:40:58,WSJO000020151216ebcg000p3,No,,,,,
+7/24/2019 11:41:04,CHEMEC0020150515eb5m0002h ,No,,,,,
+7/24/2019 11:41:05,PRESSA0020150727eb7r003mm,Yes,Undergoing clinical trials,MANTA 18F,Essential Medical Inc.,Yes,No
+7/24/2019 11:41:22,DJDN000020151012ebac0024y,No,,,,,
+7/24/2019 11:41:26,CHEMEC0020150501eb58002ae,No,,,,,
+7/24/2019 11:41:26,BIOELSE020150903eb8s0001l,No,,,,,
+7/24/2019 11:41:30,J000000020150819eb8j0002z,No,,,,,
+7/24/2019 11:41:36,DJDN000020150105eb15001vz,No,,,,,
+7/24/2019 11:41:37,BWR0000020150209eb290004b,Yes,FDA application submission and/or FDA testing,LJPC-501,La Jolla,Yes,No
+7/24/2019 11:41:55,WPCOM00020150615eb6f007hj,No,,,,,
+7/24/2019 11:41:57,MENAFI0020150527eb5q0002t,Yes,Approved by FDA and scheduled to be launched,dolutegravir,"Aurobindo Pharma,ViiV Healthcare,CHAI",No,Yes
+7/24/2019 11:42:00,DJDN000020150812eb8c001oy,Yes,Undergoing clinical trials,RGN-259,RegeneRx Biopharmaceuticals Inc,Yes,No
+7/24/2019 11:42:00,NAIRAQ0020150924eb9n0008h,No,,,,,
+7/24/2019 11:42:02,DJDN000020150805eb85003sc,No,,,,,
+7/24/2019 11:42:12,NBPPBS0020150508eb5900043,No,,,,,
+7/24/2019 11:42:15,ATPHAM0020150602eb5t00030,No,,,,,
+7/24/2019 11:42:21,DJDN000020150728eb7s002si,Yes,Approved by FDA and scheduled to be launched,Senza(R) SCS system,Nevro Corporation,Yes,Yes
+7/24/2019 11:42:23,INDFED0020150826eb8q001nj,No,,,,,
+7/24/2019 11:42:26,STLBJO0020150618eb6i00002,No,,,,,
+7/24/2019 11:42:43,ATPHAM0020150303eb320005r ,Yes,Unsure,"Depofoam, EXPAREL","EXPAREL, Pacira Pharmaceuticals ",Yes,Unsure
+7/24/2019 11:42:48,DJDN000020151209ebc9002np,No,,,,,
+7/24/2019 11:42:53, MPRMPR0020150929eb9s0000b,Yes,Approved by FDA and scheduled to be launched,Betaconnect autoinjector,Bayer,Yes,Yes
+7/24/2019 11:43:00,JNWP000020150325eb3p0000f,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:43:05,DJDN000020150116eb1g002ak,No,,,,,
+7/24/2019 11:43:07,HNASNI0020150805eb85000rx,Yes,Approved by FDA but not scheduled to be launched,ZipDose,Aprecia,Yes,No
+7/24/2019 11:43:12,PHBW000020150123eb1q0000g,Yes,Available to consumers (has been launched on the market),Tarina Fe 1/20,Afaxys,Unsure,Unsure
+7/24/2019 11:43:13,CHPR000020150916eb990001v,No,,,,,
+7/24/2019 11:43:15,MTPW000020150330eb3u0066b ,Yes,,CoreValve system,Medtronic ,Yes,No
+7/24/2019 11:43:17,OBWK000020150619eb6r001es,No,,,,,
+7/24/2019 11:43:24,RTWK000020150501eb540003w,No,,,,,
+7/24/2019 11:43:42,DJDN000020151214ebce001wg,No,,,,,
+7/24/2019 11:43:47,MTEU000020150107eb17000gr ,No,,,,,
+7/24/2019 11:43:51,CHPR000020150819eb8b0001n,No,,,,,
+7/24/2019 11:43:53, CTRW000020150501eb54000m3,No,,,,,
+7/24/2019 11:43:59,GNVL000020160213ebbo000hp,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:44:02,FBCOM00020151027ebar000xh,Yes,Available to consumers (has been launched on the market),,Theranos,Unsure,Unsure
+7/24/2019 11:44:10,FLYWAL0020150304eb340033j,No,,,,,
+7/24/2019 11:44:26,APRS000020150401eb41008qa,No,,,,,
+7/24/2019 11:44:40,JORTI00020150626eb6q0008i,Yes,FDA application submission and/or FDA testing,antimicrobial coated stents,,Unsure,Unsure
+7/24/2019 11:45:07,POLGOV0020150313eb3j001nc,Unsure,Unsure,,,Unsure,Unsure
+7/24/2019 11:45:51,ATPHAM0020150518eb5d0003g ,Yes,Undergoing clinical trials,NEOD001,,Unsure,Unsure
+7/24/2019 11:45:51,CHEMEC0020151225ebcp000sm ,No,,,,,
+7/24/2019 11:46:11,BIWK000020150109eb1e001cc,No,,,,,
+7/24/2019 11:46:20,BIOELSE020151117ebb90001r,Yes,Undergoing clinical trials,STELLAR (Safety and Therapeutic Efficacy of Live-attenuated Listeria/GVAX with Anti-PD1 Regimen),Aduro,Unsure,Unsure
+7/24/2019 11:46:24,DRGW000020150619eb6q00057,Unsure,Undergoing clinical trials,MMV665852,,Unsure,Unsure
+7/24/2019 11:46:24,ATPHAM0020150724eb7n0006d,No,,,,,
+7/24/2019 11:46:25,LBA0000020151208ebc800rby,Yes,Approved by FDA but not scheduled to be launched,"Vonvendi, Kanuma"," Baxalta Inc's, Alexion Pharmaceutical Inc's",Yes,Yes
+7/24/2019 11:46:28,KHALEJ0020151106ebb50005q,Yes,Approved by FDA and scheduled to be launched,Phentolamine,Hikma,Yes,No
+7/24/2019 11:46:30,CHEMEC0020150515eb5m0002h,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:46:31,GENT000020150206eb2c0000q,Unsure,Undergoing clinical trials,,,Unsure,Unsure
+7/24/2019 11:46:54,DAIM000020150615eb6g0000d ,No,,,,,
+7/24/2019 11:47:07,WDAN000020150226eb2q0001v,Yes,Approved by FDA and scheduled to be launched,Avycaz,Forest Laboratories,Yes,No
+7/24/2019 11:47:25,ATPHAB0020150514eb5e0005o,Yes,FDA application submission and/or FDA testing,Orkambi,Vertex,Yes,Yes
+7/24/2019 11:47:44,MLFRDDN020151029ebas00007,Yes,Available to consumers (has been launched on the market),"Addyi, flibanserin ",Sprout Pharmaceuticals ,Yes,No
+7/24/2019 11:47:45,ATPHAM0020150518eb5d0003g,Yes,Undergoing clinical trials,NEOD001,Prothena,Yes,No
+7/24/2019 11:47:46,GLOMCP0020151105ebb500ky4,Yes,Available to consumers (has been launched on the market),"Unituxin injection, Remodulin,Remodulin injection, Tyvaso inhalation solution, Adcirca tablets,  Orenitram Extended-Release ","United Therapeutics Corporation ,DEKA Research & Development Corp",Yes,Yes
+7/24/2019 11:48:01,BIWK000020150612eb6h0006s,Yes,Unsure,Oxycodone Hydrochloride,ANI Pharmaceuticals Inc.,Unsure,Yes
+7/24/2019 11:48:09,BNZNGA0020150326eb3q0005m,No,,,,,
+7/24/2019 11:48:11,JOENG00020150227eb34003c0,Yes,Unsure,Wireless detection of motion,Vertex Pharmaceuticals,Unsure,Unsure
+7/24/2019 11:48:11,AIWFIE0020150928eb9s0002w,Yes,Unsure,Elepsia XR ,SPARC,Unsure,Unsure
+7/24/2019 11:48:14,PHBW000020150612eb6f00037,Yes,Available to consumers (has been launched on the market),guanfacine,Teva,No,Yes
+7/24/2019 11:48:23,RTNW000020150702eb72000ff,Yes,FDA application submission and/or FDA testing,Orkambi,Vertex,Yes,Unsure
+7/24/2019 11:48:26,BWR0000020151019ebaj000g3,Yes,Undergoing clinical trials,"Cotempla XR-ODT,amphetamine XR-ODT,NT-0202,Cotempla XR--ODT,NT--0202",Neos Therapeutics,Unsure,Unsure
+7/24/2019 11:48:35,DAIM000020150615eb6g0000d,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:48:35,BIOELSE020150930eb9p0000u ,No,,,,,
+7/24/2019 11:48:41,ATPHAM0020151215ebce0000h,Yes,Undergoing clinical trials,Pyridorin,NephroGenex,Unsure,Unsure
+7/24/2019 11:48:58,GLOMCP0020151103ebb30004l,No,,,,,
+7/24/2019 11:49:07,HAMW000020150410eb4h0004r,No,,,,,
+7/24/2019 11:49:15,BIWK000020150529eb63000tm,No,,,,,
+7/24/2019 11:49:24,BIWK000020150417eb4m000ps,No,,,,,
+7/24/2019 11:49:29,OFBOAR0020151005eba1001j6,No,,,,,
+7/24/2019 11:49:31,DRGW000020150529eb650005a,Yes,Approved by FDA and scheduled to be launched,HCV NS5B Drug Resistance Assay,Laboratory Corporation of America ,,
+7/24/2019 11:49:34,ATPHAM0020150529eb5r000bt,Yes,Approved by FDA and scheduled to be launched,Xifaxan 550 mg,Valeant Pharmaceuticals International,Yes,No
+7/24/2019 11:49:36,ATPHAM0020151218ebch00039,No,,,,,
+7/24/2019 11:49:48,CTRW000020150612eb6f0005v,No,,,,,
+7/24/2019 11:49:49,DJDN000020150305eb35002ui,No,,,,,
+7/24/2019 11:49:53,BHLD000020150518eb5d00011,Yes,FDA application submission and/or FDA testing,Orkambi,Vertex,Yes,No
+7/24/2019 11:49:58,BIOELSE020150903eb8s0001l,No,,,,,
+7/24/2019 11:50:03,ATTOPN0020150823eb8l00006,Yes,Approved by FDA but not scheduled to be launched,flibanserin,Sprout Pharmaceuticals,Yes,No
+7/24/2019 11:50:16,ATPHAB0020151019ebaj00036,No,,,,,
+7/24/2019 11:50:27,BWR0000020151019ebaj000g3,Yes,Approved by FDA and scheduled to be launched,XR-ODT,Neos,Yes,No
+7/24/2019 11:50:33,NBPPBS0020150410eb4b0020b,No,,,,,
+7/24/2019 11:50:45,OBWK000020150522eb5u00024,No,,,,,
+7/24/2019 11:50:47,BHLD000020151023eban0003h,Yes,Undergoing clinical trials,,Merrimack,Yes,No
+7/24/2019 11:50:53,BWR0000020151019ebaj000g3,Yes,FDA application submission and/or FDA testing,"Cotempla XR-ODT, NT-0202",Neos Therapeutics,Yes,No
+7/24/2019 11:50:58,BBPUB00020151112ebbc000ea,No,,,,,
+7/24/2019 11:51:02,ATEHEA0020150512eb5c00001,Yes,Approved by FDA and scheduled to be launched,"HF10 therapy, HF10",,No,No
+7/24/2019 11:51:03,LBA0000020150702eb7200qb9,Yes,Approved by FDA and scheduled to be launched,Orkambi,Vertex,Yes,No
+7/24/2019 11:51:11,RTTNEW0020150630eb6t00043,Unsure,Unsure,N/A,Celgene,Unsure,Unsure
+7/24/2019 11:51:12,WDAN000020150226eb2q0001v,Yes,FDA application submission and/or FDA testing,Avycaz,Actavis,Unsure,Unsure
+7/24/2019 11:51:29,IDAHOSJ020150503eb530001f,No,,,,,
+7/24/2019 11:51:35,RTWK000020150403eb4600007,No,,,,,
+7/24/2019 11:51:37,TELWK00020150313eb3i000ec,No,,,,,
+7/24/2019 11:51:41,ATPHAM0020150501eb4u0000r,Yes,Approved by FDA but not scheduled to be launched,Protege MRI,St. Jude Medical,Yes,No
+7/24/2019 11:51:53,BIOELSE020150930eb9p0000u,Unsure,Unsure,NARCAN ,,Unsure,Unsure
+7/24/2019 11:51:53,INDFED0020150805eb850020a,No,,,,,
+7/24/2019 11:51:55,ATPHAB0020151019ebaj00036,No,,,,,
+7/24/2019 11:51:56,POLGOV0020151008eba800067,No,,,,,
+7/24/2019 11:52:14,PIQUADC020150505eb2r000k2,No,,,,,
+7/24/2019 11:52:30,CHWKNW0020150410eb4e00050,Yes,Undergoing clinical trials,IFN(alpha)-Kinoid,"Neovacs,Stellar",Yes,No
+7/24/2019 11:52:36,NYTFEED020151228ebct00335,No,,,,,
+7/24/2019 11:52:37,RTTNEW0020151106ebb5000gp ,No,,,,,
+7/24/2019 11:52:45,KUWNA00020151215ebce000b8,Yes,Available to consumers (has been launched on the market),NINLARO,Takeda,Unsure,Unsure
+7/24/2019 11:52:45,DJDN000020150430eb4u002md,Yes,Approved by FDA but not scheduled to be launched,"KYBELLA(TM),ATX-101",KYTHERA Biopharmaceuticals,Yes,No
+7/24/2019 11:52:51,WDAN000020150828eb8s0001w,Yes,Available to consumers (has been launched on the market),Synjardy,Boehringer Ingelheim,No,Yes
+7/24/2019 11:52:57,DJDN000020150702eb72001pv,Yes,Available to consumers (has been launched on the market),HETLIOZ(R),Vanda Pharmaceuticals Inc. ,Yes,No
+7/24/2019 11:52:59,LBA0000020150424eb4o00qgt ,No,,,,,
+7/24/2019 11:53:08,BIWK000020150612eb6h0006s ,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:53:17,DJDN000020150512eb5c001xe,No,,,,,
+7/24/2019 11:53:28,INDFED0020150116eb1g001nx ,No,,,,,
+7/24/2019 11:53:45,BWR0000020150217eb2h00047,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:53:59,CHWKNW0020150410eb4e00050 ,Yes,Undergoing clinical trials,IFN(alpha)-Kinoid ,Neovacs,Yes,No
+7/24/2019 11:53:59,HAMW000020150529eb6500135,Yes,Undergoing clinical trials,"OpRegen,OpRegen(R),AST-OPC1,Renevia(TM),Renevia,PanC-Dx,PanC-Dx(TM),AST-VAC2",BioTime,Unsure,Unsure
+7/24/2019 11:53:59,FWIR000020151123ebc10000q,No,,,,,
+7/24/2019 11:54:02,DEALNEW020150316eb390000a,Yes,Undergoing clinical trials,"Neo-Kidney Augment, Neo-Urinary Conduit",Tengion,Yes,No
+7/24/2019 11:54:14,PBRELS0020150209eb2300005,No,,,,,
+7/24/2019 11:54:27,HUGNEN0020150914eb9e001xh,Yes,Approved by FDA and scheduled to be launched,evera mri icd,medtronic,Yes,Yes
+7/24/2019 11:54:29,MTEU000020150618eb6i000dz,Yes,Approved by FDA and scheduled to be launched,SAPIEN 3 valve,SAPIEN,Yes,No
+7/24/2019 11:54:30,DJDN000020150812eb8c001oy,Yes,Undergoing clinical trials,TB4,RegeneRx Biopharmaceuticals Inc,Yes,Yes
+7/24/2019 11:54:35,RTTNEW0020151027ebar001ur,Yes,Approved by FDA but not scheduled to be launched,KEYTRUDA,Merck,Yes,No
+7/24/2019 11:54:43,CTRW000020150501eb54000m3,Unsure,Undergoing clinical trials,,ImmunoGen Inc.,Yes,No
+7/24/2019 11:55:13,APRS000020150916eb9g00and,No,,,,,
+7/24/2019 11:55:23,CHWKNW0020150410eb4e00050 ,Yes,Undergoing clinical trials, IFN(alpha)-Kinoid,"Neovacs, Stellar",Yes,No
+7/24/2019 11:55:33,INVEN00020151208ebc7000b6,No,,,,,
+7/24/2019 11:55:45,DRGW000020150109eb1g0003u,Yes,Unsure,MC4R ,University of Cambridge,Yes,Unsure
+7/24/2019 11:55:53,ATPHAB0020151212ebcc0000d,Yes,FDA application submission and/or FDA testing,Reslizumab,Biologics License Application,Yes,No
+7/24/2019 11:56:01,BIWK000020150612eb6h0006s ,,,,,,
+7/24/2019 11:56:28,AIWINE0020150619eb6k000s1,Yes,FDA application submission and/or FDA testing,a generic version of Copaxone,Natco,Yes,No
+7/24/2019 11:56:32,BWR0000020150217eb2h00047 ,,,,,,
+7/24/2019 11:56:47,CHPR000020150819eb8b0001n,No,,,,,
+7/24/2019 11:56:55,BIOELSE020150407eb3q0000p,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:57:19,JOENG00020150313eb3i0002v,Yes,Available to consumers (has been launched on the market),intelliport system,"BD, CRISI",Unsure,Unsure
+7/24/2019 11:57:19,MENAFI0020151028ebas0000b,Yes,Undergoing clinical trials,Methylnaltrexone,,No,Yes
+7/24/2019 11:57:24,PHBW000020150709eb7900005,Yes,Undergoing clinical trials,VT-464,Innocrin,Unsure,Unsure
+7/24/2019 11:57:36,INVDAI0020150317eb3g00002,No,,,,,
+7/24/2019 11:57:42,DRGW000020150612eb6j0008h,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:57:49,DJDN000020150116eb1g002ak,No,,,,,
+7/24/2019 11:57:49,BIWK000020150703eb730008f,No,,,,,
+7/24/2019 11:57:52,DJDN000020150108eb18000zc,Yes,Undergoing clinical trials,Plazomicin,Achaogen,Yes,No
+7/24/2019 11:58:04,BWR0000020150609eb69000gh,No,,,,,
+7/24/2019 11:58:11,BIOELSE020150123eb1g00013,Yes,FDA application submission and/or FDA testing,Durezol,Akorn,No,Yes
+7/24/2019 11:58:23,DJDN000020150403eb430019x,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:58:23,DJDN000020150728eb7s001k1,Yes,Unsure,,"Merck, cCAM Biotherapeutics",Unsure,Unsure
+7/24/2019 11:58:24,CTRW000020150501eb54000m3,Yes,Undergoing clinical trials,Maytansinol,ImmunoGen Inc.,Yes,No
+7/24/2019 11:58:57,DJDN000020150105eb15001u2,Yes,Approved by FDA and scheduled to be launched,MarginProb, Dune Medical Devices,Yes,Unsure
+7/24/2019 11:58:59,AIWINE0020150619eb6k000s1,Yes,Available to consumers (has been launched on the market),Copaxone,Teva,No,Yes
+7/24/2019 11:59:14,RTTNEW0020151030ebat00106,No,,,,,
+7/24/2019 11:59:14,SFBJO00020150928eb9s0005l,Yes,FDA application submission and/or FDA testing,ocrelizumab,Genentech,Yes,No
+7/24/2019 11:59:18,INVDAI0020150429eb4t0001g,Yes,Undergoing clinical trials,"Januvia,Tecos",Merck,No,Yes
+7/24/2019 11:59:21,NBPPBS0020150310eb3a0010p,No,,,,,
+7/24/2019 11:59:23,DJDN000020150105eb15001vz,No,,,,,
+7/24/2019 11:59:30,SAUDPA0020151014ebad000p2,Yes,Approved by FDA and scheduled to be launched,Xtampza ER,Collegium Pharmaceutical Inc,Unsure,Yes
+7/24/2019 11:59:34,ATDOMB0020150522eb5m0005r,No,Unsure,,,Unsure,Unsure
+7/24/2019 11:59:48,ATPHAM0020150602eb5t00030,No,,,,,
+7/24/2019 11:59:55,RVESEN0020150414eb4e0040j,Yes,Unsure,rVSV-ZEBOV,,No,Unsure
+7/24/2019 11:59:58,PRESSA0020150727eb7r003mm,Yes,Undergoing clinical trials,MANTA 18F,"Essential Medical, Inc.",Yes,No
+7/24/2019 12:00:05,JORTI00020150921eb9i0008g ,Unsure,Undergoing clinical trials,"Talked w/ Gizem and team about this. Innovation appears to be administration regimen (novel combination of two drugs, but it's unclear if the drugs are new)",,Unsure,Unsure
+7/24/2019 12:00:13,AIWINE0020150619eb6k000s1,Yes,FDA application submission and/or FDA testing,,"Novartis, Sandoz, Momenta Pharmaceuticals, Mylan, Natco Pharma",No,Yes
+7/24/2019 12:00:27,CTRW000020150109eb1c0000i,Yes,Undergoing clinical trials,,,Yes,No
+7/24/2019 12:00:31,DJDN000020150304eb340038c ,Unsure,,,,,
+7/24/2019 12:00:38,BIOELSE020150407eb3q0000p ,No,,,,,
+7/24/2019 12:00:41,BIOELSE020150522eb5e0000f,Yes,Available to consumers (has been launched on the market),Zorvolex,Iroko Pharmaceuticals,Unsure,Unsure
+7/24/2019 12:00:47,BHLD000020150518eb5d00011,Yes,FDA application submission and/or FDA testing,Orkambi,Vertex,Yes,No
+7/24/2019 12:00:48,POSTCOUR20150127eb1r00013,Yes,Undergoing clinical trials,,AstraZeneca PLC ,Unsure,Unsure
+7/24/2019 12:00:48,HAMW000020150529eb6500135,,,"OpRegen(R),AST-OPC1,Renevia(TM),PanC-Dx(TM),AST-VAC2",BioTime,Yes,No
+7/24/2019 12:00:53,DJDN000020151215ebcf0038v,No,,,,,
+7/24/2019 12:01:14,BIWK000020150612eb6h0006s,No,,,,,
+7/24/2019 12:01:22,ATPHAM0020150930eb9u000el,No,,,,,
+7/24/2019 12:01:28,NBPPBS0020150507eb58001vs,No,Unsure,,,Unsure,Unsure
+7/24/2019 12:01:41,SAUDPA0020151014ebad000p2,Yes,Unsure,xtampza ER,collegium pharmaceutical,Unsure,Unsure
+7/24/2019 12:01:50,BWR0000020150209eb290004b,Yes,Undergoing clinical trials,LJPC-501,La Jolla,Yes,Unsure
+7/24/2019 12:01:52,ATPHAM0020150110eb18000bc,No,,,,,
+7/24/2019 12:02:12,RTNSIN0020150731eb7v0003f,,Approved by FDA and scheduled to be launched,Benzonatate ,"Bangalore, Strides ",Yes,Unsure
+7/24/2019 12:02:13,DRGW000020150612eb6j0008h ,Unsure,,,,,
+7/24/2019 12:02:17,DEALNEW020150316eb390000a,No,,,,,
+7/24/2019 12:02:24,BTBW000020150921eb9l0000h,Yes,,REPATHA,"Amgen Inc., Diplomat",Yes,Unsure
+7/24/2019 12:02:38,ATPHAM0020151112ebba0005o,Yes,Unsure,PRX302,,Unsure,Unsure
+7/24/2019 12:02:44,DJDN000020151218ebci0002z,No,,,,,
+7/24/2019 12:03:04,RTTNEW0020151106ebb5000gp,No,,,,,
+7/24/2019 12:03:06,DEALNEW020150316eb390000a,No,,,,,
+7/24/2019 12:03:07,DJDN000020150528eb5s002th,No,,,,,
+7/24/2019 12:03:09,DJDN000020150403eb430019x ,No,,,,,
+7/24/2019 12:03:11,DJDN000020150302eb320019u,Yes,FDA application submission and/or FDA testing,EXPAREL,Pacira Pharmaceutical,Yes,Yes
+7/24/2019 12:03:18,STLBJO0020150611eb6b0002w,No,,,,,
+7/24/2019 12:03:28,FLYWAL0020150925eb9p008c1 ,No,,,,,
+7/24/2019 12:03:36,ATPHAM0020151218ebch00039,No,,,,,
+7/24/2019 12:03:38,SACBJO0020150923eb9n0005l,No,,,,,
+7/24/2019 12:03:41,JOENG00020150313eb3i000k8,Yes,Available to consumers (has been launched on the market),TrueBeam STx System ,"Varian Medical Systems, Inc.",Yes,Unsure
+7/24/2019 12:03:45,DJDN000020150311eb3b004c0,Yes,FDA application submission and/or FDA testing,Nuplazid,Acadia,Yes,No
+7/24/2019 12:03:46,APRS000020150819eb8j00030,Yes,Approved by FDA and scheduled to be launched,"flibanserin, Addyi ",Sprout Pharmaceuticals ,No,Yes
+7/24/2019 12:03:47,CHPR000020150904eb8v0000i,No,,,,,
+7/24/2019 12:03:47,OBWK000020150522eb5u000dt,No,,,,,
+7/24/2019 12:04:17,PHBW000020150123eb1q0000g ,No,,,,,
+7/24/2019 12:04:18,BIWK000020150709eb79000na,No,,,,,
+7/24/2019 12:04:30,IUST000020150424eb4o0000h,No,,,,,
+7/24/2019 12:04:33,CHPR000020150904eb8v0000i,No,,,,,
+7/24/2019 12:04:36,FNWIR00020151117ebbh000b6,No,,,,,
+7/24/2019 12:04:40,ATDOMB0020150522eb5m0005r,No,,,,,
+7/24/2019 12:04:51,PRGRSS0020150725eb7p0001h,No,,,,,
+7/24/2019 12:05:21,INVDAI0020150317eb3g00002,No,,,,,
+7/24/2019 12:05:25,PRESSA0020151008eba8003uy,Yes,,MCNA,Telesta Therapeutics,Yes,No
+7/24/2019 12:05:35,CTRW000020150424eb4r000ga,No,,,,,
+7/24/2019 12:05:54,DNVR000020151227ebco0000d,No,,,,,
+7/24/2019 12:06:04,J000000020150808eb8800015,No,,,,,
+7/24/2019 12:06:16,HAMW000020150109eb1g004bm,,,ETC-1002,,Yes,No
+7/24/2019 12:06:27,RTTNEW0020150709eb79001b9,Yes,FDA application submission and/or FDA testing,"UCART19, Lexmark NilRead","Cellectis and Servier, Lexmark",Yes,Unsure
+7/24/2019 12:06:32,BHLD000020150518eb5d00011,Yes,FDA application submission and/or FDA testing,Orkambi,Vertex,Yes,No
+7/24/2019 12:06:51,SFBJO00020150408eb4700001,Yes,FDA application submission and/or FDA testing,F/TAF,Gilead ,Yes,Unsure
+7/24/2019 12:06:54,BIOELSE020150831eb8o0000e,Yes,Undergoing clinical trials,Tazemetostat,Epizyme,Unsure,Unsure
+7/24/2019 12:06:55,ATPHAM0020151008eba800090 ,No,,,,,
+7/24/2019 12:07:11,NBPPBS0020150417eb4h000rz ,No,,,,,
+7/24/2019 12:07:13,NBPPBS0020150507eb58001vs ,No,,,,,
+7/24/2019 12:07:36,LBA0000020150722eb7m00eyx,Unsure,Unsure,"Appears to be a stock report on multiple companies, so it's not clear what to focus on in the ""article""",,Unsure,Unsure
+7/24/2019 12:08:52,ATPHAM0020151112ebba0005o,Yes,Unsure,PRX302,,Unsure,Unsure
+7/24/2019 12:09:04,JOENG00020151102ebb2001ss,,FDA application submission and/or FDA testing,,Embrechts,Yes,No
+7/24/2019 12:09:04, NJDE000020150819eb8j00037,Yes,Approved by FDA and scheduled to be launched,"Addyi, Viagra, Flibanserin",,Yes,Yes
+7/24/2019 12:09:19,BIWK000020150116eb1l000go,No,,,Varian Medical Systems,,
+7/24/2019 12:09:22,MSP0000020150924eb9k00015,No,,,,,
+7/24/2019 12:09:23,LFSW000020151020ebak001dv,No,Unsure,,Genentech Inc.,,
+7/24/2019 12:09:29,BIWK000020150619eb6o000wo,Yes,Unsure,??,??,Yes,No
+7/24/2019 12:09:29, MANAVG0020150910eb9a0003b,No,,,,,
+7/24/2019 12:09:39,PBRELS0020150615eb680000k,No,,,,,
+7/24/2019 12:10:43,HAMW000020150410eb4h0004r,No,,,,,
+7/24/2019 12:11:05,PHBW000020151102ebb200089,Yes,Undergoing clinical trials,lifitegrast ,"Ophthalmics, Foresight Biotherapeutics, SARcode Bioscience, Premacure AB, BIKAM Pharmaceuticals",Yes,No
+7/24/2019 12:11:25,CTRW000020150619eb6m000g9,Yes,Undergoing clinical trials,Quantitative Lung Ultrasound Comet Measurement,Weill Cornell Medical College,Yes,No
+7/24/2019 12:11:37,BWR0000020150730eb7u000b3,Yes,Available to consumers (has been launched on the market),Quell Health Cloud,NeuroMetrix,Unsure,Unsure
+7/24/2019 12:11:53,ATPHAM0020151030ebat0006f,No,,,,,
+7/24/2019 12:12:35,DJDN000020150702eb72001pv,Yes,Approved by FDA but not scheduled to be launched,HETLIOZ,Vanda Pharmaceuticals Inc.,Yes,No
+7/24/2019 12:12:37,OBWK000020151030ebau0005h,No,,,,,
+7/24/2019 12:14:01,HNFRDSNT20150502eb35000qq ,Yes,Available to consumers (has been launched on the market),Contrave,,Yes,No
+7/24/2019 12:14:43,BWR0000020150227eb2r0000g,,FDA application submission and/or FDA testing,,"Avedro, Inc.",Yes,No
+7/24/2019 12:14:47,BIWK000020151216ebcg0004y,Yes,FDA application submission and/or FDA testing,HuMab 5B1,MabVax,Yes,Unsure
+7/24/2019 12:14:53,DJDN000020151209ebc9002np,No,,,,,
+7/24/2019 12:14:55,DRGW000020150206eb2d0000g,No,,,,,
+7/24/2019 12:15:04,ATPHAM0020150807eb850002u,No,,,,,
+7/24/2019 12:15:58,SAUDPA0020150604eb63000e1,No,,,,,
+7/24/2019 12:17:05,DJDN000020150507eb57001nu,No,,,,,
+7/24/2019 12:17:48,DJDN000020151228ebcs00258,No,,,,,
+7/24/2019 12:18:34,LBA0000020150720eb7k00jll,Yes,FDA application submission and/or FDA testing,cabozantinib,EXELIXIS INC,Yes,No
+7/24/2019 12:19:11,DJDN000020150305eb35002ui,No,,,,,
+7/24/2019 12:19:29,ATPHAM0020151120ebbj000ec,No,,,,,
+7/24/2019 12:20:23,DJDN000020151012ebac0001t,No,,,,,
+7/24/2019 12:21:05,MTEU000020151001eb9u0002t,Yes,Undergoing clinical trials,Tack Endovascular System,Intact Vascular,Yes,No
+7/24/2019 12:21:13,MDST000020150213eb2m000us,No,,,,,
+7/24/2019 12:23:36,ATPHAM0020150602eb5t0008f,Yes,Approved by FDA and scheduled to be launched,Quell,Quell Relief,Unsure,Unsure
+7/24/2019 12:24:19,INDFED0020150114eb1d002gf,No,,,,,
+7/24/2019 12:59:55,JOENG00020150612eb6h00039,No,,,,,
+7/24/2019 13:01:26,JOENG00020150612eb6h00039,No,,,,,
+7/24/2019 13:02:11,JOENG00020150612eb6h00039,No,,,,,
+7/24/2019 13:03:52,JOENG00020150612eb6h00039,No,,,,,
+7/24/2019 13:04:15,JOENG00020150612eb6h00039,No,,,,,
+7/24/2019 13:06:04,JOENG00020150612eb6h00039,Yes,Approved by FDA and scheduled to be launched,Xeomin,,Yes,Unsure
+7/24/2019 13:06:59,BWR0000020150720eb7k00096,No,,,,,
+7/24/2019 13:08:06,DJDN000020150108eb18000zc,Yes,FDA application submission and/or FDA testing,Plazomicin,Achaogen,Yes,Yes
+7/24/2019 13:09:45,J000000020150617eb6h00033,No,,,,,
+7/24/2019 13:12:13,CLADV00020150605eb6100003,Yes,Undergoing clinical trials,enalapril,,Yes,Unsure
+7/24/2019 13:13:05,LFSW000020151020ebak001dv,No,,,,,
+7/24/2019 13:42:07,DJDN000020150511eb5b004nh,No,Available to consumers (has been launched on the market),,,No,No
+7/24/2019 13:42:45,ATPHAM0020150831eb8u000bn,No,,,,,
+7/24/2019 13:44:40,RAUNEW0020150406eb4300003,Yes,Undergoing clinical trials,SpaceOAR ,Augmenix ,Unsure,Unsure
+7/24/2019 13:46:29,UWIR000020150417eb4g000f1,No,,,,,
+7/24/2019 13:51:48,HAMW000020150529eb6500135,Yes,Undergoing clinical trials,"OpRegen(R), AST-OPC1, Renevia(TM), PanC-Dx(TM) cancer diagnostics, AST-VAC2","BioTime Inc., Asterias Biotherapeutics Inc., Cell Cure Neurosciences Ltd., OncoCyte Corporation, LifeMap Sciences Inc., LifeMap Solutions Inc., ES Cell International Pte Ltd, OrthoCyte Corporation, ReCyte Therapeutics Inc.",Yes,Yes
+7/24/2019 13:52:20,NBPPBS0020151020ebak0020h,No,,,,,
+7/24/2019 13:54:07,HAMW000020150130eb26001ab,Yes,Undergoing clinical trials,"ThermoDox (R), ",Celsion ,Yes,Yes
+7/24/2019 13:54:19,DJDN000020150116eb1g002ak,No,,,,,
+7/24/2019 13:56:48,ATPHAB0020151212ebcc0000d,Yes,Approved by FDA and scheduled to be launched,reslizumab BLA,,Yes,Yes
+7/24/2019 13:57:47,DJDN000020150105eb15001mn,No,,,,,
+7/24/2019 13:58:11,APRS000020150401eb41008qa,No,,,,,
+7/24/2019 13:59:49,DJDN000020151119ebbj003f3,Yes,FDA application submission and/or FDA testing,drisapersen ,BioMarin,No,Yes
+7/24/2019 14:00:23,MSP0000020150924eb9k00015,No,,,,,
+7/24/2019 14:02:29,DJDN000020150302eb320019u,Yes,FDA application submission and/or FDA testing,"EXPAREL(R), bupivacaine liposome injectable suspension",Pacira Pharmaceuticals Inc.,Yes,Unsure
+7/24/2019 14:13:18,ATPHAM0020150206eb24000eq,No,,,,,
+7/24/2019 14:14:44,DRIDY00020150520eb5k00006,No,,,,,
+7/24/2019 14:15:23,INDFED0020150805eb850020a,No,,,,,
+7/24/2019 14:19:03,DJDN000020151001eba1002ac,Yes,FDA application submission and/or FDA testing,Yervoy-Opdivo combination,Bristol-Myers ,Yes,No
+7/24/2019 14:23:26,ENPNEW0020150130eb1u00044,Yes,Approved by FDA and scheduled to be launched,IMBRUVICA ,Janssen and Pharmacyclics Inc,Yes,Yes
+7/24/2019 14:26:12,DJDN000020150403eb430019x,No,,,,,
+7/25/2019 13:35:04,PHBW000020150716eb7g0000t,Yes,Undergoing clinical trials,Moxduo,QRx Pharma,Unsure,Unsure
+7/25/2019 13:37:25,DRIDY00020150623eb6n00002,Yes,Approved by FDA and scheduled to be launched,Fycompa,Eisai,No,Yes
+7/25/2019 13:44:33,BWR0000020150209eb290004b,Yes,Undergoing clinical trials,LJPC-501,La Jolla Pharmaceutical Company,Yes,No
+7/25/2019 13:42:51,ATPHAM0020150515eb5e0007f,No,,,,,
+7/25/2019 13:45:10,BIWK000020150612eb6h0006s,No,,,,,
+7/25/2019 13:45:58,BIOELSE020150930eb9p0000u,No,,,,,
+7/25/2019 14:03:47,RVESEN0020150414eb4e0040j ,Yes,Undergoing clinical trials,rVSV-ZEBOV vaccine,,Yes,No
+7/25/2019 14:04:59,BTBW000020150921eb9l0000h,No,,,,,
+7/25/2019 14:05:07,ATPHAM0020151008eba800090 ,No,,,,,
+7/25/2019 14:05:25,NBPPBS0020150417eb4h000rz,No,,,,,
+7/25/2019 14:06:37,STLBJO0020150611eb6b0002w,Yes,Undergoing clinical trials,Brain Computer Interface (BCI),NeuroLutions,Unsure,Unsure
+7/25/2019 14:06:22,MANAVG0020150910eb9a0003b ,No,Approved by FDA and scheduled to be launched,,,,
+7/25/2019 14:06:42,ATPHAM0020150602eb5t0008f ,No,,,,,
+7/25/2019 14:07:25,ELECWK0020150320eb3p000rf ,No,,,,,
+7/25/2019 14:07:49, LFSW000020150313eb3h001e3,No,,,,,
+7/25/2019 14:08:11,BIOELSE020151117ebb90001r,No,,,,,
+7/25/2019 14:08:53,,Yes,Undergoing clinical trials,F/TAF,Gilead,Yes,Yes
+7/25/2019 14:08:55,IFDAW00020151023eban00009,No,,,,,
+7/25/2019 14:10:13,CHIMOG0020151019eba90000b ,No,,,,,
+7/25/2019 14:11:55,IHPDB00020151102ebb200006,Unsure,Approved by FDA but not scheduled to be launched,Exparel,,Unsure,Unsure
+7/25/2019 14:12:16,BIOELSE020150916eb9900019 ,No,,,,,
+7/25/2019 14:12:24,BIWK000020151216ebcg0004y,Yes,Undergoing clinical trials,HuMab 5B1,MabVax Therapeutics Holdings Inc,Yes,Yes
+7/25/2019 14:13:24,ATPHAB0020150317eb3h0002t ,Yes,Approved by FDA but not scheduled to be launched,Watchman LAAC Device,Boston Scientific,Unsure,Unsure

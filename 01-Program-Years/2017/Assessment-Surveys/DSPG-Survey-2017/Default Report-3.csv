@@ -1,0 +1,178 @@
+Default Report
+Last Modified: 2017-09-12 12:07:32 MDT
+
+
+Q1 - Were the projects interesting? Why?
+Were the projects interesting? Why?
+"Yes, because there was variety and a bigger impact than just helping the sponsor."
+"Yes, very much so! There are two parts that make me enthused. First, it's the appeal that what we work on will have positive impact on the more vulnerable parts of society. Second, some if not, all the problems have not been solved before. It's being on the edge of trying something new that fascinates me!"
+"I think the projects were extremely interesting. I think I learned a lot about new topics. I realized that I learned a lot about several different statistical techniques, like NLP, spatial modeling, and network models, as well as applications, such as crime and refugee issues. "
+
+Q2 - Which project did you like best? Why?
+Which project did you like best? Why?
+"I liked working on WMATA, but wish we had more time to work on that project."
+"Probabilistic Linkage for DHS! I think part of the reason is after trying so many different things for WMATA and most of them not working out, and then, jumping into DHS: writing code and seeing results just made me swoon! Another reason might be that although it's actually ""nobody's"" job, I am excited about the technical challenge of merging these legacy data sets which were not originally designed to be merged. I got excited of the possible insights people could gain after merging these data sets."
+"This is a hard question but I think I liked the AC911 Community Indicators project the best. I was doing some very meaningful modeling that I thought would make a difference. Even though some mistakes were made at the end, I think we still will be able to turn it around and make valuable conclusions with this work. "
+
+Q4 - Comment on working in a collaborative environment.
+Comment on working in a collaborative environment.
+"Working collaboratively works great when the assigned roles and expectations are clear. For instance, the role of fellow and PI can be muddled at times, and a clearer distinction would help. Also, making sure undergrads have clear tasks is key, but whose job is that?"
+"I think it would be great if there was a discussion between fellows initiated by the program directors on collaborative working environment. I think some of us are more team-spirited and some are more oriented towards seeking individual merit. I think a nice balance is needed especially if we are to mentor undergraduates and let some of them shine. From what I gathered from my conversations with the undergraduates, I think some of the fellows were too dominant for some undergraduates to shine! "
+"I really enjoyed working in a collaborative environment. It was a great experience to be able to experience managing teams with different skillsets. Sometimes, I think it would be good to have interventions with the students that are struggling, and earlier so that people can catch up if they fall behind."
+
+Q5 - Comment on your work load.
+Comment on your work load.
+"There were too many projects to work on, and while they all were completed, it wasn't completed satisfactorily. Graduate fellows have a standard, and while a piece of the project was done, how well it was done matters on a personal level. I can't do 5 things really well when I'm scrapped for time, and instead did mediocre. "
+"I think the number of graduate students should be increased if we are going to 14 or so projects. I think if we had less projects, we would have been able to focus on 1 or 2 and I think one of us had been able to do that. On the other hand, I also think that the duration of the program should be longer to around 12 weeks. Most of us lost some steam during the 6th or so week and we took a breather. I think that should be accounted for! It's okay to work really hard during the last few weeks but, I think we would even have better results or outputs if we have a few more weeks!"
+"I think the work load was a bit much in terms of the number of projects. I think being involved in four each *with the current amount of students/fellows* was a big workload. However, I think this would be helped immensely if we had a fifth fellow. So, I think it was definitely doable but it would be great if we could have another fellow or a couple more students. "
+
+Q9 - Comment on the number of meetings.
+Comment on the number of meetings.
+"There are also too many meetings as a result of having too many projects. There are too many people to manage, and it is very easy to drop the ball with those students who may have benefited from more attention. I'm specifically talking about David Hinkle, David Park, and Joe Kim. "
+"Initially, it was too much but later on, I figured out that I did not need to be in all the meetings!"
+"I think the number of meetings was totally doable. I wish the trainings would have been a bit more spread out, because I think having some at the end would be useful and I think the trainings made it hard to get the projects started at the beginning. "
+
+Q33 - Did you find the weekly wrap-up meetings to be useful? Why?
+Did you find the weekly wrap-up meetings to be useful? Why?
+"Yes and no. It was good to hear what was going on, but the amount of time going into preparation for it and listening to all the summaries took too long. Once a clear and concise report was decided on, it made things much smoother. However, I find it irritating that it feels like people want to present it in a certain way to make themselves look better. For instance, making a PowerPoint with all these graphics is somehow better than writing a few words on the wiki. It is ridiculous, and more emphasis on the medium to communicate the wrap up should be emphasized. No one in particular did this, but my point is that the feeling is there. Presentations ""feel"" better, but making them are completely unnecessary for wrap up meetings. "
+"I think the weekly wrap-up can be improved. The concept is sound as it allows for everyone to pitch in but, I think it should strictly be focused on two things:
+1) Here is the problem we are trying to solve.
+2) Here is where we are stuck at. Anybody has any ideas?
+I think the rest of time should be spent where the program directors actually have a speed session with each individuals on quickly recapping what they have done this week, what help they needed etc... I think these 1 on 1s would make sure that nobody is falling through the cracks and we are able to reach out to struggling students. I would argue that the program should continue to accept students who are not that good but, who show some promise to grow. I think we should do our best to reach out to students and have them grown!
+
+"
+"I thought they were useful in terms of getting the students experience in presenting their work. I don't know if it was too useful in terms of getting feedback, but that might not have been the purpose."
+
+Q10 - Which training were helpful?  Which ones were not?
+Which training were helpful?  Which ones were not?
+"The trainings were helpful, but going to meetings and trainings took up so much time. The other issue is that while I still learned something, some undergrads feel very behind. The problem is that if they don't use it in their project, it is not a skill they will pick up. So, somehow making it important that they learn proper R skills needs to be made. "
+"I am quite familiar with most of the training so, it was a good recap for me. I think the most useful was the GIS one, personally!"
+"I thought the trainings were helpful, in general. The only training that I did not think was helpful was the ""data science"" training, where there was no statistics training at all before then, but I think people know that :)"
+
+Q11 - Which training would you recommend for next year's DSPG?
+Which training would you recommend for next year's DSPG?
+"The intro R trainings are good as would be an intro statistics one before showing any code for modeling in R. Also, I would recommend one on the data visualization and exploratory analysis. "
+"Data exploration! I think most students don't get what data exploration is.
+Also, curiosity! If there is a way to inject or get some students be curious and write down what they want to see from the data even if they don't know how to do it, it would be a great exercise!"
+"A ""Statistics"" training session, and maybe something in Julia or Python"
+
+Q12 - Did you receive sufficient mentoring? Did you find it useful?
+Did you receive sufficient mentoring? Did you find it useful?
+"I did not, but part of the is the personality of my mentor. I needed to be the one to approach, but I lacked any time to do this with all the items I was working on. It would have been useful, but a missed opportunity."
+"YES! I have the BEST mentors! If anything, I should have reached out more early on with some of the collaboration issues I was having!"
+"I received sufficient mentoring, and I feel like I really learned a lot throughout the summer. I didn't really have the opportunity to talk to anyone about my goals, because I was so wrapped up in the work towards the end, but I really feel like I learned a lot from folks in the lab."
+
+Q13 - How can the mentoring process be improved?
+How can the mentoring process be improved?
+"Each mentoring relationship will be different, but perhaps having an initial meeting where the guidelines are discussed would help. "
+"I think everyone was busy and stressed out but, I would like to argue that we should do more for students who are struggling. Personally, I feel like I have let down David Park, David Hinkle and Joe. I would sit down with other students and went through their codes etc but with at least the 2 Davids, I felt put off initially. In retrospect, I think we are always going to come across difficult students who may be unmotivated. I feel strongly that we should put extra effort to get them to engage and become better students. I think this is another case of public good. Bad students may translate to bad decision making members of society later on through the voting booth to every day living."
+"I believe that the mentoring process could be improved by making sure that students aren't all on the same projects together and that one student doesn't have the same mentor for all projects. It makes it much harder to learn from others and make connections when that's the case. I would also suggest having time set aside where mentors and mentees get lunch together, maybe in groups. I would love to talk to the faculty in the lab outside of the office!"
+
+Q27 - Was having the DSPG alumni as part of the program useful?
+Was having the DSPG alumni as part of the program useful?
+"Yes. Their experience is invaluable, but not sure what they can do while all the trainings are going on since they know it all too well. Same goes for fellows who know the information well."
+Yes! Adrienne was very helpful for ARI. She is one of the most down to earth and generous person I have ever met!
+"I thought it was pretty useful! I didn't think they acted too different from the other students, but they were able to be very accessible. "
+
+Q29 - What did the alumni do well?
+What did the alumni do well?
+Sharing past experiences.
+They brought institutional knowledge which was helpful for us in figuring out whom to reach out to etc.
+"The students always felt like they could come talk to the alumni, which was great. I'm really glad that they were there and that the students felt comfortable talking to them. "
+
+Q28 - What could the alumni have done better?
+What could the alumni have done better?
+"Nothing in particular. Again, having clear roles and expectations for the program would help it run more smoothly. What were they expected to do?"
+"I don't see any as of now. I think it would be great if we have had more backyard barbecue like at Aaron's place where we all get to relax and get to know each other. I understand it's a lot of logistical planning but if an alumni can each take turns to organize these social events, it would be great! I understand it was attempted early on but sort of faltered."
+"The alumni could have shared a bit more of their experience- I didn't really hear much about the summer before. "
+
+Q24 - How did the undergraduates perform on your projects?
+How did the undergraduates perform on your projects?
+"Some did well and worked very hard and others did not. Some of it is from their inability to speak up, but somebody has to engage them. So, whose job is this? Having clear tasks and making sure they do throughout the whole time is crucial. Again, whose job is this? As a graduate fellow, I tried my best, but at some point the PI needs to be paying attention to this as well. "
+"Some of them like Eiriki, Craig and Ben did very well. They picked on and did not hesitate to ask for help when they needed to. Others like the Davids did considerably less. I think part of the failure is on our end and the other part may be that they did not get over their initial insecurities. More 1 on 1 mentoring would have helped."
+"This question is quite difficult to answer, as there is so much variety among the undergraduates. I'd be happy to elaborate on student performance, but I don't think I can say much in a small survey. Overall, I was pleased with the undergraduates, with a few exceptions. However, most of them picked up their game at the end. I think in general, the faculty could have been more involved in terms of interventions with students and assigning doable, specific tasks (which is not always possible for us to do). "
+
+Q25 - Was the diversity in skillsets and maturity within the undergraduates positive or negative? Why?
+Was the diversity in skillsets and maturity within the undergraduates posit...
+"Diversity is positive, and maturity levels is somewhat negative. When there are varying levels, careful attention is needed. Again, when there are not clear roles of the PI and graduate fellow, this cannot be addressed properly. As a fellow, helping undergrads is very different than trying to manage the project as well and give them clear and do able tasks."
+"Despite the cases of the Davids where I believe they are not as mature as some other members of the undergraduates, I would argue that we should keep this diversity instead of a collection of students who are relatively more mature and skilled. 
+Instead, we should make it explicit that there is something to learn from each of us. The less skilled ones should not shy from picking the brains from the more skilled ones. This is their chance to grow. I think it should be made clear that some of us might feel dumb on certain things and slower than others and we should let them know that it's perfectly fine. Just opportunities for growth.
+And for those who are more skilled, sharing with the students who are less skilled is an opportunity for them to hone their mentoring skills which is essential in any jobs in the future!
+
+"
+"I think overall, the diversity in skillsets and maturity was a positive. It allowed us to learn from eachother. However, for the students that are not as mature, I think there need to be systems in place where faculty can get involved and intervene much earlier. "
+
+Q30 - Did you find the fellow meetings after the weekly wrap-ups useful? Why?
+Did you find the fellow meetings after the weekly wrap-ups useful? Why?
+"Not really. Some feedback was taken, but not much of it was really heard. Basically, the administrative side of the program is unclear. Until people take on certain roles or manage this better, the program is going to be messy. Graduate fellows want to learn something too. We are not secretaries and we are not nannies. "
+YES! My only regret is that we didn't go out to happy hours as much. Things could have turned out even much better if the 6 of us went on happy hours more often!
+"I found them useful in terms of a format to present feedback but I don't think any of our suggestions were used, which is okay but I'm not sure if this is useful then?"
+
+Q31 - Any suggestions for improving student engagement in the program?
+Any suggestions for improving student engagement in the program?
+"Again, clear roles and establishing better relationships with them would help. This is a side effect of having too many projects. We lose the ability to make meaningful connections because we are too overwhelmed with how much has to get done."
+I would argue for more fun games and activities led by alumni or fellows for everyone to just relax and get to know each other.
+"As mentioned, I would suggest having an intervention with students that are falling behind. I would also suggest workshops on career development topics, such as graduate school. "
+
+Q32 - What did you think about the Fellows office set-up?
+What did you think about the Fellows office set-up?
+"I liked it, but would prefer less barriers to the undergrads. It made it harder for them to come to us as a resource. "
+"I love it! I got to tease my three bosses and we have our privacy to vent out from time to time. 
+I think some of us broke down at different points in the program and it would not have been possible if we did not have an office and a very supportive family."
+I really loved the Fellows office set-up. We really learned a lot from each other!
+
+Q6 - What skills do you wish you had come with?
+What skills do you wish you had come with?
+Nothing I can think of.
+"I wish I was more assertive! Also, I am not good at taking credit for what I do. I have been brought up to shy from individual glory, so, it is very hard for me to take credit or want to take credit."
+"I think I learned everything I needed to in terms of Git that I didn't know before! I wish I had come with a bit more spatial modeling skills, but Josh was so helpful in helping us learn."
+
+Q7 - What skills did you learn or improve on?
+What skills did you learn or improve on?
+"Some of my R skills and working with R markdown really improved. "
+"Being more assertive, standing up, speaking up and maybe wanting a little more individual credit!"
+"I improved on some modeling techniques, and lots of data/code management techniques. "
+
+Q8 - What skills would you liked to have learned or improved on?
+What skills would you liked to have learned or improved on?
+"I would have liked the opportunity to learn a statistical method or approach in the sense that we really learn it, possibly improve upon on it, or use it in a different application. "
+Model building! I missed out on that part!
+I would have liked to learn a bit of coding in other languages. And I wish we had learned a bit more stats in the program (rather than just coding). I hope Josh has a workshop in the future!
+
+Q17 - Did the DSPG program meet your expectations?
+Did the DSPG program meet your expectations?
+"Not quite. This is mainly due to the fact the expectations were not clear until about 8th week. I didn't realize that many projects are stepping stones, and also complete explorations within each project couldn't happen because there were too many. Basically, we couldn't be as curious as we wanted to because there were too many things to do, but this affects the quality of work produced. "
+"YES! I have had my BEST summer so far in the States and it's here at DSPG. The mentorship supported exceeded my expectations. I have never had this number of mentors who would show me stuffs. Usually, it's figuring things out on my own!"
+"Yes! Definitely. I learned a lot and contributed a lot, which is a great balance. "
+
+Q18 - Would you consider working in the public sector after graduation? Why?
+Would you consider working in the public sector after graduation? Why?
+"Maybe. Depends on the level of statistical methodology I end up using. For many of the projects, it just wasn't there, and I'm not busting my butt in a phd program just to make summary graphs. "
+"Yes! I do have financial & work eligibility constraints due to being an international student but, if it were not the case, I would dedicate myself to public sector work. The obvious reason is that I strongly believe as a society we should not let a group of people fall through the cracks because they do not have the financial & political leverage to have a decent living. Yes, life is not going to be fair and public sector work (or any disruptive and innovative work that improves the life of people on the margin) is our moral obligation to make this world a happier place!"
+"Yes- I enjoy doing work that is going to have an impact on people. "
+
+Q19 - What was your favorite part of the DSPG program?
+What was your favorite part of the DSPG program?
+"The projects had a bigger impact, and the people. Everyone there is great, but clear roles and expectations must be made. distribute information is key. "
+"First, I have found mentors who drive me to be a better human being. At the end of the day, that is all it counts.
+Second, we are like a start-up. Move fast, break fast, solve fast. I very much enjoy that. It reminded me of my bitcoin days!
+"
+"My favorite part was two-fold: being able to work on real-world problems that will help people and to work alongside some really inspiring and intelligent people. "
+
+Q20 - Provide suggestions on how we can improve the DSPG program.
+Provide suggestions on how we can improve the DSPG program.
+"Clear roles and expectations need to be made. Defining the role of the PI and the graduate fellow is key. This makes all the administrative items go much more smoothly. Also, a clearer way to distribute information is important, especially administrative ones. It shouldn't be that something gets told to one person and that person is responsible for telling everyone else. A better system needs to be in place. "
+"I think we should have less projects per graduate student and per principal investigator so that it allows everyone to form deeper working relations. More importantly, it should be emphasized that undergraduates can change projects later on if they don't think it's a fit. "
+"I would have the workshop on stats, and encourage more than just project-based mentoring :)"
+
+Q27 - What would you change about the program?
+What would you change about the program?
+"The expectations and roles be made clear as well as reducing the number of projects. "
+"As mentioned before, a 12 weeks program. If it's not possible, I think the trainings could be more compact. At one point, more training wouldn't help unless they get their hands dirty with the data. I think the trainings could start earlier around 8:00 am for the first 2 weeks and then, we just get people to start working on the projects. That way, everyone will have more time for individual mentoring as they stumble on the projects."
+Above
+
+Q27 - What did you think about the DSPG Symposium?
+What did you think about the DSPG Symposium?
+"I thought it was great, but more effort needs to be made to make it an opportunity for graduate fellows too. Also, making sure students eat first would be great. "
+"I think it was done very well. I think everyone should have been reminded to have their business cards ready. Not all of us were prepared for networking so, if there is some training on that, it would be great."
+I thought it was a great forum to present our work! I can't wait to see how it grows in the future.

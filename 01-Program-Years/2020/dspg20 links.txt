@@ -1,0 +1,52 @@
+* THE AMERICAN SOLDIER IN WORLD WAR II: EXTRACTING INSIGHTS FROM HISTORICAL TEXTUAL DATA
+https://dspg-young-scholars-program.github.io/dspg20amsoldier/
+
+ARMY PERFORMANCE MEASUREMENT: CONTENT AND THEMES
+https://dspg-young-scholars-program.github.io/DSPG2020_ARI2/
+
+MODELING CAREER PATHWAYS OF VETERANS IN THE DC METRO AREA
+https://dspg-young-scholars-program.github.io/dspg20career/
+
+SECTORING CONTRIBUTIONS TO OPEN SOURCE SOFTWARE (OSS) ON GITHUB
+https://dspg-young-scholars-program.github.io/dspg20oss/
+
+* DETECTING AND LINKING PHARMACEUTICAL INNOVATORS IN NEWS ARTICLES
+https://dspg-young-scholars-program.github.io/dspg20BI/
+
+* SKILLED TECHNICAL WORKFORCE (STW) ESTIMATES FOR STATES X YEARS (2010 TO 2019) AND BENCHMARKING
+https://dspg-young-scholars-program.github.io/dspg20STW/
+
+* RND ABSTRACTS: EMERGING TOPIC IDENTIFICATION
+https://dspg-young-scholars-program.github.io/dspg20RnD/
+
+* EVALUATING RESIDENTIAL PROPERTY DATA QUALITY
+https://dspg-young-scholars-program.github.io/dspg20broadbandERS/
+
+FAIRFAX COUNTY LABOR MARKETS: CHARACTERIZING LOCAL WORKFORCE AND EMPLOYMENT NETWORKS
+https://dspg-young-scholars-program.github.io/dspg20fairfax/
+
+* FACTORS OF ECONOMIC MOBILITY THROUGH A POLITICAL CAPITAL LENS
+https://dspg-young-scholars-program.github.io/dspg20uvaEM/
+* BARRIERS TO HEALTH CARE ACCESS AND USE IN PATRICK COUNTY, VA
+https://dspg-young-scholars-program.github.io/dspg20patrick/
+
+HALIFAX COUNTY: FACTORS OF INCARCERATION AND RECIDIVISM
+https://dspg-young-scholars-program.github.io/dspg20halifax/?dspg
+
+* ECONOMIC MOBILITY BASELINE AND COMPARATIVE ANALYSIS FOR THE SOUTH WASCO COUNTY SCHOOL DISTRICT AREA, OREGON
+https://dspg-young-scholars-program.github.io/dspg20wasco/
+
+UNDERSTANDING THE IMPACT OF COVID-19 ON THE DELIVERY OF EMERGENCY MEDICAL SERVICES
+https://dspg-young-scholars-program.github.io/dspg20CharlottesvilleEMSEquity/
+
+* INDUSTRY AND WORKFORCE ATTRACTION AND RETENTION IN WYTHE COUNTY
+https://dspg-young-scholars-program.github.io/dspg20wythe/
+
+* MEASURING ECONOMIC AND SOCIAL INFRASTRUCTURE: INTERGENERATIONAL POVERTY IN PAGE COUNTY
+https://dspg-young-scholars-program.github.io/dspg20page/
+
+* MEASURING REGIONAL FOOD INSECURITY AND THE ROLE OF A LOUDON COUNTY FOOD HUB
+https://dspg-young-scholars-program.github.io/dspg20loudon/
+
+* UNDERSTANDING EVICTIONS IN RICHMOND CITY: POLICY, COMMUNITY, AND INDIVIDUAL FACTORS
+https://dspg-young-scholars-program.github.io/dspg20richmond/

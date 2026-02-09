@@ -1,0 +1,47 @@
+00:30:13	joannaschroeder:	Could the host of the zoom call maybe mute everyone except lara?
+00:30:29	joannaschroeder:	/the interns
+00:30:58	Gizem Korkmaz:	I did! thanks
+00:31:08	joannaschroeder:	nice
+00:50:48	Carol Robbins:	Have you thought about presenting this work here:
+00:50:53	Carol Robbins:	https://www.nihlibrary.nih.gov/services/bibliometrics/bibSymp20
+01:04:40	Carol Robbins:	nice slides, 
+01:12:39	Gizem Korkmaz:	So good!
+01:13:08	Crystal Zang:	https://rpubs.com/czang97/UVA-DSPG-OSS
+01:13:15	Crystal Zang:	Interactive map!
+01:13:38	Carol Robbins:	Gizem, can we save the chat, so we can get these link?
+01:13:50	Gizem Korkmaz:	yes!
+01:14:00	Crystal Zang:	It’s also listed on the ppt, we can share the ppt!
+01:14:15	Carol Robbins:	that would be great
+01:20:11	Brandon:	Just to clarify that last question a little bit further. GitHub users in our project are only those that have contributed to OSS projects that repositories with OSI-approved licenses.
+01:23:14	Carol Robbins:	good choice
+01:24:06	John Jankowski:	Thank-you.  Makes sense
+01:28:37	Morgan Stockham:	Love this graphic
+01:28:48	Gizem Korkmaz:	Me too!
+01:29:11	Gizem Korkmaz:	Made me think about the state-level OSS
+01:31:01	Crystal Zang:	Learn more about BGT, especially in DC, ARI3 will gives you some more insights!
+01:35:10	John Jankowski:	Some JOLTS vs BGT info:  Skills_Gap_Different_Skills_Different_Gaps_FINAL.pdf
+01:49:29	Adam Wells:	Morgan and all:  This is very cool!
+01:49:38	Mary Solomon:	thank you!
+01:49:47	Chase Dawson:	thanks 
+01:49:49	Chase Dawson:	!!
+01:50:10	joannaschroeder:	I’m having a hard time seeing, is both less than 4th grade and NA white?
+01:50:14	joannaschroeder:	or is one off white
+01:50:26	Chase Dawson:	< 4th grade is white
+01:50:41	joannaschroeder:	nice
+01:50:43	Chase Dawson:	NA is the lighter gray. 
+01:53:04	Sallie Keller:	You guys might want to look at The Professional Soldier: A Social and Political Portrait by Morris Janowitz from 1960.  Our Army PM has pointed us to this.
+01:54:33	Chase Dawson:	awesome, we will check that out!
+01:54:51	Morgan Stockham:	Thank you Sallie!
+01:55:03	Mary Solomon:	Thank you!
+02:10:25	Mary Solomon:	love the meme :D
+04:09:06	Cassandra Dorius:	good question
+04:09:42	Lara Haase:	Thanks! Just wanted to point it out ;)
+04:10:00	Lara Haase:	Def still important to look at!
+04:10:02	Cassandra Dorius:	nice work, Page County team!
+04:10:48	Ford Ramsey:	Thanks Cassandra
+04:27:17	Crystal Zang:	Quick question to the previous team, how are you hosting data for the users to access the data from the dspg r package?
+04:29:43	Heike Hofmann:	The package is hosted on GitHub for now at: DSPG-ISU/DSPG
+04:30:45	Crystal Zang:	Cool. I assume the data sets are not huge, since  GitHub doesn’t  allow large data set
+04:31:56	Matthew Voss:	Yeah, none of our data sets so far are particularly large
+05:03:26	Brandon Kramer:	Very interesting! Thank you very much.
+05:03:53	Xinyi Zhu:	Thank you!

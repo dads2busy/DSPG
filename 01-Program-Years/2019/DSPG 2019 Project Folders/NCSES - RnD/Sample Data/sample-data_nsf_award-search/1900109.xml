@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rootTag>
+<Award>
+<AwardTitle>Exploration of Non-Equilibrium Interfacial Phenomena in Spin Forbidden Oxidation</AwardTitle>
+<AwardEffectiveDate>05/01/2019</AwardEffectiveDate>
+<AwardExpirationDate>04/30/2022</AwardExpirationDate>
+<AwardTotalIntnAmount>500000.00</AwardTotalIntnAmount>
+<AwardAmount>500000</AwardAmount>
+<AwardInstrument>
+<Value>Standard Grant</Value>
+</AwardInstrument>
+<Organization>
+<Code>03090000</Code>
+<Directorate>
+<Abbreviation>MPS</Abbreviation>
+<LongName>Direct For Mathematical &amp; Physical Scien</LongName>
+</Directorate>
+<Division>
+<Abbreviation>CHE</Abbreviation>
+<LongName>Division Of Chemistry</LongName>
+</Division>
+</Organization>
+<ProgramOfficer>
+<SignBlockName>John Papanikolas</SignBlockName>
+</ProgramOfficer>
+<AbstractNarration>Modern computer chips are made from semiconductors, such as silicon, coated with an extremely thin layer of silicon-oxide. To fabricate reliable electronic components, the thickness of this oxide layer must be precisely controlled, which presents significant challenges as devices become smaller and smaller. Present methods of creating the silicon-oxide film require heating the semiconductor at high temperature.  This process leads to a non-uniform oxide layer.  In this project, funded by the Chemical Structure, Dynamics, and Mechanisms-A (CSDM-A) program of the Chemistry Division, Professor Sylvia T. Ceyer of the Massachusetts Institute of Technology and her students are using sophisticated molecular beam techniques to study the oxide formation process.  Their discoveries could lead to improved methods using lower temperatures, which would have significant societal and economic benefit.  This research is also providing a broad-based education in scientific problem solving for students embarking on careers in chemical industry.  Professor Ceyer leverages MIT?s Summer Research Program (MSRP) to recruit underrepresented undergraduate students for summer research engaging them in the excitement of scientific discovery.  Professor Ceyer also authors and narrates compelling general chemistry lectures on YouTube as a part of educational and outreach activities designed to make science understandable and accessible for all. &lt;br/&gt;&lt;br/&gt;This work proposes a novel method using (O2)2 dimer to easily synthesize O2 in its first electronically excited singlet state with the aim of bypassing a spin-forbidden reaction that limits oxidation activity of semiconductors.  This idea may lead to precise control of ever-thinner oxide layers in devices. The comparison between the experimentally-determined interaction dynamics of O2 versus (O2)2 are providing insights into the origin of the low, but non-zero probability of this spin forbidden reaction.  This research program also explores a non-equilibrium phenomenon involving lattice electronic excitations due to the initial collision of the incident O2 in the quest for understanding the non-zero O2 reactivity.  Finally, these experiments test a hypothesis that an alternate mechanism for dissociative chemisorption, atom abstraction, which does not require a spin forbidden transition, may be operative via a metastable, non-equilibrium precursor state or a direct atom abstraction associated with a transient potential energy maximum.&lt;br/&gt;&lt;br/&gt;This award reflects NSF's statutory mission and has been deemed worthy of support through evaluation using the Foundation's intellectual merit and broader impacts review criteria.</AbstractNarration>
+<MinAmdLetterDate>04/05/2019</MinAmdLetterDate>
+<MaxAmdLetterDate>04/05/2019</MaxAmdLetterDate>
+<ARRAAmount/>
+<AwardID>1900109</AwardID>
+<Investigator>
+<FirstName>Sylvia</FirstName>
+<LastName>Ceyer</LastName>
+<EmailAddress>stceyer@mit.edu</EmailAddress>
+<StartDate>04/05/2019</StartDate>
+<EndDate/>
+<RoleCode>Principal Investigator</RoleCode>
+</Investigator>
+<Institution>
+<Name>Massachusetts Institute of Technology</Name>
+<CityName>Cambridge</CityName>
+<ZipCode>021394301</ZipCode>
+<PhoneNumber>6172531000</PhoneNumber>
+<StreetAddress>77 MASSACHUSETTS AVE</StreetAddress>
+<CountryName>United States</CountryName>
+<StateName>Massachusetts</StateName>
+<StateCode>MA</StateCode>
+</Institution>
+<ProgramElement>
+<Code>9101</Code>
+<Text>Chem Struct,Dynmcs&amp;Mechansms A</Text>
+</ProgramElement>
+<ProgramReference>
+<Code>8037</Code>
+<Text>Advanced Manufacturing</Text>
+</ProgramReference>
+</Award>
+</rootTag>

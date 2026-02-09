@@ -1,0 +1,46 @@
+"","Timestamp","ID","Freq","labeler_allocated_once","labeler_default","innovationYes","Phase","Drugname","Companyname","new2market","new2company","defaultlabel","Allocation_Freq.y"
+"14","7/24/2019 11:59:34","ATDOMB0020150522eb5m0005r",2,"CohenSamantha","NA","No","Unsure","","","Unsure","Unsure","No",1
+"15","7/24/2019 12:04:40","ATDOMB0020150522eb5m0005r",2,"CohenSamantha","NA","No","","","","","","No",1
+"19","7/24/2019 11:32:17","ATPHAB0020150415eb4f0005n",2,"CohenSamantha","NA","Yes","Approved by FDA but not scheduled to be launched","Cefixime","","No","Unsure","No",1
+"20","7/24/2019 11:39:35","ATPHAB0020150415eb4f0005n",2,"CohenSamantha","NA","Yes","Available to consumers (has been launched on the market)","Cefixime","","No","No","No",1
+"46","7/25/2019 14:06:42","ATPHAM0020150602eb5t0008f",2,"PietrowiczSean","NA","No","","","","","","No",1
+"47","7/24/2019 12:23:36","ATPHAM0020150602eb5t0008f",2,"PietrowiczSean","NA","Yes","Approved by FDA and scheduled to be launched","Quell","Quell Relief","Unsure","Unsure","No",1
+"125","7/24/2019 12:01:50","BWR0000020150209eb290004b",3,"Extra2","NA","Yes","Undergoing clinical trials","LJPC-501","La Jolla","Yes","Unsure","No",1
+"126","7/24/2019 11:41:37","BWR0000020150209eb290004b",3,"Extra2","NA","Yes","FDA application submission and/or FDA testing","LJPC-501","La Jolla","Yes","No","No",1
+"127","7/25/2019 13:44:33","BWR0000020150209eb290004b",3,"Extra2","NA","Yes","Undergoing clinical trials","LJPC-501","La Jolla Pharmaceutical Company","Yes","No","No",1
+"143","7/24/2019 11:41:04","CHEMEC0020150515eb5m0002h",2,"CohenSamantha","NA","No","","","","","","No",1
+"144","7/24/2019 11:46:30","CHEMEC0020150515eb5m0002h",2,"CohenSamantha","NA","No","Unsure","","","Unsure","Unsure","No",1
+"148","7/24/2019 11:43:51","CHPR000020150819eb8b0001n",2,"KorkmazGizem","NA","No","","","","","","No",1
+"149","7/24/2019 11:56:47","CHPR000020150819eb8b0001n",2,"KorkmazGizem","NA","No","","","","","","No",1
+"155","7/24/2019 11:55:23","CHWKNW0020150410eb4e00050",3,"CohenSamantha","NA","Yes","Undergoing clinical trials","IFN(alpha)-Kinoid","Neovacs, Stellar","Yes","No","No",1
+"156","7/24/2019 11:53:59","CHWKNW0020150410eb4e00050",3,"CohenSamantha","NA","Yes","Undergoing clinical trials","IFN(alpha)-Kinoid","Neovacs","Yes","No","No",1
+"157","7/24/2019 11:52:30","CHWKNW0020150410eb4e00050",3,"CohenSamantha","NA","Yes","Undergoing clinical trials","IFN(alpha)-Kinoid","Neovacs,Stellar","Yes","No","No",1
+"175","7/24/2019 11:48:35","DAIM000020150615eb6g0000d",2,"CohenSamantha","NA","No","Unsure","","","Unsure","Unsure","No",1
+"176","7/24/2019 11:46:54","DAIM000020150615eb6g0000d",2,"CohenSamantha","NA","No","","","","","","No",1
+"195","7/24/2019 12:03:11","DJDN000020150302eb320019u",2,"NairDevika","NA","Yes","FDA application submission and/or FDA testing","EXPAREL","Pacira Pharmaceutical","Yes","Yes","No",1
+"196","7/24/2019 14:02:29","DJDN000020150302eb320019u",2,"NairDevika","NA","Yes","FDA application submission and/or FDA testing","EXPAREL(R), bupivacaine liposome injectable suspension","Pacira Pharmaceuticals Inc.","Yes","Unsure","No",1
+"259","7/24/2019 11:57:42","DRGW000020150612eb6j0008h",2,"CohenSamantha","NA","No","Unsure","","","Unsure","Unsure","No",1
+"260","7/24/2019 12:02:13","DRGW000020150612eb6j0008h",2,"CohenSamantha","NA","Unsure","","","","","","No",1
+"292","7/24/2019 11:40:11","GNVL000020160213ebbo000hp",2,"CohenSamantha","NA","No","","","","","","No",1
+"293","7/24/2019 11:43:59","GNVL000020160213ebbo000hp",2,"CohenSamantha","NA","No","Unsure","","","Unsure","Unsure","No",1
+"308","7/24/2019 11:36:53","HAMW000020150529eb65001p3",2,"CohenSamantha","NA","Yes","Undergoing clinical trials","SB010","","Yes","No","No",1
+"309","7/24/2019 11:29:53","HAMW000020150529eb65001p3",2,"CohenSamantha","NA","Yes","Undergoing clinical trials","SB010","","Unsure","Unsure","No",1
+"339","7/24/2019 11:43:00","JNWP000020150325eb3p0000f",2,"CohenSamantha","NA","No","Unsure","","","Unsure","Unsure","No",1
+"340","7/24/2019 11:38:42","JNWP000020150325eb3p0000f",2,"CohenSamantha","NA","No","","","","","","No",1
+"367","7/24/2019 11:23:09","LFSW000020150130eb23001n2",2,"CohenSamantha","NA","No","Undergoing clinical trials","","","No","No","No",1
+"368","7/24/2019 11:17:56","LFSW000020150130eb23001n2",2,"CohenSamantha","NA","No","","","","","","No",1
+"393","7/24/2019 14:00:23","MSP0000020150924eb9k00015",2,"NairDevika","NA","No","","","","","","No",1
+"394","7/24/2019 12:09:22","MSP0000020150924eb9k00015",2,"NairDevika","NA","No","","","","","","No",1
+"410","7/24/2019 12:01:28","NBPPBS0020150507eb58001vs",2,"CohenSamantha","NA","No","Unsure","","","Unsure","Unsure","No",1
+"411","7/24/2019 12:07:13","NBPPBS0020150507eb58001vs",2,"CohenSamantha","NA","No","","","","","","No",1
+"459","7/24/2019 12:04:51","PRGRSS0020150725eb7p0001h",2,"KramerBrandon","NA","No","","","","","","No",1
+"460","7/24/2019 11:23:17","PRGRSS0020150725eb7p0001h",2,"KramerBrandon","NA","Unsure","","","","","","No",1
+"466","7/24/2019 11:27:13","PZON000020150917eb9h0002q",2,"CohenSamantha","NA","Yes","Available to consumers (has been launched on the market)","QSpex blu-bloQ","QSpex","Unsure","Unsure","No",1
+"467","7/24/2019 11:33:46","PZON000020150917eb9h0002q",2,"CohenSamantha","NA","No","Unsure","","","No","Yes","No",1
+"494","7/24/2019 11:30:04","SFBJO00020150408eb4700001",2,"HalewiczVictoria","NA","Yes","Undergoing clinical trials","F/TAF","Gilead, Janssen Sciences Ireland UC","Yes","No","No",1
+"495","7/24/2019 12:06:51","SFBJO00020150408eb4700001",2,"HalewiczVictoria","NA","Yes","FDA application submission and/or FDA testing","F/TAF","Gilead","Yes","Unsure","No",1
+"498","7/24/2019 12:03:18","STLBJO0020150611eb6b0002w",3,"Extra1","NA","No","","","","","","No",1
+"499","7/24/2019 11:23:09","STLBJO0020150611eb6b0002w",3,"Extra1","NA","Yes","Undergoing clinical trials","No name yet","NeuroLutions","Unsure","Unsure","No",1
+"500","7/25/2019 14:06:37","STLBJO0020150611eb6b0002w",3,"Extra1","NA","Yes","Undergoing clinical trials","Brain Computer Interface (BCI)","NeuroLutions","Unsure","Unsure","No",1
+"511","7/24/2019 11:24:12","WSJO000020151215ebcf003s7",2,"CohenSamantha","NA","No","","","","","","No",1
+"512","7/24/2019 11:31:30","WSJO000020151215ebcf003s7",2,"CohenSamantha","NA","No","Unsure","","","No","Unsure","No",1

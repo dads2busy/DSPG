@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# Office / archives
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.zip
+*.tar
+*.gz
+*.7z
+
+# Images / media (keep only if small and needed)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.mp3
+*.wav
+*.pdf
+*.xlsx
+*.xls
+
+# Anything under promotional item ideas, zoom backgrounds, etc.
+04-Branding/Promotional-Materials/
+04-Branding/Zoom-Backgrounds/
+05-Alumni-and-Outreach/old - archived docs/
