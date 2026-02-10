@@ -1,0 +1,109 @@
+x,reconciled
+battalion/brigade,"battalion, brigade"
+regiment/special,brigade
+observer/coach/trainer,o/c-t
+/,
+engineer/assist,engineer
+instructor/tactical,"instructor, tactical"
+internship/congressional,"internship, congressional"
+fellowship/msg,"fellowship, msg"
+officer/project,"officer, project"
+engineer/project,"engineer, project"
+ac/rc,"ac, rc"
+acs/twi/rsms/bop/pb-gsip,"acs, twi, rsms, bop, pb-gsip"
+doctrine/training/capability,doctrine
+ctc/mtcp,"ctc, mtcp"
+brigade/battalion,"brigade, battalion"
+"xo/s3,","xo, s3"
+joint/ascc/hqda/acom,"joint, ascc, hqda, acom"
+planner/tac,"planner, tac"
+bde/dist,bde
+commander/xo,"commander, xo"
+div/corps,"div, corps"
+hqda/office,"hqda, office"
+joint/ascc/hqda/acom/cocoms,"joint, ascc, hqda, acom, cocoms"
+observer/coach-trainer/staff,"o/c-t, staff"
+fellowship/scholarship,"fellowship, scholarship"
+o/c-t,o/c-t
+commander/chief,"commander, chief"
+g-3/5/7,g-3/5/7
+company/troop,company
+divarty/brigade/battalion,"brigade, battalion"
+observer/trainer,o/c-t
+scholarship/fellowship,"scholarship, fellowship"
+division/corps,"division, corps"
+ascc/macom,"ascc, macom"
+doctrine/training,doctrine
+rotc/usma,"rotc, usma"
+divarty/fa,divarty
+corps/ascc,corps
+g-3/5/7,g-3/5/7
+senior/lead,senior
+plans/operations,plans
+battery/company,company
+company/service battery,company
+jtags/an/tpy-2,jtags
+brigade/aamdc,brigade
+observer/controller,observer
+o/c,o/c-t
+usaadas/ile,
+brigade/division/corps,"brigade, division, corps"
+brigade/arspace/smdc,brigade
+dod/jiim/army/acom,"dod, jiim, army, acom"
+s3/xo,"s3, xo"
+"acom/ascc/dru,","acom, ascc, dru"
+"acom/dru,","acom, dru"
+hqda/pentagon,hqda
+division/corps/ascc,"division, corps, ascc"
+acom/dru/hqda,"acom, dru, hqda"
+cm/biological,cm/biological
+control/verification,control
+(jtags)/an/tpy-2,jtags
+(mtt)/advisor,mtt
+(o/c),o/c-t
+army/army,army
+(acom)/army,acom
+(dod)/jiim/army/acom,"dod, jiim, army, acom"
+fellowship/internship,fellowship
+staff/cdid/dotd/ocada,"staff, cdid, dotc, ocada"
+atec/u.s,"atec, us"
+futures/army,"futures, army"
+instructor/staff,"instructor, staff"
+staff/fires,"staff, fires"
+trainer/advisor,trainer
+smdc/german,"smdc, german"
+force/gmd,gmd
+dod/joint/army/acom,"dod, joint, army, acom"
+"3/5/7,",g-3/5/7
+company/detachment,"company, detachment"
+cdr/xo/s3,"cdr, xo, s3"
+ctc/observer/controller,observer
+brigade/regiment/corps,"brigade, corps"
+acom/ascc/dru,"acom, ascc, dru"
+aa/rc,"aa, rc"
+controller/evaluator,controller
+manager/instructor,instructor
+instructors/doctrine,"instructors, doctrine"
+branch/fa,branch/fa
+brigade/regiment/group,brigade
+acom/,acom
+ascc/dru,"ascc, dru"
+ra/rc,"ra, rc"
+battalion/squadron,battallion
+brigade/regiment,brigade
+pms/apms,"pms, apms"
+army/joint,"army, joint"
+coach/trainer,trainer
+instructor/sgi,instructor
+nominative/joint,"nominative, joint"
+interagency/joint,"interagency, joint"
+corps/division,"corps, division"
+staff/instructor,"staff, instructor"
+trainer/leader,trainer
+tank/mobile,"tank, mobile"
+system/scout,system scout
+aide-de-camp/nominative,"aide-de-camp, nominative"
+fellowships/scholarships,"fellowship, scholarship"
+brigade/division/corps/joint,"bridage, division, corps, joint"
+combat/training/doctrine,doctrine
+observer coach/trainer,o/c-t

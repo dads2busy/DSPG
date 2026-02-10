@@ -1,0 +1,26 @@
+---
+title: "Project Title"
+subtitle: "Data Processing - Webscrapping"
+---
+
+# Problem
+
+[The Black Knight property dataset](https://www.blackknightinc.com/products/property-data/) provides information on each property's assessed value, number of bedrooms and bathrooms, building area, age of property, and etc. These variables help us gauge the household characteristics of the subscribers and, in the difference-in-difference analysis, these will serve as control variabls that make sure our control group is similar to the subscribers.
+
+Any systematic bias or vacancy in this data is thus particularly worrisome. Though we expected a certain percentage of missing records, it was to our surprise that in our North Dakota sampled data, all properties saw their number of bedrooms, bathrooms, and square footage missing.
+
+# Web scraping solution
+
+To facillitate the analysis for our projects, we experimented using web scraping to find the missing information using search engines. Our script can be described as performing the following checklist: for each address, 
+
+1. Send a HTTP request to web-search the address witth Bing
+2. Scan through the searched result and identify those from selected sources
+3. Use a regular expression to find the required information
+
+Bing is used as our primary search engine for its relative friendliness to frequent requests, and we included [Zillow](https://www.zillow.com/) and [Realtor](https://www.realtor.com) as the two sources whose search results will be taken for further analysis.
+
+# Performance
+
+To ensure the accuracy of our analysis, we only accept the properties whose number of bedrooms, bathrooms, and square footage can all be scrapped from the sources listed above. Under this standard, we managed to get information for 455 properties out of the total of 2963 properties in the North Dakota project buffer zone.
+
+The success rate of 15.3% in this particular sample may appear to be too low, but this information is otherwise missing completely. Moreover, in other areas where the assessors' office publicize a more detailed record of properties, our scrapping script also tend to perform significantly better.

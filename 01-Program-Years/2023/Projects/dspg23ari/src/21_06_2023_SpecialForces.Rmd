@@ -1,0 +1,59 @@
+---
+title: "21_06_2023_SpecialForces.Rmd"
+author: "Sara Shallenberger"
+date: "2023-06-21"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pdftools)
+library(tesseract)
+library(stringr)
+library(rlist)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+# read in the document
+data <- pdf_data("./data/specialforces-da-pam-600-3-a.pdf")
+
+# getting relevant pages
+
+pages <- list.rbind(data[7:11])
+pagessep <- as.character(pages$text)
+```
+
+```{r}
+# start the dataframe
+columns <- c("MOS", "Rank", "Assignment", "Type")
+
+# data frame
+dataframe <- data.frame(matrix(nrow = 100, ncol = length(columns)))
+
+# assigning column names
+colnames(dataframe) <- columns
+
+dataframe$MOS <- "Special Forces"
+```
+
+```{r}
+#KDs
+v1 <- c(rep("CAP", 1), rep("MAJ", 7), rep("LTC", 1), rep("COL", 2))
+KDps <- unlist(str_extract_all(fulltext, "\\h[abcd]\\.\\h.*?(?=((Preferred)|(\\.\\h(SF)\\h(Colonel)\\h)))"))
+KDps[1] <- "SFOD-A Command *Equivalent to company/battery/troop command"
+KDps <- unlist(str_split(KDps, "\\(\\d\\)"))
+KDps <- KDps[-c(2,10,11,13)]
+KDps[9:11] <- c("Battalion Commander", "Brigade Commander", "JSOTF Commander")
+KDps <- str_remove_all(KDps, "(^\\h)|(SF\\h)|(\\..*$)|(\\h$)|(\\h\\(.*$)")
+
+#add to data frame
+dataframe[(1:length(v1)), 2:4] <- c(v1, KDps, rep("KD", length(v1)))
+
+#there aren't any devs here so this should be our final
+
+fulldata <- dataframe[1:11,]
+write.csv(fulldata, "./data/22_06_2023_SpecialForces.csv")
+```
+

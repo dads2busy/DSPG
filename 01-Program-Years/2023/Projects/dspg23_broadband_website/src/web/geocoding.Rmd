@@ -1,0 +1,25 @@
+---
+title: "Impact of Rural Broadband Development Programs"
+subtitle: "Data Processing - Geocoding"
+---
+
+# Problem
+
+We used [Black Knight (BK) dataset](https://www.blackknightinc.com/products/property-data/) as a reference for property information. An accurate geographic location for each of these properties is important for our selection of bufferzone and accurate calculation from the Ookla kernel (see methodology section). However, during exploratory analysis, we found inconsistency between the latitude-longitude information and the street address in the dataset. 
+
+# Geocoding Scheme
+
+We inspected the partition of the data that is close enough to the list of projects that we selected as examples for analysis. In this raw partition of 516,273 records, we summarize our finding in the workflow figure below.
+
+![Inspection workflow of geocoding in BlackKnight data](img/bk_geocode_inspection.png)
+
+We developed programs to call three free geocoding APIs, and tested their performance on a random sample of 1000 addresses, then cross-referenced with the lat-long in BK data. The APIs tested are the [Bing Map API](https://www.microsoft.com/en-us/maps/choose-your-bing-maps-api), the [Census geocoder](https://geocoding.geo.census.gov/geocoder/), and the [OpenStreetMap API](https://wiki.openstreetmap.org/wiki/API_v0.6). The Bing Map API is accessed under a free educational key, and to ensure accuracy, we only accepted Bing's geocoding result that they mark as of *high confidence*.
+
+|        API |        Bing       |       Census       | OpenStreetMap |
+|-----------:|:-----------------:|:------------------:|:-------------:|
+|      Limit |    50,000 / day   |   10,000 / batch   |   1 / second  |
+|      Speed | 0.2-0.25s / query | 0.01-0.02s / query |   1s / query  |
+| Match rate |        98%        |         85%        |      73%      |
+|  Avg. Diff |        26m        |         94m        |      229m     |
+
+We found the Census API to be the most suitable for large-scale implementation on the entire BlackKnight dataset, and the Bing Map API to be the most powerful one that can potentially be used to fix the addresses that the Census API fails to geocode.

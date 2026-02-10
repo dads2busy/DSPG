@@ -1,0 +1,74 @@
+---
+title: "Exploring Documents as Data"
+subtitle: Our Team
+output:
+  html_document:
+    df_print: paged
+---
+<br>
+
+<div align="center">
+<p>  
+<h1> DSPG 2023 Team </h1>
+</p>
+</div>
+
+<br>
+<br>
+
+<div align="center">
+<div class="column">
+<p style="text-align: center;">  
+![](img/sara_pic.png){width=60%} 
+<h2>*Sara Shallenberger*</h2>
+<h2>Undergraduate Intern</h2>
+</p>
+</div>
+
+<div class="column">
+<p style="text-align: center;">  
+![](img/nakshatra_pic.png){width=60%} 
+<h2>*Nakshatra Yalagach*</h2>
+<h2 style = "margin-bottom: 80px;">Graduate Student Mentor</h2>
+</p>
+</div>
+</div>
+
+<div align="center" style="margin-top: 40px;">
+<p> 
+<br>
+<h1> UVA Biocomplexity Institute</h1>
+<h3> Social and Decision Analytics Division Staff </h3>
+</p>
+</div>
+
+
+<br>
+<div align="center">
+<div class="column">
+<p style="text-align: center;">  
+![](img/Joanna_pic.png){width=60%} 
+<h2>*Joanna Schroeder*</h2>
+<h2 style="text-align: center;">Intermediate Research Specialist</h2>
+</p>
+</div>
+
+
+<div class="column">
+<p style="text-align: center;">  
+![](img/Joel_pic.png){width=60%}
+<h2>*Joel Thurston*</h2>
+<h2 style = "margin-bottom: 80px;">Senior Scientist</h2>
+</p>
+</div>
+<br>
+<br>
+<br>
+</div>
+
+
+<div align = "center">
+# Project Sponser
+
+## *Andrew Slaughter, Army Research Institute for the Behavioral and Social Sciences*
+</div>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Extracting Text from Documents</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.27/datatables.js"></script>
+<link href="site_libs/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="site_libs/jszip-1.12.1/jszip.min.js"></script>
+<link href="site_libs/dt-ext-buttons-1.12.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="site_libs/dt-ext-buttons-1.12.1/js/dataTables.buttons.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.12.1/js/buttons.html5.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.12.1/js/buttons.colVis.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.12.1/js/buttons.print.min.js"></script>
+<link href="site_libs/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="site_libs/nouislider-7.0.10/jquery.nouislider.min.js"></script>
+<link href="site_libs/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="site_libs/selectize-0.12.0/selectize.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img id='dspg' class='center' src = 'img/black-logo.png' /></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Extracting Text From Documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Goals_Pt1.html">Goals</a>
+    </li>
+    <li>
+      <a href="Data_Pt1.html">Data</a>
+    </li>
+    <li>
+      <a href="Methods_Pt1.html">Methods</a>
+    </li>
+    <li>
+      <a href="Findings_Pt1.html">Insights</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyzing Data From Documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Goals_Pt2.html">Goals</a>
+    </li>
+    <li>
+      <a href="Data_Pt2.html">Data</a>
+    </li>
+    <li>
+      <a href="Methods_Pt2.html">Methods</a>
+    </li>
+    <li>
+      <a href="Findings_Pt2.html">Insights</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="team.html">Team</a>
+</li>
+<li>
+  <a href="https://github.com/DSPG-Young-Scholars-Program/dspg23ari">
+    <span class="fa fa-github"></span>
+     
+    
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Extracting Text from Documents</h1>
+<h3 class="subtitle">Insights</h3>
+
+</div>
+
+
+<div id="the-output-from-the-first-part-of-our-project-was-a-dataset-of-officer-assignments-by-branchfunctional-area-type-and-rank.-explore-or-download-our-dataset-below." class="section level4">
+<h4>The output from the first part of our project was a dataset of Officer Assignments by Branch/Functional Area, Type, and Rank. Explore or download our dataset below.</h4>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-fa2d0981ee8041568123" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-fa2d0981ee8041568123">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"caption":"<caption>Table 1. Officer Assignment Dataset ;\n                   MOS = Branch/Functional Area ;\n                   KD = Key Developmental Assignment ;\n                   DEV = Developmental/Broadening Assignment ; \n                   LT = Lieutenant ;\n                   CPT = Captain ;\n                   MAJ = Major ;\n                   LTC = Lieutenant Colonel ;\n                   COL = Colonel<\/caption>","data":[["Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Armor","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Aviation","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Air Defense Artillery","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Chemical","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Civil Affairs","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Field Artillery","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Infantry","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Engineers","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Psychological Operations","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Information Operations ","Special Forces","Special Forces","Special Forces","Special Forces","Special Forces","Special Forces","Special Forces","Special Forces","Special Forces","Special Forces","Special Forces","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Cyber","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Electronic Warfare","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Military Police","Aviation"],["KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","KD","DEV","DEV","DEV","DEV","DEV","DEV","DEV","KD"],["LT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","COL","COL","COL","COL","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","LT","COL","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","LT","LT","LT","LT","LT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","LT","LT","LT","LT","LT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","COL","COL","COL","COL","LT","LT","LT","LT","LT","LT","LT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","COL","COL","COL","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","LT","CPT","MAJ","LTC","COL","LT","LT","LT","LT","LT","LT","LT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","LT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","COL","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","COL","COL","COL","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","COL","COL","LT","LT","LT","LT","LT","LT","LT","LT","LT","LT","LT","LT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","LT","LT","LT","LT","LT","LT","LT","LT","LT","LT","LT","LT","LT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","CPT","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","MAJ","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","LTC","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","COL","LT"],["platoon leader","company commander","staff officer","battalion operations officer s3","battalion xo","brigade s3","xo","division chief of plan","training developer","rotc pm","rotc apm","battalion commander","division staff head","army staff head","joint staff head","brigade commander","directorate head","division head","strategic solutions leader","aide-de-camp","nominative position","army sponsored fellowship","scholarship","battalion staff","brigade staff","bolc-a cadre","ctc o/c-t","cross-component training support brigade trainer staff","brigade staff","doctrine developer","training developer","maneuver center of excellence instructor","other coe small group instructor","project warrior","school instructor","team leader within a security force assistance brigade","u.s. army recruiting company command staff","u.s. army recruiting company staff","usma service school faculty staff","usma staff","other combat arms generalist","branch generalist positions","advanced civil schooling","ctc o/c-t armor branch","nominative","joint position","advisor positions for foreign school","army sponsored broadening opportunities fellowship","scholarship","bolc-a cadre","brigade staff","division staff","corps staff","staff","joint staff","cgsc instructor","combat developer","training developer","developer","doctrine developer","foreign schools advisor","hqda staff officer","army command staff officer","interagency duty","joint duty","ocll","sfab xo","s3","brigade xo","corps staff","division staff","ctc o/c-t","hqda staff","joint staff","staff","osd staff","ile instructor","maneuver center of excellence staff","nominative position","rotc pm","service school staff instructor","instructor staff","army attaché","army capabilities manager","ctc operations group commander","combat trainer developer","department director","maneuver center of excellence","division staff","corps chief of staff","corps staff officer","division staff officer","general officer xo","hqda staff","joint staff","combatant command staff","staff","army major command staff","rotc pm","platoon leader","brigade commander","platoon leader 15d in an aviation support company","company command","detachment command","battalion xo","brigade xo","battalion s3","brigade s3","command positions coded for majors","battalion commander","brigade deputy cdr s3","brigade xo","brigade s3","company leader","platoon leader","adam staff","observer staff","small group instructor","staff position","instructor","lieutenant colonel","brigade","corps assistant","deputy assistant","operations officer","assistant plans officer","rotc duty","rotc recruiting duty","acom staff","ascc staff","dru staff","army staff","joint staff","aa assignment","rc assignment","senior-level joint duty","corps-level officer","observer controller","course instructor","training with industry","hrc assignment","collection manager","battalion primary staff officer","battalion cab assistant staff officer","brigade aviation element","ctc observer controller","rc advisor","usarec staff","usma faculty staff","usma staff","tradoc service school instructor","doctrine writers instructor","army staff generalist","joint staff generalist","branch/fa generalist positions staff","security forces assistance brigade","lieutenant colonel positions at usaace","ctc","brigade xo","division primary staff","corps assistant","deputy assistant","operations officer","assistant plans officer","rotc duty","rotc recruiting duty","acom ascc staff","dru staff","army staff","joint staff","aa assignment","rc assignment","colonel positions at ctcs brigade xo","division primary staff","corps assistant","deputy assistant","operations officer","assistant plans officer","rotc duty","rotc recruiting duty","acom staff","ascc staff","dru staff","army staff","joint staff","ra assignment","rc assignment","platoon leader","xo","battalion staff officer","liaison officer","aide-de-camp","ada battery command","hhb commander","hhc commander","detatchment commander","adam cell oic assignment","battalion","brigade s3","battalion","brigade s3","aamdc plans officer","aamdc fire control officer","security force assistant brigade","csl battalion-level command","transition team commander","aamdc deputy chief of staff","aamdc deputy g3","corps chief","division chief","csl brigade-level command","air defense division chief","aamdc chief of staff","aamdc assistant chief of staff g-3","mtt trainer","ada brigade air defense artillery fire control officer","patriot top gun","multinational transition team trainer","ctc observer","small group instructor","ada battalion staff officer","brigade staff officer","gmd brigade staff officer","battalion tactical director","brigade tactical director","space staff officer","missile defense command staff officer","battlefield coordination detachment staff officer","army commandarmy space staff officer","adam cell officer","security force assistance brigade","asymmetric warfare group","directorate of training","doctrine development","office","of chief of air defense artillery","hrc position","army test","evaluation command","u.s. army recruiting command staff","acreserve component","advanced civil schooling based on army requirements","reserve officer training corps instructor","usma instructor","tactical officer","foreign service exchange officer","foreign service school exchange officer","jiim assignment","fellowship","aide-de-camp","ctc senior o/c-t","ada brigade staff officer","faculty staff officer","staff officer","brigade staff officer","division staff officer","corps staff officer","gmd brigade staff officer","dod jiim staff officer/dod army staff officer/dod acom staff officer","battle command training program position","service school instructor","ac","rc service","other branch","multi-functional position","inspector general","fellowship","rotc instructor","rotc usma instructor","fcoe staff","cdid staff","dotc staff","ocada staff","atec","us. army training","doctrine command","awg assignment","futures staff","army staff g-8","hrc positions staff","smdc staff officer","dod staff officer","jiim staff officer","army staff officer","acom staff officer","service school instructor staff officer","staff officer instructor","ac","rc service","bctp position","director of ocada assignment","selected fcoe assignment","hrc staff","chief","gmd fire direction center","fcoe staff","fires officer staff","smdc staff officer","german air staff officer","missile defense gmd staff officer","dod staff officer","joint staff officer","army staff officer","acom staff officer","installation staff officer","rotc staff officer","rotc usma staff officer","ac","rc service","usaadas assistant commandant","brigade fcoe g g-3/5/7 tcm-aamdc","tcm-ada brigade","mda","director warfighter integration","usstratcom deputy commander","director of operations jfcc-imd commander","battalion staff officer","platoon leader","team leader of cbrne response team","company xo","aide-de-camp","brigade cbrn officer in a bct","brigade-level command","company commander","battalion s3","battalion xo","brigade s3","brigade xo","deputy division cbrn staff officer","joint staff officer","major level commander","separate brigade cbrn officer","brigade primary staff officer","lieutenant colonel-level command","acom staff officer","ascc staff officer","dru hqda staff officer","osd staff officer","joint staff officer","division cbrn officer","brigade deputy commanding officer","sams followed by a utilization tour","colonel-level command","acom","dru hqda","osd","joint staff officer","corp","ascc cbrn officer","assistant commandant","usacbrns assistant","combatant command cbrn officer","battalion staff","brigade primary staff","small group leader","rc observer controller","security force assistance brigade sfab cbrn officer","usma faculty staff","usma staff","acom","dru","joint staff officer","rotc staff","hqda staff","usarec","army sponsored fellowship","scholarship","","internship","aide-de-camp","hrc assignments manager","instructor","usa element instructor","naval academy instructor","contingency support detachment","white house military office","division staff officer","corps staff officer","ascc cbrn staff officer","acom staff officer","dru staff officer","hqda staff officer","sf group cbrn officer","usma faculty staff","usma staff","ctc o/c-t","rc o/c-t","tradoc staff officer","maneuver support center of excellence mscoe staff officer","usacbrns staff officer","command staff","general staff college faculty","staff","hrc assignments manager","rotc assistant professor of military science","jiim organization","command","cm/biological arms control","army sponsored fellowship","scholarship","","internship","usarec","corps cbrn staff officer","tradoc staff officer","maneuver support center of excellence mscoe staff officer","usacbrns staff officer","rotc professor of military science","assignments branch chief hrc","cm/biological arms control","inspector general","command staff","staff college faculty","staff","01c positions on division staff","usma faculty staff","usma staff","tradoc staff officer","cm/biological arms control","usma faculty staff","usma staff","01c coded positions in corp","ascc","ca team commander","hhc","ca company commander","battalion","brigade xo","battalion","brigade operations officer","primary staff civil affairs officer","career manager","division chief","mission command training center","special operations training detachment","ctc o/c-t","usasoc force modernization center","personal staff position","battalion command","csl assignment","proponent manager","assistant chief of staff","brigade deputy commander","personal staff position","brigade command","csl assignment","chief of staff","deputy commanding officer","capability manager","primary staff officer","theater civil affairs planning team chief","assistant chief of staff","headquarters staff officer","ca team commander","assignments at ca proponent","battalion assistant operations officer","brigade assistant operations officer","ca sof governance officer","operational assignment","institutional assignment","jiim assignment","academic assignment","usajfkswcs course manager","usajfkswcs senior instructor","usajfkswcs instructor","theater special operations command plans officer","theater civil affairs planning team plans officer","civil-military operations center chief","operational assignment","institutional assignment","jiim assignment","academia assignment","operational assignment","institutional assignment","jiim assignment","academia assignment","battery xo","battery operations officer","pl","ammunition platoon leader","fdo","company fso","company staff officer","battery commander","battalion s3","battalion xo","brigade fso","field artillery brigade s3","divarty s3","field artillery brigade xo","divarty xo","battalion commander","brigade command","divarty command","csl command","battalion fso","battalion fdo","battalion assistant s3","brigade staff officer","battalion staff officer","ctc o/c-t","small group instructor","branch immaterial position","mission command training program","foreign exchange officer","instructor position","ground liaison officer","scholarship","fellowship","division staff officer","corps staff officer","ascc staff officer","bcd assistant operations officer","ctc o/c-t","mission command training program","joint army staff position","instructor position","ascc staff officer","macom staff officer","doctrine developer","ranger sf fso","usma rotc","rotc usma faculty","dfscoord","divarty brigade xo","bct xo","joint army staff position","nato staff","combatant command staff","bcd plans officer","senior fire support oc at","assignments with the mission command training program","fires assignments in tradoc army futures command","service branch school staff instructor","instructors staff","special operations fire support officer","usma rotc","rotc usma faculty","corps ascc chief of fire","division chief of staff","corps ascc assistant chief of staff","corps deputy chief of staff","corps g-3/5/7","corps staff officer","army targeting center director","assistant commandant of the field artillery school","ctc operations group commander staff","chief of staff commander","mctp commander chief of operations group","department director","u.s. army fires center of excellence","hqda joint staff","ascc staff officer","macom staff officer","field artillery training","xo to a general officer","usma rotc","rotc usma faculty","rifle platoon leader","company commander","battalion commander","battalion commander","brigade commander","initial military training","generating force company xo","old guard","75th ranger battalion","cavazo","patton program internship","aide-de-camp for a general officer","instructor: tradoc training position","nominative assignment","active component reserve component o/c-t staff","staff","generating force staff","doctrine developer","training developer","acom staff","higher-level da staff","usma faculty staff","usma staff","u.s. army recruiting company command staff","u.s. army recruiting company staff","reserve officers’ training corp","multinational staff officer","coalition trainer staff officer","staff officer","fellowship","scholarship","other combat arms generalist","branch generalist position","jiim organization","command","mctp staff","1st army staff","staff","ctc o/c-t staff","staff","training developer","doctrine developer","sfab commander","operations officer","","xo","da staff officer","joint staff officer","nominative assignment","division staff","corps staff","army command staff","cgsc staff","faculty staff","service school instructor","usma faculty staff","usma staff","rotc assistant professor of military science","multi-national staff officer","coalition trainer staff officer","staff officer","fellowship","scholarship","jiim organization","command","division g3","ctc task force trainer","2nd-time command","enterprise nominative assignment","deputy bct commander","service school instructor","rotc pm","division staff","corps staff","ascc staff","acom staff","staff","hqda staff","division ig","senior army advisor to the adjutant general","jiim organization","command","mctp staff","oc-t staff","combat training center operations group commander staff","chief of staff commander","tradoc capabilities manager","division staff","corps chief of staff","division staff","corps staff","staff","field army assistant chief of staff","g–357 staff","xo to a general officer","department director","u.s. army maneuver center of excellence","hqda staff","joint staff","usma brigade tactical officer","senior rotc pm","nominative assignment","platoon leader","company commander","battalion xo","brigade xo","battalion s3","brigade operations officer s3","ranger brigade forces group engineer","sfab xo","s3 b","toe engineer battalion command","lieutenant colonel usace engineer district command","tradoc engineer battalion command","training support battalion command","usarec battalion command","battalion command","second command in sfab brigade engineer battalion","select us army recruiting commands","toe engineer brigades command","colonel usace engineer districts command","tpo geospatial chief","tradoc engineer brigade command","usarec brigade command","battalion command","ctc o/c-t","small group leader instructor","aide de camp","hrc assignments officer","security force assistance brigade","ensof assist","group engineer","command engineer","ranger bn en","instructor","tactical officer instructor","jcs internship","congressional fellowship","msg wright mba","usace project officer","project engineer","project manager","geospatial engineer","ac","rc o/c-t","ac","twi","rsm","bop","pb-gsip with utilization requirement","doctrine developer","exchange officer","ctc","mtcp o/c-t","aide de camp","hrc assignments officer","battalion sfab advisor company commander","brigade commander","battalion xo commander","s3 sfab brigade engineer officer commander","joint staff","ascc staff","hqda staff","acom staff","school of advanced military studie","instructor","jiim staff officer","division engineer planner","tac engineer officer","usace deputy district commander","geospatial engineer","royal school of military survey","doctrine developer","advanced civil schooling","exchange officer","forward engineer support team","senior o/c-t at a ctc","usaes chief of staff","hrc branch chief","hqda office of the chief of engineers staff","army futures command","bde deputy commander xo","xo commander","div staff","corps staff","usasoc command engineer","joint staff","ascc staff","hqda staff","acom staff","jiim staff officer","rotc professor of military science","hqda","office of the chief of engineer","director","usace chief of staff","usaes assistant commandant","army futures command","cdid team chief","combatant command staff","usace staff","mscoe staff","exchange officer","jiim staff officer","rotc pm","joint staff","ascc staff","hqda staff","acom staff","cocoms staff","corps engineer","osd staff assignment","detatchment commander","company commander","battalion s3","battalion xo","group s3","usaoc officer","special forces group staff officer","combined arms center","battalion commander","brigade commander","branch assignment","joint duty assignment","branch generalist assigment","corps staff officer","ascc staff officer","global combatant comand staff officer","tsoc staff officer","interagency operations officer","branch assignment","joint duty assignment","branch generalist assigment","1st io commander staff officer","division staff officer","multifunctional brigade staff officer","1st io commander staff officer","division staff officer","corps staff officer","ascc staff officer","transition team staff officer","provincial reconstruction team staff officer","army division staff officer","corps staff officer","ascc staff officer","battalion commander","army corps staff officer","ascc staff officer","1st information operations commander","forscom staff officer","training center staff officer","uscybercom staff officer","stratcom staff officer","special operations unit staff officer","asymmetric warfare group staff officer","combined arms center staff officer","ctc staff officer","hqda staff officer","ranger battalion staff officer","arcyber staff officer","training with industry","fellowship","io instructor","nato staff officer","joint information operations warfare center staff officer","combatant command staff officer","government agency position","state department","defense intelligence agency","cac staff officer","ctc staff officer","arcyber staff officer","hqda staff officer","training with industry","fellowship","io instructor","nato staff officer","joint information operations warfare center staff officer","combatant command staff officer","government agency position","hqda staff officer","army war college proponent director","proponent director","nato","jiowc staff officer","combatant command staff officer","government agency position","sfod-a command *equivalent to companybatterytroop command","company commander","battalion operations officer","battalion xo","group s3 operations officer","group xo","sof plans officer","sof operations officer","battalion commander","brigade commander","jsotf commander","cyber planner","assistant s3","section leader","battle captain","cyberew planner","analytic support officer","brigade cewo","aide d e camp","platoon leader","developer","company xo","exploitation analyst cmf","company commander","support team leader cst","mission element leader cpt","section leader nmtcmt","cyber warfareops officer","brigade sfg cewo","development crew leader","senior developer","cyber planner","analytic support officer","deputy team leader ect","battalion s2s3 ctb","cyew rsrch. scientist","career program mgr. occ","branch chief ocodcododin","remote operations oic","division","corps cewo","battalion s2s3 ctb","product engineer 915th cwb","cy research scientist aci","assistant s3 bnbde","instructor cysusma","evaluation concepts officer","aroc officer","instructor cysusma","battle captain joc","cyber oct ctcs","cy research scientist","watch officer joc","mission manager joc","special technical ops sto planner","instructor cys usma","task force tf cuops officer cmf","mdtf company xo","systems development chief","career program mgr.","cyberew planner","effects assessment officer","trainingexercises officer","cyberew oct ctcs","development team leader 915th","mission team leader cmt cpt ect","brigadesfg cewo","development section lead er","battalion xo","tf commander cmfcnmf","battalion s3","support team leader ns t","company commander mdtf","master developer","senior oct ctcs","bde assistant s3","cyber mission manager","cyber planner","cyew rsrch. scientist","tf deputy commander cmfcnmf","college director cys","cy research scientist aci","senior fires officer joc","division","corpseac cewo","chief","capabilities integr. iwoc","cyber integration lead jfhq -cy","instructor","joint plans analyst joc","instructor cysusmacac","college director","college director cys","assignments officer","aroc officer","course manager cyber school","career program mgr.","cyberew integrator ccoe","strategypolicy planner socom","cyber branch chief","cyber oct ctcs","battle watch chief joc","cyberew branch chief","cyberew oct ctcs","cyber rsrch. scientist","watch officer joc","career program manager","cyberew planner","cyber operations chief jfhq -cy","trainingexercisesplans officer","division cewo","development site leader","battalion commander csl","master developer","mission team leader nmtcpt","task force commander cmfcnmf","","chief","ctoc arcyber","senior capabilities analyst iwoc","senior cyber oct ctcs","deputy director occ","battle captain jfhq -cy","senior training analyst w1yyaa","chief","itoc jfhq -cy","cyber branchdivision chief","chief","capabilities dev. ccoe","cyber warfare officer ecb","assistant acm cyberew ccoe","j3 branch chief disa","mission director uscybercom","training integrator ccoe","tech director uscybercom","instructor cacusmausn","technical director uscybercom","chief","information dominance hrc","lead army analysisops jewc","chief","doctrine branch ccoe","bde deputy commander","senior oct ctcs","chief cyber research aci","chief","info dominance hrc","assistant acm cyberew","senior watch officer iwoc","cema opstraining forscom","corpsccmd cewo","bde deputy command","senior cyber planner","chief research scientist aci","bde s3","bde dep. commander","acm capability developer ccoe","joint cyberspace analyst jcs","brigade commander csl","corps cewo csl","master developer","bde cap. development leader","acm cyberew csl","asst. cmdt cys","chief of staff","operations chief jfhq -cy asst. cmdt cys","asst. commandant cys","cema division chief","cyber outreach officer aci","director","aci","operations chief jfhq -cy","asccccmd cewo","chief","joint cyber center ccmd","director","g33 iwoc","chief of staff","director","army cyber institute","director","ipe ccmd","division chief dcs g357","fa 29","bct","multifunctional brigade","jointmultinational","academia","special operations unit","ctc","centers of excellence","civilian enterprise","fa 29","joint electronic warfare center","army central command","academia","special operations unit","ew program manager office","u.s. army africa","nsa","ctc","centers of excellence","u.s. army pacific","hqda","nato headquarter","asymmetric warfare group","forscom","hrc","u.s. army europe","dod","civilian enterprise","army headquarter","ascc","joint staff","army division","corp","tcm ew","hqda","ew course director","center of excellence","training with industry","joint staff","army headquarter","ascc","army corp","jointmultinational","academia","tcm ew","hqda","civilian enterprise","transportation","company command","platoon leader","staff officer","platoon leader","battalion","sustainment brigade","detachment command","installation pm office","platoon leader","brigade level","duty officer","company xo","bde or","mp unit","mp company","mp captain","ascc","de","acom","detention","pm","usamp","staff","cid","bct pm","dru","deputy division pm","group s3","xo","installation deputy de","pm","brigade division mp planner","mp brigade s3","xo","ascc","usma","acom","hqda","bct","detention","usacidc","rc support","sam","service school instructor","usamp","correction","cid","mp 7 maj kd position","division","dru","key billet","battalion command","deputy brigade commander","brigade","installation de","pm","ltc","division pm","mp school staff","jiimdodarmy staff","ascc","key billet","acom","brigade command","usma faculty staff","usma staff","inspector general","joint duty assignment","senior leadership position","protection warfighting function","protection director","rotc","u.s. army recruiting","opmg division director","corp","o7","united nation","joint chiefs of staff internship","allied service","dea","fema","mp branch representative","national security council","platoon leader"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>MOS<\/th>\n      <th>Type<\/th>\n      <th>Rank<\/th>\n      <th>Assignment<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"paging":true,"scrollX":true,"searching":true,"ordering":true,"dom":"Bfrtip","buttons":["copy","csv","excel"],"pageLength":20,"columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="below-we-present-some-summary-descriptive-statistics-for-the-assignment-dataset." class="section level4">
+<h4>Below we present some summary descriptive statistics for the assignment dataset.</h4>
+<p>We find that the majority (72%) of Assignments are Developmental/Broadening Assignments.</p>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-7959ea0b8464efa3ed21" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-7959ea0b8464efa3ed21">{"x":{"filter":"none","vertical":false,"caption":"<caption>Table 2. Overall count of Assignments by Type. ; KD = Key Developmental ; DEV = Developmental/Broadening<\/caption>","data":[["DEV","KD"],[559,208]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Type<\/th>\n      <th>count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"dom":"tip","columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<p>We find that Cyber has the most unique Assignments, followed by Air Defense Artillery.</p>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-4a3be2845ac5600817ad" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-4a3be2845ac5600817ad">{"x":{"filter":"none","vertical":false,"caption":"<caption>Table 3. Overall count of Assignments by Branch/Functional Area. ; MOS = Branch/Functional Area<\/caption>","data":[["Air Defense Artillery","Armor","Aviation","Chemical","Civil Affairs","Cyber","Electronic Warfare","Engineers","Field Artillery","Infantry","Information Operations ","Military Police","Psychological Operations","Special Forces"],[114,82,62,84,41,143,32,90,70,74,36,73,18,11]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>MOS<\/th>\n      <th>count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":14,"dom":"tip","columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,14,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<p>We found that Major had the most unique Assignments, followed by Lieutenant Colonel.</p>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-1700c995ec1966c9e5cc" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1700c995ec1966c9e5cc">{"x":{"filter":"none","vertical":false,"caption":"<caption>Table 4. Overall count of Assignments by Rank. ; \n                   LT = Lieutenant ;\n                   CPT = Captain ;\n                   MAJ = Major ;\n                   LTC = Lieutenant Colonel ;\n                   COL = Colonel<\/caption>","data":[["COL","CPT","LT","LTC","MAJ"],[194,219,41,208,280]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Rank<\/th>\n      <th>count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"dom":"tip","columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+
+<hr />
+<div>
+  <table style="text-align:center;margin: auto;">
+  <tr>
+    <td style="text-align:center; font-size:10px;">
+    <img src="img/black-logo.png" height="75px">
+    </td>
+  </tr>
+  <tr>
+    <td style="text-align:center; font-size:10px; padding-top: 12px;">
+    <p>
+      Program Contacts:
+    <a href="mailto:jt9sz@virginia.edu">Joel Thurston</a> and <a href="mailto:cpm9w@virginia.edu">Cesar Montalvo</a>
+    </p>
+    </td>
+  </tr>
+  </table>
+</div>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

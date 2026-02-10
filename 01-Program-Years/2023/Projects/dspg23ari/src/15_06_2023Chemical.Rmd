@@ -1,0 +1,98 @@
+---
+title: "15_06_2023Chemical.rmd"
+author: "Sara Shallenberger"
+date: "2023-06-15"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pdftools)
+library(tesseract)
+library(stringr)
+library(rlist)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+# read in data
+data <- pdf_data("./data/chemical-da-pam-600-3-a.pdf")
+pages3to7 <- list.rbind(data[3:7])
+pages3to7textsep <- as.character(pages3to7$text)
+fulltext <- paste(pages3to7textsep, collapse = " ")
+fulltext
+```
+
+```{r}
+# make dataframe
+
+# variable name
+columns <- c("MOS", "Rank", "Assignment", "Type")
+
+# data frame
+dataframe <- data.frame(matrix(nrow = 100, ncol = length(columns)))
+
+# assigning column names
+colnames(dataframe) <- columns
+
+#put in MOS
+
+dataframe$MOS <- "Chemical"
+```
+
+```{r}
+# per usual lieutenant is hard
+dataframe$Rank[1:5] <- "LT"
+dataframe$Assignment[1:5] <- c("Battalion staff officer", "Platoon leader", "Team leader of CBRNE response team", "Company executive officer", "Aide-de-camp")
+dataframe$Type[1:5] <- c(rep("KD",4), "DEV")
+```
+
+```{r}
+# get the KDs
+KDps <- unlist(str_extract_all(fulltext, pattern = "(Key)\\h(developmental)\\h(assignments)\\..*?(?=\\h\\(3\\))"))
+KDps <- unlist(str_extract_all(KDps, pattern = "(?<=\\h\\(\\w\\)\\h).*?(?=\\.)"))
+
+# clean em
+
+for (i in 1:length(KDps)) {
+  KDps <- unlist(str_remove_all(KDps, "\\h\\(.*\\)"))
+}
+
+KDps[1] <- str_extract(KDps[1], "(CBRN)\\h(o).*$")
+KDps[2] <- "Company commander"
+```
+
+```{r}
+# put KDs in
+dataframe$Rank[6:26] <- c(rep("CAP", 2), rep("MAJ", 7), rep("LTC", 6), rep("COL", 6))
+dataframe$Assignment[6:26] <- KDps
+dataframe$Type[6:26] <- "KD"
+```
+
+```{r}
+# work on the broadening
+DEVps <- unlist(str_extract_all(fulltext, pattern = "(Developmental)\\h(and)\\h(broadening)\\h(assignments)\\..*?(?=\\h\\(4\\))"))
+DEVps <- unlist(str_extract_all(DEVps, pattern = "(?<=\\h\\(\\w\\)\\h).*?(?=\\.)"))
+
+# clean up
+
+for (i in 1:length(DEVps)){
+  DEVps <- unlist(str_split(DEVps, "\\h\\([ij]\\)\\h"))
+}
+DEVps[10] <- "USAREC"
+DEVps
+DEVps <- str_remove_all(DEVps, "\\(.*\\)$")
+```
+
+```{r}
+# put DEVS in
+dataframe$Rank[27:72] <- c(rep("CAP", 15), rep("MAJ", 16), rep("LTC", 11), rep("COL", 4))
+dataframe$Assignment[27:72] <- DEVps
+dataframe$Type[27:72] <- "DEV"
+
+fulldata <- dataframe[1:72,]
+write.csv(fulldata, "./data/15_06_2023_ChemicalR.csv")
+```
+
+

@@ -1,0 +1,30 @@
+---
+title: "Our Team"
+subtitle: ""
+---
+
+# Our Team
+
+- Anjali Mehta, Third Year @ UVA (CS Engineering & DS)
+- Prashanth Wagle, Grad Student @ UVA (CS)
+- Trinity Chamblin, Second Year @ UVA (Stats & CS)
+- Annie Xie, Grad Student @ CMU (Policy & DA)
+- Steve Zhou, Fourth Year @ UVA (CS & Math)
+- Sara Shallenberger, Third Year @ Carleton College (Stats)
+- Marijke van der Geer, Fourth Year @ SDSU (Stats & DS)
+- Nakshatra Yalagach, Grad Student @ UVA (CS) 
+- Jianing Cai, Fourth Year @ UVA (CS & Math)
+- Kate Lanman, Third Year @ Northeastern (DS & Math)
+
+
+
+# Our Mentors
+
+- Cesar Montalvo, Research Assistant Professor, Social Decisions and Analytics Division, Biocomplexity Institute
+- Joel Thurston, Senior Scientist, Social Decisions and Analytics Division, Biocomplexity Institute
+- Treena Goswami, Post Doctoral Research Associate, Social Decisions and Analytics Division, Biocomplexity Institute
+
+
+# Sponsor
+
+Alex Han, Chief Executive Officer, Biokind Analytics

@@ -1,0 +1,51 @@
+---
+title: "Analyzing Data From Documents"
+subtitle: "Data"
+---
+
+# Global Assessment Tool (GAT)
+Our data source were the documents used for the *GAT 2.0 Survey* (now called the Azimuth Check). GAT is a confidential, self-assessment tool through which you are able to confidentially assess your physical and psychological health based the five dimensions of strength: Social, Emotional, Spiritual, Family, and Physical.
+<br>
+<br>
+
+<h4> <em> GAT is a truly holistic assessment tool </em></h4>
+A variety of questions tell you how resilient you are in the five areas of strength: social, emotional, spiritual, family and physical. For example:<br>
+• Are you eating right? <br>
+• Are you socially connected? <br>
+• Are you sleeping well? <br>
+• Do you need to be more optimistic? <br>
+
+Below is a sample of the the GAT survey.
+<div align= "center">
+
+<p align="center" style= "margin-top: 15px;">
+![Sample of GAT survey*](img/part2-gat.png){width=100%}
+*Sample of GAT survey*
+</p>
+</div>
+<br>
+<br>
+
+The results of the above survey is analyzed to determine the resilience in the five dimensions of
+strength, as well as your RealAge. Feedback on the three elements of the Performance Triad - Sleep, Activity, and Nutrition is also provided. This helps to determine the strengths and the areas to improve.   
+
+Below image describes a sample result of the the GAT survey.
+<div align= "center">
+<p align="center" style= "margin-top: 15px;">
+![Survey Analysis](img/part2-survey.png){width=100%}
+*Survey Analysis*
+</p>
+<br>
+<br>
+</div>
+
+# Army Doctrine Publication (ADP) 6-22
+- ADP 6-22: Army Leadership and the Profession
+- Establishes the Army's concepts of leadership and performance
+  - Leadership is a universal quality for all Soldiers
+  - The ADP 6-22 "describes the attributes and core competencies required" of officers
+
+# Joint Universal Task List
+- The Universal Joint Task List (UJTL) is the authoritative library of all approved joint tasks required for planning, readiness reporting, training and exercises, lessons learned processing, and requirements.
+
+

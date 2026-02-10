@@ -1,0 +1,10 @@
+---
+title: "Impact of Rural Broadband Development Programs"
+subtitle: "Analysis - Predictive Model"
+---
+# Predictive Model
+$$
+SubscriptionSpeed = \beta_0 + \beta_1ImputedOokla + \beta_2FCCMedAdSpeed + \vec{\beta_i}\vec{HousingFeatures} + e
+$$
+![regression](img/regression.png){width=50%}
+

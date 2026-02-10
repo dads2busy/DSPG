@@ -1,0 +1,93 @@
+---
+title: "20_06_2023_Engineers.Rmd"
+author: "Sara Shallenberger"
+date: "2023-06-20"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
+library(pdftools)
+library(tesseract)
+library(stringr)
+library(rlist)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+# read in that data
+data <- pdf_data("./data/engineers-da-pam-600-3-a.pdf")
+pages5to10 <- list.rbind(data[5:10])
+pages5to10textsep <- as.character(pages5to10$text)
+fulltext <- paste(pages5to10textsep, collapse = " ")
+```
+
+```{r}
+# make dataframe
+
+# variable name
+columns <- c("MOS", "Rank", "Assignment", "Type")
+
+# data frame
+dataframe <- data.frame(matrix(nrow = 100, ncol = length(columns)))
+
+# assigning column names
+colnames(dataframe) <- columns
+
+#put in MOS
+
+dataframe$MOS <- "Engineers"
+```
+
+```{r}
+# KDs
+KDps <- unlist(str_extract_all(fulltext, "\\([a]\\).*?(\\([b]\\))"))
+KDps <- KDps[-1]
+KDps
+KDps[1:2] <- c("Platoon Leader", "Company Commander")
+KDps <- unlist(str_split(KDps, "\\h•\\h"))
+KDps <- KDps[-c(3)]
+KDps <- unlist(str_split(KDps, "\\h\\(\\d\\)\\h"))
+KDps <- KDps[-c(7,13)]
+KDps[7:15] <- str_extract(KDps[7:15], "(?<=\\.\\h)[A-Z].*?(\\.)")
+KDps[c(7,12)] <- unlist(str_extract_all(KDps, "(?<=(This)\\h(includes)\\h).*?(\\h).*?(\\h).*?(\\h)"))
+KDps <- unlist((str_split(KDps, "(\\h(and)\\h)|(\\h(as)\\h(well)\\h(as))")))
+KDps[c(11:12,19:20)] <- unlist(str_extract_all(KDps[c(11:12,19:20)], "(?<=(immaterial)\\h).*(commands)"))
+KDps <- unlist(str_remove_all(KDps, "((are).*$)|((is)\\h.*$)"))
+KDps[13] <- str_extract(KDps[13], "(second).*$")
+KDps[c(7,9:10,15:16,18)] <- paste(KDps[c(7,9:10,15:16,18)], "commands", sep = " ")
+KDps <- str_remove_all(KDps, "((?<=(battalion)|(brigade)(district))[s])|(\\h?(?=\\h))")
+KDps <- str_remove_all(KDps, "(?<=(command))[s]")
+```
+
+```{r}
+#put em in
+v1 <- c(rep("LT", 1), rep("CAP", 1), rep("MAJ", 4), rep("LTC", 8), rep("COL", 6))
+dataframe$Rank[1:length(v1)] <- v1
+dataframe$Assignment[1:length(v1)] <- KDps
+dataframe$Type[1:length(v1)] <- "KD"
+```
+
+```{r}
+#get developing
+DEVps <- unlist(str_extract_all(fulltext, "\\([b]\\).*?(\\([3]\\))"))
+DEVps <- DEVps[-1]
+DEVps <- unlist(str_remove_all(DEVps, "^.*?(?=•)"))
+number <- str_count(DEVps, pattern = "•|(\\.)")
+DEVps <- unlist(str_split(DEVps, "(•\\h)|(\\.)"))
+DEVps <- DEVps[-c(1,19,36,48)]
+DEVps <- unlist(str_remove_all(DEVps, "(\\h$)|(\\(.*\\).*$)|(^\\h)"))
+```
+
+```{r}
+# put em in part 2
+v2 <- c(rep("CAP", 17), rep("MAJ", 16), rep("LTC", 11), rep("COL", 14))
+dataframe$Rank[21:(20+length(v2))] <- v2
+dataframe$Assignment[21:(20+length(v2))] <- DEVps
+dataframe$Type[21:(20+length(v2))] <- "DEV"
+fulldata <- dataframe[1:78,]
+write.csv(fulldata, "./data/20_06_2023EngineersR.csv")
+```
+

@@ -1,0 +1,26 @@
+name: "dspg-website-template"
+output_dir: "../docs"
+exclude: ["*.nb.html", "*.csv", "*.CSV", "*.dcf", "parlog", "old", "dashboard"]
+output:
+  html_document:
+    theme: flatly
+    css: style.css
+    include:
+      after_body: footer.html
+navbar:
+  title: "<img id='dspg' class='center' src = 'img/black-logo.png' />"
+  right:
+    - text: "Overview"
+      href: index.html
+    - text: "Literature Review"
+      href: literature_review.html
+    - text: "Household Analysis"
+      href: household_analysis.html
+    - text: "Donation Trend"
+      href: donation_trend.html
+    - text: "Findings"
+      href: findings.html
+    - text: ""
+      icon: fa-github
+      # Change to your github repo
+      href: "https://github.com/DSPG-Young-Scholars-Program/dspg23_website_template"

@@ -1,0 +1,72 @@
+---
+title: "Mastercard_Data"
+output: html_document
+date: "2023-06-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+install.packages("readxl")
+```
+
+```{r}
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+```
+
+```{r}
+mastercard <- read_excel("mastercard_data.xlsx")
+```
+
+```{r}
+#what does the donation index mean?
+colnames(mastercard)
+```
+
+
+```{r}
+#Scatterplot of Donation Index vs. Month
+
+ggplot(data = mastercard, aes(x=Month, y=Donation)) + geom_point() + labs(x = "Date", y = "Donation Index", title= "Donation Index by Month")
+```
+
+```{r}
+mastercard <- mastercard %>% mutate(Month = ymd(Month))
+```
+
+```{r}
+#Line graph of Donation Index vs. Month
+
+ggplot(data = mastercard, aes(x=Month, y=Donation)) + geom_line() + labs(y = "Donation Index", title= "Donation Index by Month") + scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") + theme(axis.text.x = element_text(angle = 90))
+```
+
+
+```{r}
+#Line graph of Donation Index Growth vs. Month
+
+ggplot(data = mastercard, aes(x=Month, y=Donation_Index_Growth)) + geom_line() + labs(y = "Donation Index Growth", title= "Donation Index Growth by Month") + scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") + theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+#Line graph of Donation Index 3 Month Avg vs. Month
+
+ggplot(data = mastercard, aes(x=Month, y=Donation_Index_3_Month_Avg)) + geom_line() + labs(y = "Donation Index 3 Month Avg", title= "Donation Index 3 Month Avg") + scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") + theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+#Line graph of growth of Number Donations Growth vs. Month
+
+ggplot(data = mastercard, aes(x=Month, y=Number_Donations_Growth)) + geom_line() + labs(y = "Donation Count Growth", title= "Donation Count Growth by Month") + scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") + theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+#Line graph of growth of Avg Donation Size Growth vs. Month
+
+ggplot(data = mastercard, aes(x=Month, y=Avg_Donation_Size_Growth)) + geom_line() + labs(y = "Avg Donation Size Growth", title= "Avg Donation Size Growth") + scale_x_date(date_labels = "%b %Y", date_breaks = "3 months") + theme(axis.text.x = element_text(angle = 90))
+```
+

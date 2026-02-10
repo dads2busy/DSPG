@@ -1,0 +1,27 @@
+---
+title: "BioKind Analytics"
+subtitle: "Literature Review"
+---
+
+In this page, we present a brief review of past literatures on the socio-economic factors that affect charitable donations.
+
+Donors, especially higher net worth individuals who are often influenced by capital market forces, contribute significantly to nonprofit organizations, accounting for nearly 75% of all donations in the United States. Investor sentiment refers to the prevailing emotional outlook or attitude of investors towards financial markets and investment opportunities, influencing their decision-making and market behaviors (Baker, 2007). During periods of high investor sentiment donors shift towards cash-based donations, driven by an overvaluation of securities and belief that market prices will continue to rise. (Amin, 2020) A positive correlation exists between investor sentiment and donation trends, showing that increased investor sentiment serves as a catalyst for higher donation activity. Additionally, it is worth noting that consumer sentiment, while influential, acts as a lagging indicator in influencing the propensity to donate. Also, individual givers are significantly more responsive to macroeconomic improvements than to macroeconomic declines as defined by the S&P 500 (List, 2011).  
+
+49.6% of general population reported charitable giving in 2018 (Indiana University Lily Family School of Philanthropy, 2021), and in general a household is more likely to give as its income rises (List, 2011). Though the exact data of giving as a percentage of household income is U-shaped, List attributed this pattern to the potential wealthy group of retired Americans. Households’ charitable contributions are likely to increase, as their income and wealth rises.  Moreover, numerous studies have used PSID data to explore how charitable donation behaviors respond to certain socio-economic events, such as the 2008 financial crisis. Meer et al. (2016) exploited the panel nature of PSID to include household fixed effect to observe each family’s taste for altruism. With household characteristics as control variables, Meer et al. concluded that apart from the shocks to income and wealth, the increased uncertainty after the financial crisis also accounted for the decrease in charitable donations. Thus, despite the lack of timely research on the effect of COVID-19 pandemic on chartable donations, we expect that charities receive less donations due to decreased income and wealth as well as increased risk and uncertainty in economic recovery. 
+
+Overall, we believe hosuehold characteristics and macroeconomic trends are two significant factors that can influence American people's altruistic behavior. This provides a theoratical foundation for our work during this DSPG program, from which data sources to collect to what analysis should be conducted.
+
+# Reference
+
+<div style="padding-left: 36px;text-indent: -36px;">
+<p>Amin, K., &amp; Harris, E. (2020). The effect of investor sentiment on nonprofit donations. <em>Journal of Business Ethics</em>, <em>175</em>(2), 427&ndash;450. https://doi.org/10.1007/s10551-020-04646-7</p>
+<p>Baker, M., &amp; Wurgler, J. (2007). Investor sentiment in the stock market. <em>Journal of Economic Perspectives</em>, <em>21</em>(2), 129&ndash;151. https://doi.org/10.1257/jep.21.2.129</p>
+<p>Indiana University Lily Family School of Philanthropy. (2021). <em>The 2021 Bank of America study of philanthropy: Charitable giving by affluent households</em>. Retrieved July 31, 2023, from https://scholarworks.iupui.edu/server/api/core/bitstreams/ff2ebcdc-fe48-41fe-baf9-6437b62f8bfa/content</p>
+<p>List, J. A. (2011). The market for charitable giving. <em>Journal of Economic Perspectives</em>, <em>25</em>(2), 157&ndash;180. https://doi.org/10.1257/jep.25.2.157</p>
+<p>Meer, J., Miller, D., &amp; Wulfsberg, E. (2016). <em>The Great Recession and charitable giving</em>. https://doi.org/10.3386/w22902</p>
+</div>
+
+
+
+
+

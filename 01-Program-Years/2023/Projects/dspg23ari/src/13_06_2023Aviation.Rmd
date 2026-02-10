@@ -1,0 +1,139 @@
+---
+title: "13_06_2023Aviation"
+output: pdf_document
+date: "2023-06-06"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pdftools)
+library(tesseract)
+library(stringr)
+library(rlist)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+# read in the document
+data <- pdf_data("./data/aviation-da-pam-600-3-a.pdf")
+
+# getting relevant pages
+pages <- list.rbind(data[3:8])
+pagessep <- as.character(pages$text)
+fulltext <- paste(pagessep, collapse = " ")
+```
+
+```{r}
+# start the dataframe
+columns <- c("MOS", "Rank", "Assignment", "Type")
+
+# data frame
+dataframe <- data.frame(matrix(nrow = 100, ncol = length(columns)))
+
+# assigning column names
+colnames(dataframe) <- columns
+
+dataframe$MOS <- "Aviation"
+```
+
+
+```{r}
+# get KD paragraphs
+KDps <- unlist(str_extract_all(fulltext, pattern = "(?<=\\(2\\)\\h).*?(?=\\(3\\)\\h)"))
+
+# Lieutenant + colonel difficult so let's hard code it in
+dataframe[1,2:4] <- c("LT", "Platoon Leader", "KD")
+dataframe[2,2:4] <- c("COL", "Brigade Commander", "KD")
+
+# and get rid of that from the paragraphs
+KDps <- KDps[-c(1,5)]
+KDps
+```
+
+```{r}
+# clean the KDs
+for (i in KDps) {
+KDsclean <- unlist(str_extract_all(KDps, pattern = "(?<=\\h\\(\\w\\)\\h).*?(?=(\\h\\(\\w\\)\\h)|(\\.\\h$))"))
+}
+
+KDsclean <- KDsclean[-c(6,7)]
+dataframe$Assignment[3:9] <- KDsclean
+dataframe$Rank[3:4] <- "CAP"
+dataframe$Rank[5:7] <- "MAJ"
+dataframe$Rank[8:9] <- "LTC"
+dataframe$Type[3:9] <- "KD"
+```
+
+```{r}
+# get dev paragraphs
+devps <- unlist(str_extract_all(fulltext, pattern = "(?<=\\h(Developmental assignments)\\.\\h).*?(?=\\h\\(\\d\\))"))
+# 1-3 paragraphs doesn't get us anything 
+devps <- devps[-c(1:3)]
+#might require some hard coding for this :(
+dataframe$Assignment[10:14] <- c("Company Leader", "Platoon Leader", "ADAM Staff", "CTC/observer/controller Staff", "Small group instructor")
+dataframe$Rank[10:14] <- "CAP"
+dataframe[15, 2:3] <- c("MAJ", "Staff Positions")
+dataframe[16, 2:3] <- c("MAJ", "Instructor")
+
+#cleaning
+devpsclean <- unlist((str_extract_all(devps, pattern = "(?<=:\\h).*?(\\.)")))
+devpsclean <- devpsclean[-1]
+devpsclean <- unlist(str_split(devpsclean, pattern = ","))
+devpsclean
+ddevpsclean <- unlist((str_remove_all(devpsclean, "^\\h(and)\\h")))
+devpsclean <- unlist(str_remove_all(devpsclean, pattern = "^\\h"))
+devpsclean <- devpsclean[-c(3,4,6,7,9,11,18,20:23)]
+devpsclean <- unlist(str_remove_all(devpsclean, pattern = "\\h((for)|(at)|(positions)).*$"))
+devpsclean <- unlist(str_remove_all(devpsclean, pattern = "(^and\\h(selected))|(\\.$)"))
+devpsclean <- unlist(str_remove_all(devpsclean, pattern = "^\\h"))
+length(devpsclean)
+dataframe$Assignment[17:28] <- devpsclean
+dataframe$Rank[17:26] <- "LTC"
+dataframe$Rank[27:28] <- "COL"
+dataframe$Type[10:28] <- "DEV"
+```
+
+```{r}
+# get broadening assignments
+broadeningps <- unlist(str_extract_all(fulltext, pattern = "(?<=(Broadening)\\h((assignments)|(assignment))\\.\\h).*?(?=\\h\\(\\d\\))"))
+
+#split up based on technique
+broadeningps1 <- broadeningps[1:2]
+broadeningps2 <- broadeningps[3:4]
+
+```
+
+```{r}
+# work with 1
+
+broadeningps1 <- unlist(str_extract_all(broadeningps1, pattern = "(?<=\\h\\(\\w\\)\\h).*?(?=(\\.)|$)"))
+broadeningps1 <- unlist(str_remove_all(broadeningps1, pattern = "(\\h(at).*$)|(\\(.*$)"))
+dataframe$Assignment[29:(28+length(broadeningps1))] <- broadeningps1
+dataframe$Rank[29:35] <- "CAP"
+dataframe$Rank[36:43] <- "MAJ"
+dataframe$Type[29:43] <- "DEV"
+```
+
+```{r}
+# work with 2
+broadeningps2 <- unlist(str_extract_all(broadeningps2, pattern = "(?<=(broadening)\\h(assignments).{2}).*?(?=\\.)"))
+broadeningps2 <- unlist(str_split(broadeningps2, pattern = ",\\h"))
+broadeningps2 <- unlist(str_remove_all(broadeningps2, "((and)\\h(selected)\\h)|((?<=(assignments)).*$)|(\\hfor.*$)"))
+for (m in 1:2) {
+    for (i in 1:length(broadeningps2)) {
+      if (isTRUE(startsWith(broadeningps2[i], prefix = "G"))) { 
+        broadeningps2 <- broadeningps2[-(i)]
+      }
+  }
+}
+broadeningps2
+dataframe$Assignment[44:(43+length(broadeningps2))] <- broadeningps2
+dataframe$Type[44:(43+length(broadeningps2))] <- "DEV"
+dataframe$Rank[44:56] <- "LTC"
+dataframe$Rank[57:68] <- "COL"
+dataframe <- dataframe[1:67,]
+dataframe <- dataframe[-43]
+write.csv(dataframe, "./data/14_06_2023AviationR.csv")
+```
+

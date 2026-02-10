@@ -1,0 +1,98 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+ver 01: use Zillow to find missing info of properties in BK dataset.
+
+```{r}
+library(readr) 
+library(dplyr)
+library(data.table)
+library(stringr)
+library(tidyr)
+library(scales)
+library(rvest)
+```
+
+```{r}
+# load the data ------------------------------------
+subscr_addr <- read.csv('../data_joining/ndproject_subscriber_full_address.csv', header = TRUE, row.names = 1)
+buffer_addr <- read_csv('../data_joining/ndproject_bufferzone_full_address.csv', col_types = cols(.default= 'c'))
+# rownames(buffer_addr) <- buffer_addr$dpid
+subscr_addr[,c('bedrooms', 'bathrooms', 'sqft', 'text')] <- NA
+buffer_addr[,c('bedrooms', 'bathrooms', 'sqft', 'text')] <- NA
+```
+
+```{r}
+#BIP DISTRIBUTION LOGIC HERE
+set_1<-subscr_addr[1:100,]
+#set_2<-bips[67:79,]
+#set_3<-bips[79:83,]
+
+active_set<-set_1
+```
+
+```{r}
+for(index in 1:nrow(active_set)){
+  print(index)
+  
+  address <- active_set[index, 'full_address']
+  url <- URLencode(paste0("https://www.google.com/search?q=",address))
+  page <- xml2::read_html(url)
+  Sys.sleep(5)
+  
+  divs <- rvest::html_nodes(page, "div")
+  result_text <- NA
+  for (i in divs){
+    subdiv <- rvest::html_nodes(i, 'div')
+    for (j in subdiv){
+      if (grepl("zillow", html_text(j), fixed = TRUE)){
+        result_text <- html_text(j)
+        print(result_text)
+      }
+      if (!is.na(result_text)){
+        break
+      }
+    }
+    if(!is.na(result_text)){
+      break
+    }
+  }
+  
+  
+  #sq_feet<-str_extract(result_text,"(\\d)+(?= Square Feet)")
+  
+  sq_feet <- str_extract(result_text, "(\\d+,)?\\d+\\.?\\d*?(?=\\s(Square Feet))")
+  
+  if(is.na(sq_feet)){
+    sq_feet <- str_extract(result_text, "(\\d+,)?\\d+\\.?\\d*?(?=\\s(sqft))")
+  }
+  if(is.na(sq_feet)){
+    sq_feet <- str_extract(result_text, "(\\d+,)?\\d+\\.?\\d*?(?=\\s(square foot))")
+  }
+  
+  bed_count <- str_extract(result_text, "\\d+\\.?\\d*?(?=\\s(bed))")
+  if(is.na(bed_count)){
+    bed_count <- str_extract(result_text, "\\d+\\.?\\d*?(?=\\s(-bed))")
+  }
+  
+  bath_count<- str_extract(result_text, "\\d+\\.?\\d*?(?=\\s(bath))")
+  if(is.na(bath_count)){
+    bath_count<- str_extract(result_text, "\\d+\\.?\\d*?(?=\\s(-bath))")
+  }
+
+  active_set[index, 'bedrooms'] = bed_count
+  active_set[index, 'bathrooms'] = bath_count
+  active_set[index, 'sqft'] = sq_feet
+  active_set[index, "text"] = result_text
+  
+  print(sq_feet)
+  print(bed_count)
+  print(bath_count)
+}
+```
+
+```{r}
+subscr_addr = merge(subscr_addr[c("full_address")], active_set[, -1], by.x = 0, by.y = 0, all.x = TRUE)
+```

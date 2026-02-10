@@ -1,0 +1,14 @@
+---
+title: "Impact of Rural Broadband Development Programs"
+subtitle: "Analysis - Findings"
+---
+
+# DID Regression
+The predictive model was fitted on the treatment group and the matching control group before and after the project completion. We then applied difference-in-difference regression on the predicted internet speed to test if the average difference is statistically significant.
+$$
+PredictedSpeed_{h,t} = \alpha + \beta treatment_h + \gamma year_t + \delta_{DD}treatment_h * year_t + e_{h,t}
+$$
+The results indicate that there is a significant improvement in predicted internet speed in the project area compared with the matching control group after the project completion. 
+
+![DID Regression Result](img/didreg.png){width=50%}
+ 

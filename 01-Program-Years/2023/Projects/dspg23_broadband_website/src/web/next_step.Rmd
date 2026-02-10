@@ -1,0 +1,11 @@
+---
+title: "Impact of Rural Broadband Development Programs"
+subtitle: "Next Steps"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Improve the Predictive Model
+
+The $R^2$ of the current regression model on subscription speed is 0.14. We would like to improve the explanatory power of the model.

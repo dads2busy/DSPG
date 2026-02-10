@@ -1,0 +1,94 @@
+---
+title: "Exploring Documents as Data"
+subtitle: "Project Overview"
+---
+
+#### **We explored a corpus of Army documents to gain insights on the career progression of Army Soldiers and performance. Our project addressed two themes:** 
+
+#### - Methods for extracting data from PDF files
+#### - Methods for exploring text data
+
+<br>
+<br>
+
+### Research Questions
+#### 1. What Army assignments are the same across military occupational specialty (MOS) and rank?
+#### 2. What Army assignments are unique to specific military occupational specialties (MOS) and ranks?
+#### 3. How is Army performance connected to psychosocial characteristics?
+#### 4. What behaviors are associated with Army Soldier and unit performance?
+
+<br>
+<br>
+
+### Goals
+#### 1. Explore methods to extract assignments from documents
+#### 2. Explore methods to model text data, including large language models (LLMs)
+#### 3. Contribute open-source repositories to address the documentation debt LLMs
+
+<br>
+<br>
+
+### Findings
+#### 1. What assignments are the same across military occupational specialty (MOS) and rank?
+
+- Platoon leader is the key developmental (KD) assignment for Lieutenants in seven branches: Infantry, Aviation, Field Artillery, Air Defense Artillery, Chemical, Engineers, and Military Police, as well as a developmental assignment in Cyber and both Key Developmental and Developmental Assignment for Captains in Aviation.
+
+- Staff positions (Staff, Joint Staff, USMA Staff, for example) also frequently occurring across most MOS, accounting for 27% of all assignments. Only 15% of Staff positions are KD.
+
+#### 2. What assignments are unique to specific military occupational specialties (MOS) and ranks?
+
+- Cyber had the most unique assignments with 172. The Military Police had the most KD Assignments, with 44, followed by Chemical with 35. 
+- Major had the most unique assignments with 354. Major also had the most KD assignments with 97 followed by Colonel with 72.
+
+#### 3. How is performance connected to psychosocial characteristics?
+
+- LLMs were not very discerning between performance concepts overall, and less so for good and bad performance
+- Considering this, both good and bad psychosocial characteristics were conceptually represented in the performance document 
+- The psychosocial characteristic of friendship had the highest alignment with the performance document across both models. 
+- The following characteristics aligned most with the performance document 
+  - Negative affect - good performance (e.g. "I rarely feel upset")
+  - Character - bad performance (e.g. "In the last four weeks I have rarely acted with critical thinking")
+  - Non-work interests - bad performance (e.g. "I do not spend time at interests or hobbies other than work")
+  - Work engagement - bad performance (e.g. "It is not like me at all that my work is one of the most important things in my life")
+- The following characteristics aligned least with the performance document
+  - Optimism - bad performance (e.g. "It is not like me that in uncertain times, I usually expect the best")
+  - Family satisfaction - good performance (e.g. "In the past four weeks I have felt extremely satisfied with my family")
+  - Life meaning - bad performance (e.g. "It is not like me at all that I live my life in a way that I believe there is a purpose for my life")
+  - Non-work interests - good performance (e.g. "It is very much like that my work is one of the most important things in my life")
+  - Organizational trust - good performance (e.g. "I strongly agree that I trust my fellow Soldiers in my unit to look out for my welfare and safety")
+
+#### 4. What behaviors are associated with Soldier and unit performance?
+
+- The most frequently mentioned behaviors were 
+  - include
+  - provide 
+  - support
+  - require
+  - coordinate
+- Frequently occurring behaviors seem to connect to leadership activities generally, such as communication, rather than warfighting  
+- These behaviors frequently cooccurred the term DJ, or Director of the Joint Staff, indicating that hierarchies or communication vertically is an important performance behavior. 
+<br>
+<br>
+
+### Limitations
+
+Given the scope of a ten-week research project, we were unable to explore many avenues of research interest. We were reliant on pre-trained LLMs for exploration, which are trained on a broad corpus of text. In the future, we would like to explore training our own LLM on a corpus of Army-specific text for more specific insights. 
+
+Further, we have only explored one performance document and one document for Soldier behaviors thus far. Our results are specific to these documents. In the future, we would like to add more documents to our corpus for exploration. 
+
+<br>
+<br>
+
+### Future Research
+
+The dataset created in the first part of the project will be used by the Social and Decision Analytics Division (SDAD) to inform models of Soldier career progression. The dataset will also be made available to other Army analysts in the Person-Event Data Environment (PDE).  Insights from the second part of the project will contextualize SDAD's efforts to model performance in the Army.
+
+This project has laid the groundwork for analyzing patterns in Army assignments. In the future, we would like to further explore the connections between Army assignments and behaviors and skills of Soldiers. We would also like to explore the connections between psychosocial characteristics and more performance documents. 
+
+<br>
+<br>
+
+### Disclosure
+The research described herein was sponsored by the U.S. Army Research Institute for the Behavioral and Social Sciences, Department of the Army (Cooperative Agreement No. W911NF-20-20-027). The views expressed in this presentation are those of the authors and do not reflect the official policy or position of the Department of the Army, DOD, or the U.S. Government.
+
+

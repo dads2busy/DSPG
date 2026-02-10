@@ -1,0 +1,9 @@
+---
+title: "Exploring Documents as Data"
+subtitle: "Extracting Text From Documents"
+--- 
+
+`
+
+# Findings 
+

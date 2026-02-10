@@ -1,0 +1,115 @@
+---
+title: "Comparing methods, demo cleaning"
+author: "Joanna Schroeder"
+date: "6/20/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Load libraries
+library(tidyr)
+library(dplyr)
+library(stringr)
+
+# Load datasets for compairson, standardizing them
+armor_gpt <- readr::read_csv("../data/12_06_2023ArmorGPT.csv") %>% mutate(source = "gpt") %>% 
+  mutate(Type = ifelse(`Type of Assignment` == "Key Developmental", "KD", "DEV"), MOS = "Armor") %>% select(-`Type of Assignment`)
+armor_r <- readr::read_csv("../data/14_06_2023_ArmorR.csv") %>% mutate(source = "regex") %>% select(-`...1`)
+ada_gpt <- readr::read_csv("../data/12_06_2023AirDefenseArtilleryGPT.csv") %>% mutate(source = "gpt") %>% 
+  mutate(Type = ifelse(`Type of Assignment` == "Key Developmental", "KD", "DEV"), MOS = "ADA") %>% select(-`Type of Assignment`)
+ada_r <- readr::read_csv("../data/15_06_2023_ADAR.csv") %>% mutate(source = "regex",MOS = "ADA") %>% select(-`...1`)
+
+# Combine datasets
+data <- rbind(armor_gpt, armor_r) %>% rbind(ada_gpt) %>% rbind(ada_r)
+
+# Summary stats, Source and Rank by MOS
+table(data$Rank, data$source)
+table(data$MOS, data$source)
+```
+
+# Agreement without cleaning
+```{r}
+# Filter vectors for each source
+gpt <- data %>% filter(source == "gpt") %>% pull(Assignment)
+regex <- data %>% filter(source == "regex") %>% pull(Assignment)
+
+# How many assignments overall?
+c(gpt, regex) %>% length()
+# How many unique assignments?
+c(gpt, regex) %>% unique() %>% length()
+
+# How many assignments unique in gpt, regex, and shared between the two?
+setdiff(gpt, regex) %>% length()
+setdiff(regex, gpt) %>% length()
+intersect(regex, gpt) %>% length()
+```
+
+# Agreement with basic cleaning
+```{r}
+# Standardizing all to lower case 
+data <- data %>% mutate(Assignment = tolower(Assignment))
+
+# Filter vectors for each source
+gpt <- data %>% filter(source == "gpt") %>% pull(Assignment)
+regex <- data %>% filter(source == "regex") %>% pull(Assignment)
+
+# How many unique assignments?
+c(gpt, regex) %>% unique() %>% length()
+
+# How many assignments unique in gpt, regex, and shared between the two?
+setdiff(gpt, regex) %>% length()
+setdiff(regex, gpt) %>% length()
+intersect(regex, gpt) %>% length()
+```
+
+# Agreement with fuzzy matching
+```{r}
+# Loading fuzzy matching package
+library(stringdist)
+
+# Computing string distance matrix for all assignments
+matrix <- stringsimmatrix(data$Assignment, data$Assignment)
+# Keep only the upper triangle
+matrix[lower.tri(matrix, diag = FALSE)] <- 0
+# Filter for non-exact matches and anything about 0.7
+matches <- as.data.frame(which(matrix >= 0.70 & matrix != 1, arr.ind = TRUE)) %>% filter(row != col)
+
+# Joining the match information with the dataset, we just take the text of the first index of the match as the match
+data <- data %>% tibble::rownames_to_column() %>% mutate(rowname = as.integer(rowname)) %>% left_join(matches, by = c("rowname" = "row"))
+data <- data %>% mutate(match = ifelse(!is.na(col), col, rowname)) %>% 
+  mutate(Assignment = Assignment[match]) %>% select(-col, -rowname, -match)
+
+# Filter vectors for each source
+gpt <- data %>% filter(source == "gpt") %>% pull(Assignment)
+regex <- data %>% filter(source == "regex") %>% pull(Assignment)
+
+# How many unique assignments?
+c(gpt, regex) %>% unique() %>% length()
+
+# How many assignments unique in gpt, regex, and shared between the two?
+setdiff(gpt, regex) %>% length()
+setdiff(regex, gpt) %>% length()
+intersect(regex, gpt) %>% length()
+```
+
+## Summary of findings
+
+For the ADA and Armor branches, regex either performs about the same or better than chat-gpt (i.e. finds more assignment names). Within these branches, we find 225 assignments using both methods. Without any cleaning, 180 of those assignments are unique. Regex finds more unique assignments than chat-gpt. With basic cleaning (lowercasing only), we have 167 unique assignments. Using fuzzymatching, depending on our threshold, we can achieve even less unique assignments. 
+
+Questions: What other basic cleaning should we do? How will we know where to set our fuzzymatching threshold?
+
+```{r}
+#library(stringr)
+
+#files <- list.files("../data")
+#csvs <- files[str_detect(files, pattern = "\\.csv$")]
+
+#assignments <- NULL
+#for(i in 1:length(csvs)) {
+#print(i)
+#assignment <- read.csv(paste0("../data/", csvs[i])) %>% filter(str_detect(Assignment, "/")) %>% pull(Assignment) #%>% str_split(" ") %>% unlist() %>% str_subset("/") %>% tolower()
+#assignments <- c(assignment, assignments)
+#}
+```
+
+

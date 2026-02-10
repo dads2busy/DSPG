@@ -1,0 +1,72 @@
+---
+title: "21_06_2023_Psychological.Rmd"
+author: "Sara Shallenberger"
+date: "2023-06-21"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pdftools)
+library(tesseract)
+library(stringr)
+library(rlist)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+# read in the document
+data <- pdf_data("./data/psychological-branch-da-pam-600-3-a.pdf")
+
+# getting relevant pages
+
+pages <- list.rbind(data[5:8])
+pagessep <- as.character(pages$text)
+fulltext <- paste(pagessep, collapse = " ")
+```
+
+```{r}
+# start the dataframe
+columns <- c("MOS", "Rank", "Assignment", "Type")
+
+# data frame
+dataframe <- data.frame(matrix(nrow = 100, ncol = length(columns)))
+
+# assigning column names
+colnames(dataframe) <- columns
+
+dataframe$MOS <- "Psychological Operations"
+```
+
+```{r}
+#KDs
+v1 <- c(rep("CAP", 1), rep("MAJ", 7 ), rep("LTC", 1), rep("COL", 1))
+Kdps <- unlist(str_extract_all(fulltext, "\\.[^.]*([Kk]ey)\\h(development).*?(?=([d]evelopmental)|($))"))
+KDps <- Kdps[-c(1,3,5)]
+KDps <- unlist(str_remove_all(KDps, "(^.*(successful)\\h(service)\\h(as)\\h(a)\\h)|(^\\.\\h)"))
+KDps[c(1,3:4)] <- unlist(str_remove_all(KDps[c(1,3:4)], "\\..*$"))
+KDps[c(1,3:4)] <- c("Detatchment Commander", "Battalion Commander", "Brigade Commander")
+KDps <- unlist(str_split(KDps, "(\\(\\d\\)\\h)"))
+KDps <- KDps[-c(2,7,11)]
+KDps <- unlist(str_remove_all(KDps, "(\\..*$)|(\\h\\(.*$)|(PO/MISO\\h)"))
+KDps[6:8] <- c("USAOC Officer", "Special Forces Group Staff Officer", "Combined Arms Center")
+
+#put into dataframe
+dataframe[(1:length(v1)), 2:4] <- c(v1, KDps, rep("KD", length(v1)))
+```
+
+```{r}
+#get broadening
+v2 <- c(rep("MAJ", 3), rep("LTC", 5), rep("COL", 3))
+
+#all the devs are basically the same here
+
+v3 <- c("Branch assignments", "Joint duty assignments", "Branch generalist assigments")
+v4 <- c("Corps Staff Officer", "ASCC Staff Officer", "Global Combatant Comand Staff Officer", "TSOC Staff Officer", "Interagency Operations Officer")
+v5 <- c(v3,v4,v3)
+dataframe[(11:(10+length(v2))), 2:4] <- c(v2, v5, rep("DEV", length(v2)))
+fulldata <- dataframe[1:21,]
+write.csv(fulldata, "./data/21_06_2023_Psychological.csv")
+```
+

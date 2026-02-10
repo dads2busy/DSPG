@@ -1,0 +1,44 @@
+---
+title: "2001Data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+```
+
+```{r}
+#import data
+
+a <- read.csv("coreco.core2001co.csv")
+
+a <- a %>%
+  select(EIN, FisYr, NAME, STATE, ntmaj5, CONT) %>% 
+  rename(CAT = ntmaj5)
+
+b <- read.csv("nccs.core2001pc.csv")
+
+b <- b %>% 
+  select(EIN, NCCSKEY2, NAME, STATE, NTMAJ5, CONT) %>% 
+  rename(FisYr = NCCSKEY2, CAT = NTMAJ5) %>% 
+  mutate(FisYr = substr(FisYr, 9, 12))
+  
+b$FisYr <- case_when(b$FisYr == "9200" ~ "2000", b$FisYr == "0199" ~"1999", .default = b$FisYr)
+
+c <- read.csv("nccs.core2001pf.csv") 
+
+c <- c %>% 
+  select(EIN, FisYr, NAME, STATE, ntmaj5, P1TCONT) %>% 
+  rename(CONT = P1TCONT, CAT = ntmaj5)
+```
+
+```{r}
+# bind data frames on top of eachother
+unfiltered <- rbind(a,b) %>% 
+  rbind(c)
+```
+
+```{r}
+data <- unfiltered %>% filter(FisYr == 2000) %>% filter(CAT == "HE") %>% filter(CONT > 0)
+write.csv(data, "nccs_2001_filtered.csv")

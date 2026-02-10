@@ -1,0 +1,36 @@
+name: "dspg23_broadband_website"
+output_dir: "../../docs"
+exclude: ["*.nb.html", "*.csv", "*.CSV", "*.dcf", "parlog", "old", "dashboard"]
+output:
+  html_document:
+    theme: flatly
+    css: style.css
+    include:
+      after_body: footer.html
+navbar:
+  title: "<img id='dspg' class='center' src = 'img/black-logo.png' />"
+  right:
+    - text: "Overview"
+      href: index.html
+    - text: "Data Processing"
+      menu:
+      - text: "Geocoding"
+        href: geocoding.html
+      - text: "Web Scraping"
+        href: webscrapping.html
+    - text: "Analysis"
+      menu:
+      - text: "Ookla Imputation"
+        href: ookla_kernel.html
+      - text: "Predictive Model"
+        href: predictive_model.html
+      - text: "Matching"
+        href: did.html
+      - text: "Findings"
+        href: findings.html
+    - text: "Team"
+      href: team.html
+    - text: ""
+      icon: fa-github
+      # Change to your github repo
+      href: "https://github.com/DSPG-Young-Scholars-Program/dspg23_broadband_website"

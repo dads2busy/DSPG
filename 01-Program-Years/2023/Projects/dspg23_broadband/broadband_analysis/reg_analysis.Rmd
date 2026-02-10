@@ -1,0 +1,31 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# subscr = speed_ia
+subscr = read.csv("../data/reconnect_subscribers/linked_bk.csv")
+subscr = subscr[subscr$Project.ID == "IA1701-A61", ]
+
+subscr <- 
+  subscr %>% filter(Project.ID == "IA1701-A61") %>% drop_na(year_built) %>% filter(building_area != 0) %>% filter(total_assessed_value != 0) %>% filter(numberof_bedrooms != 0) %>% filter(numberof_baths != 0)
+
+
+subscr$property_age <- 2021 - subscr$year_built
+
+subscr_model_21 = lm(data = subscr, Download.Speed ~ ookla_2021_avg_d_kbps + FCC_MaxAdDown2021 + total_assessed_value + property_age + building_area + numberof_baths + numberof_bedrooms)
+
+summary(subscr_model_21)
+```
+
+```{r}
+library(MASS)
+
+subscr_model_21 = rlm(data = subscr, Download.Speed ~ ookla_2021_avg_d_kbps + FCC_MaxAdDown2021+ total_assessed_value + property_age + building_area + numberof_baths + numberof_bedrooms + factor(Zipcode) )
+summary(subscr_model_21)
+```
+
+
+
+

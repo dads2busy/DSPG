@@ -1,0 +1,42 @@
+---
+title: "14_06_2023_FuzzyTest"
+author: "Sara Shallenberger"
+date: "2023-06-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(fuzzyjoin)
+library(stringdist)
+```
+
+```{r}
+# reading in data
+data1 <- read_csv("./data/14_06_2023_ArmorR.csv") %>% select(c(2:5))
+data2 <- read_csv("./data/14_06_2023_AviationR.csv") %>% select(c(2:5))
+```
+
+```{r}
+# trying fuzzy matching on vectors
+v1 <- data1$Assignment
+v2 <- data2$Assignment
+v3 <- amatch(v1, v2, maxDist = 25)
+```
+
+```{r}
+columns <- c("v1", "v2", "v3", "v4")
+dataframe <- data.frame(matrix(nrow = 67, ncol = length(columns)))
+colnames(dataframe) <- columns
+dataframe[1:61,1] <- v1
+dataframe$v2 <- v2
+dataframe[1:61,3] <- v3
+
+if (isTRUE(is.na(v3))) {
+  dataframe$v4 <- dataframe$v1
+} else {
+  dataframe$v4 <- dataframe$v2[dataframe$v3]
+}
+```
+

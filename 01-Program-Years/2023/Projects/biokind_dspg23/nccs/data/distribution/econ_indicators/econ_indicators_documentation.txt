@@ -1,0 +1,28 @@
+Consumer sentiments index:
+	Source: University of Michigan
+	Link: http://www.sca.isr.umich.edu/
+	Raw data frequency: per month
+	Raw data time span: 1952/11 - 2023/06
+	Data processing: None applied. Filtered to 2000 onward.
+
+Healthcare ETF:
+	Source: iShare US Healthcare ETF
+	Link: https://www.ishares.com/us/products/239511/ishares-us-healthcare-etf
+	Raw data frequency: per trade day
+	Raw data time span: 2000/06 - 2023/07
+	Data processing: monthly data are the close NAV (net asset value) per share of each month's last trade day.
+
+ Dow Jones Industrial Average:
+	Source: Dow Jones Industrial Average - Yahoo Finance
+	Link: https://finance.yahoo.com/quote/%5EDJI?p=%5EDJI
+	Raw data frequency: per trade day
+	Raw data time span: 1992/01 - 2023/07
+	Data processing: monthly data are the adjusted closing price of each month's last trade day.
+	Note: Adj Close: adjusted close price adjusted for splits and dividend and/or capital gain distributions; Close: close price adjusted for splits
+
+Consumer sentiments index:
+	Source: Bureau of Labour Statistics
+	Link: https://data.bls.gov/pdq/SurveyOutputServlet
+	Raw data frequency: per month
+	Raw data time span: 1948/01 - 2023/06
+	Data processing: None applied. Filtered to 2000 onward.

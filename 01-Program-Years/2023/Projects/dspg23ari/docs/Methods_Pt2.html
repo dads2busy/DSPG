@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Analyzing Data From Documents</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img id='dspg' class='center' src = 'img/black-logo.png' /></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Extracting Text From Documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Goals_Pt1.html">Goals</a>
+    </li>
+    <li>
+      <a href="Data_Pt1.html">Data</a>
+    </li>
+    <li>
+      <a href="Methods_Pt1.html">Methods</a>
+    </li>
+    <li>
+      <a href="Findings_Pt1.html">Insights</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyzing Data From Documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Goals_Pt2.html">Goals</a>
+    </li>
+    <li>
+      <a href="Data_Pt2.html">Data</a>
+    </li>
+    <li>
+      <a href="Methods_Pt2.html">Methods</a>
+    </li>
+    <li>
+      <a href="Findings_Pt2.html">Insights</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="team.html">Team</a>
+</li>
+<li>
+  <a href="https://github.com/DSPG-Young-Scholars-Program/dspg23ari">
+    <span class="fa fa-github"></span>
+     
+    
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Analyzing Data From Documents</h1>
+<h3 class="subtitle">Methods</h3>
+
+</div>
+
+
+<div id="data-representation" class="section level3">
+<h3>Data Representation</h3>
+<p><strong> Sentence Embeddings: </strong> Given that the data primarily comprises unstructured textual content, it becomes imperative to convert this data into a numerical format for effective comprehension by our models. As a result, we employ sentence embedding, a technique to extract features from text and feed them to machine learning models. They try to preserve syntactical and semantic information. Sentence Embedding or Sentence Vector is a numeric vector input that represents a word in a lower-dimensional space. It allows sentences with similar meaning to have a similar representation.</p>
+</div>
+<div id="models" class="section level3">
+<h3>Models</h3>
+<p>To perform document similarity between the GAT items and ADP we have harnessed the capabilities of Hugging Face’s pretrained models, which have proven to be invaluable in such tasks. The models use sentence embeddings for document similarity analysis. Hugging face is an open source AI platform to create, build, and train models for open source collaboration. It provides users with the flexibility to download the pretrained models for their specific needs. Users can then train these models with their own data, fine-tuning them to suit the task at hand.</p>
+<ol style="list-style-type: decimal">
+<li><strong>BERT:</strong> Bidirectional Encoder Representations from Transformers is one of the extensively used hugging face model. Since this language model is bidirectionally trained, it can have a deeper sense of language context and flow than single-direction. BERT is designed to help computers understand the meaning of ambiguous language in text by using surrounding text to establish context. language models.
+<div align= "center">
+</li>
+</ol>
+<p align="center" style="margin-top: 50px;">
+<p><img src="img/bert.png" style="width:80.0%" /></p>
+Generating Sentence Embeddings Using BERT<br>
+</p>
+<ol start="2" style="list-style-type: decimal">
+<li><p><strong>GPT2:</strong> It is a transformer based language model designed to understand and generate human-like text by predicting the likelihood of words or sentences given the context provided to it. GPT-2 can perform various language-related tasks, such as generating coherent text, answering questions, completing sentences, and more. Its ability to generate contextually relevant responses has made it a powerful tool for natural language processing applications.</p></li>
+<li><p><strong>Clustering:</strong> K-means clustering is important in document analysis because it allows us to group similar documents together based on their content. It can be used to automatically categorize large sets of documents into distinct groups, making it easier to manage and retrieve relevant information.</p></li>
+</ol>
+</div>
+<div id="metric" class="section level3">
+<h3>Metric</h3>
+<p><strong>Cosine Similarity: </strong> It is used to measure the similarity between two documents based on their content. It calculates the cosine of the angle between two document vectors in a high-dimensional space, where each dimension represents a term (word) in the documents. Hence this was used to determine similarity between GAT items and ADP. Cosine similarity 1 implies high conceptual similarity.</p>
+</div>
+<div id="behavior-analysis" class="section level3">
+<h3>Behavior Analysis</h3>
+<p><strong>Verb Extraction</strong>: For this analysis, we decided to use verbs as a proxy for behaviors. We used the <code>nltk</code> R package to tag verbs within the Joint Universal Task List. <br> <strong>Co-occurrence</strong>: To understand behaviors in context, we performed a co-occurrence analysis to find words that co-occurred with verbs. <br> To connect behaviors to performance, we analyzed the frequencies of verbs present in both the Joint Universal Task List and the GAT Items.</p>
+</div>
+
+<hr />
+<div>
+  <table style="text-align:center;margin: auto;">
+  <tr>
+    <td style="text-align:center; font-size:10px;">
+    <img src="img/black-logo.png" height="75px">
+    </td>
+  </tr>
+  <tr>
+    <td style="text-align:center; font-size:10px; padding-top: 12px;">
+    <p>
+      Program Contacts:
+    <a href="mailto:jt9sz@virginia.edu">Joel Thurston</a> and <a href="mailto:cpm9w@virginia.edu">Cesar Montalvo</a>
+    </p>
+    </td>
+  </tr>
+  </table>
+</div>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

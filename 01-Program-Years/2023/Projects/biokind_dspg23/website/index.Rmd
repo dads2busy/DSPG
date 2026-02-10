@@ -1,0 +1,23 @@
+---
+title: "BioKind Analytics"
+subtitle: "Overview"
+---
+
+# About BioKind Analytics
+
+[Biokind Analytics](https://www.biokind.org/) brings together undergraduate data scientists and statisticians across the world to apply classroom learning for meaningful, positive societal impact in their communities. They utilize data to answer questions about current programs, help lower cost and improve efficiency, or predict future needs, specifically for healthcare non-profit organizations, a group that have been relatively unaccustomed to the shift towards data-driven decision-making.
+
+
+Biokind Analytics is a 501(c)(3) non-profit organization based in Houston, Texas. We have seven chapter institutions including Brown University, Rice University, and University of Virginia and have analyzed trends of more than $100 million in combined donations. 
+
+# Project Goals
+
+We recognize that most up-to-date analysis on the determinants of charitable donations are conducted using propertary data that is not publicly accessible, and many of these studies are not freely available to leaders of healthcare non-profit organizations. Yet, the insights embedded in such data are important for them to plan their activities effectively. Therefore, during the 2023 Data Science for the Public Goods program, commissioned by BioKind Analytics, we aim to answer the following questions with publicly available data:
+
+ * Who are the potential doners to healthcare organizations?
+ * How does the economy affect doners' altruistic behaviors?
+
+Our data sources include the Panel Survey of Income Dynamics (PSID), the National Center for Charitable Statistics (NCCS) core data, the Bureau of Labor Statistics (BLS) expenditure survey and employment data, and the historical data of several openly traded financial indices. All of these datasets are free and open to the public, and we aimed also to construct a workflow that can be replicated in the future, to further help healthcare non-profits with their decision-making.
+
+# Project Overview
+We categorize our work into three major parts: the literature review that set the general direction for all other work, the hosuehold analysis section that uses PSID data to explore what household characteristics can be the factors that lead to higher invidual donations, and the donation trend section that exploits the NCCS data and other economic indicators for insights on how broader economy affects the contributions that these non-profits receive.

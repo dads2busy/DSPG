@@ -1,0 +1,43 @@
+---
+title: "Extracting Text From Documents"
+subtitle: "Data Sources"
+---
+<br>
+
+#### Our data source was documents from the **Smartbook for DA Pam 600-3 Officer Professional Development and Career Management**. 
+
+These documents spanned 11 Army Operations branches and 3 Information Dominance branches. In these documents, the desired attributes were presented in one of three ways: text form, a tabular layout, or with a flowchart.
+
+Below are examples of each type of presentation with the desired information for our analysis highlighted. 
+
+<div>
+<div class="column">
+<p align="center" style= "margin-top: 50px;">
+*PAM DA 600-3: Information in Text Format*
+![PAM DA 600-3: Information in Text Format](img/ParagraphForm.png){width=90%} 
+</p>
+</div>
+
+<div class="column">
+<p align="center" style= "margin-top: 50px;">
+*PAM DA 600-3: Information in Tabular Format*
+![Table Format](img/DevelopmentTable.png)
+</p>
+</div>
+</div>
+
+<br>
+<div align= "center">
+<p>  
+*PAM DA 600-3: Information in Flowchart*
+</p>
+</div>
+
+
+<div align="center">
+<p align="center;">
+<p>
+![PAM DA 600-3: Information in Flowchart](img/LifecycleDevelopment.png){width=60%}
+</div>
+
+#### The formatting inconsistencies and low image quality of the flowcharts prompted us to explore a variety of data extraction methods, shown <a href=Methods_Pt1.html>here</a>.

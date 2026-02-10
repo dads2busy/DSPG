@@ -1,0 +1,36 @@
+name: "dspg-website-template"
+output_dir: "../docs"
+exclude: ["*.nb.html", "*.csv", "*.CSV", "*.dcf", "parlog", "old", "dashboard"]
+output:
+  html_document:
+    theme: flatly
+    css: style.css
+    include:
+      after_body: footer.html
+navbar:
+  title: "<img id='dspg' class='center' src = 'img/black-logo.png' />"
+  right:
+    - text: "Overview"
+      href: index.html
+    - text: "Data"
+      menu:
+        - text: Data Discovery
+          href: data-discovery.html
+    - text: "Methods"
+      href: methods.html
+    - text: "Findings"
+      menu:
+        - text: Decision Tree
+          href: findings-dec-tree.html
+        - text: Support Vector Machine
+          href: svm.html
+        - text: Conclusions
+          href: findings-conclusions.html
+    - text: "Team"
+      href: team.html
+    - text: Presentation
+      href: presentation.html
+    - text: ""
+      icon: fa-github
+      # Change to your github repo
+      href: "https://github.com/DSPG-Young-Scholars-Program/dspg23businessclimate.git"

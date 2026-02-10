@@ -1,0 +1,16 @@
+---
+title: "Project Title"
+subtitle: "Team"
+---
+
+# DSPG Interns
+* [Annie Xie](mailto:fumanx@andrew.cmu.edu)
+* [Steve Zhou](mailto:wz8ry@virginia.edu)
+
+# SDAD Mentors
+* Josh Goldstein
+* Neil Kattampalil
+* Leonel SIWE
+
+# Sponsor
+* John Pender, Economic Research Services, United States Department of Agriculture

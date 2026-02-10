@@ -1,0 +1,96 @@
+---
+title: "15_06_2023CivilAffairs.rmd"
+author: "Sara Shallenberger"
+date: "2023-06-15"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pdftools)
+library(tesseract)
+library(stringr)
+library(rlist)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+# reading in data
+# read in data
+data <- pdf_data("./data/civilaffairs-da-pam-600-3-a.pdf")
+pages5to10 <- list.rbind(data[5:10])
+pages5to10textsep <- as.character(pages5to10$text)
+fulltext <- paste(pages5to10textsep, collapse = " ")
+fulltext
+# note there is no LT rank in this document
+```
+
+```{r}
+# make dataframe
+
+# variable name
+columns <- c("MOS", "Rank", "Assignment", "Type")
+
+# data frame
+dataframe <- data.frame(matrix(nrow = 100, ncol = length(columns)))
+
+# assigning column names
+colnames(dataframe) <- columns
+
+#put in MOS
+
+dataframe$MOS <- "Civil Affairs"
+```
+
+```{r}
+# extract KDs
+
+KDps <- unlist(str_extract_all(fulltext, "(?<=(KD)\\h(assignments)\\.\\h).*?(?=(([Dd]evelopmental)\\h(assignments)))"))
+KDps[5] <- unlist(str_extract_all(fulltext, ("(brigade)\\h(or)\\h(other)\\h(CSL)\\h(assignment):.*(?=(Other)\\h(broadening))")))
+
+#clean em up
+
+KDps <- unlist(str_extract_all(KDps, "((CA)\\h(Team)\\h(Commander))|(HHCs)|((?<=\\h\\([iv]{1,3}\\)\\h).*?(\\.))"))
+KDps <- unlist(str_remove_all(KDps, "(\\(.*\\))|(\\h(at)\\h[HCa].*$)|(\\h(for)\\h(one).*$)"))
+KDps[c(6,12,13,14)] <- c("Primary Staff Civil Affairs Officer", "Proponent Manager", "Assistant Chief of Staff", "Brigade Deputy Commander")
+KDps <- unlist(str_split(KDps, ","))
+KDps <- str_remove_all(KDps, "(^\\h)|(\\h\\.$)|(\\.$)")
+KDps[11] <- "CTC O/C-T"
+KDps <- KDps[-c(20,24:26,28)]
+KDps[c(20,23)] <- c("Primary Staff Officer", "Headquarters Staff Officer")
+KDps <- str_remove_all(KDps, "^.*(at)\\h")
+KDps[c(13,17)] <- "Personal Staff Positions"
+KDps <- append(KDps, c("Battalion Command", "CSL Assignment"), after = 13)
+KDps <- unlist(str_split(KDps, "(?<=(Staff))\\h(or)\\h"))
+KDps <- append(KDps, c("Brigade Command", "CSL Assignment"), after = 19)
+
+# put into dataframe
+v1 <- c(rep("CAP", 2), rep("MAJ", 11), rep("LTC", 6), rep("COL", 9))
+dataframe$Rank[1:length(v1)] <- v1
+dataframe$Type[1:length(v1)] <- "KD"
+dataframe$Assignment[1:length(v1)] <- KDps
+```
+
+```{r}
+# extract DEVs
+DEVps <- unlist(str_extract_all(fulltext, "(?<=((Other)\\h(broadening)\\h(assignments))|(((Additional)|(following))\\h(developmental)\\h(assignments))).*?((iv\\.)|(\\(c\\)))"))
+DEVps <- unlist(str_split(DEVps, "\\([iv]{1,3}\\)"))
+DEVps <- DEVps[-c(1,8)] 
+DEVps <- str_remove_all(DEVps, "(^\\h)|(\\.(.*)$)|(^:\\h)")
+DEVps[3] <- "CA SOF Governance Officer"
+DEVps <- DEVps[-c(2,4:5)]
+DEVps <- append(DEVps, c("Battalion Assistant Operations Officer", "Brigade Assistant Operations Officer"), after = 1)
+DEVps <- unlist(str_split(DEVps, ",\\h"))
+DEVps[c(5:7,15:22)] <- paste(DEVps[c(5:7,15:22)], "assignments") 
+DEVps <- str_remove_all(DEVps, "^(and)\\h")
+
+#put into dataframe
+v2 <- c(rep("CAP", 8), rep("MAJ", 6), rep("LTC", 4), rep("COL", 4))
+dataframe$Rank[30:(29+length(v2))] <- v2
+dataframe$Assignment[30:(29+length(v2))] <- DEVps
+dataframe$Type[30:(29+length(v2))] <- "DEV"
+fulldata <- dataframe[1:51,]
+write_csv(fulldata, "./data/20_06_2023_CivilAffairs.csv")
+```
+

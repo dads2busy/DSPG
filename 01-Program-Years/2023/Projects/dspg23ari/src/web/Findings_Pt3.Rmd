@@ -1,0 +1,60 @@
+---
+title: "Extracting Text from Documents"
+subtitle: "Insights"
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(stringdist)
+library(DT)
+library(data.table)
+
+source("../../functions/clean_assignments.R")
+source("../../functions/match_strings.R")
+
+data <- clean_assignments(path_to_data = "../../data") %>% mutate(Rank = ifelse(Rank == "CAP", "CPT", Rank)) %>% rowwise() %>% 
+  mutate(Assignment = gsub("[()]", "", Assignment)) %>% 
+  mutate(Assignment = str_remove(Assignment, "post -kd")) %>%
+  mutate(Assignment = str_remove(Assignment, "post -csl")) %>%
+  mutate(Assignment = ifelse(Assignment %like% "department of defensejiimarmyacom staff officer", "dod jiim staff officer/dod army staff officer/dod acom staff officer", Assignment)) %>% 
+    mutate(Assignment = ifelse(Assignment %like% "platoon leader 15d) in an aviation support company", "platoon leader", Assignment)) %>% 
+    mutate(Assignment = ifelse(Assignment %like% "captain-level company", "company command", Assignment)) %>%
+  mutate(Assignment = ifelse(Assignment %like% "xo xo", "xo", Assignment)) %>%
+  mutate(Assignment = ifelse(Assignment %like% "brigadedivision mp planner", "brigade division mp planner", Assignment)) %>%
+  mutate(Assignment = str_squish(str_remove(Assignment, "battallion"))) %>%
+  mutate(Assignment = str_squish(Assignment)) %>% filter(!is.na(Assignment)) %>%
+  mutate(MOS = str_remove(MOS, " Branch|FA"))
+
+data %>% datatable(caption = 'Table 1: This is a simple caption for the table.',
+          extensions = "Buttons", filter = 'top',
+            options = list(paging = TRUE,
+                           scrollX = TRUE, 
+                           searching = TRUE,
+                           ordering = TRUE,
+                           dom = 'Bfrtip',
+                           buttons = c('copy', 'csv', 'excel'),
+                           pageLength = 20))
+```
+
+```{r, echo = FALSE, message = FALSE}
+data %>% distinct(Assignment, Type) %>% group_by(Type) %>% summarise(count = n()) %>% 
+  datatable(caption = 'Table 1: This is a simple caption for the table.',
+    options = list(pageLength = 5, dom = 'tip'), rownames = FALSE)
+```
+
+```{r, echo = FALSE, message = FALSE}
+data %>% filter(Type == "KD") %>% distinct(Assignment, Type, MOS) %>% 
+  group_by(MOS) %>% summarise(count = n()) %>% 
+  datatable(caption = 'Table 1: This is a simple caption for the table.',
+    options = list(pageLength = 14, dom = 'tip'), rownames = FALSE)
+```
+
+```{r, echo = FALSE, message = FALSE}
+data %>% filter(Type == "KD") %>% distinct(Assignment, Rank) %>% 
+  group_by(Rank) %>% summarise(count = n()) %>% 
+  datatable(caption = 'Table 1: This is a simple caption for the table.',
+    options = list(pageLength = 10, dom = 'tip'), rownames = FALSE)
+```
+

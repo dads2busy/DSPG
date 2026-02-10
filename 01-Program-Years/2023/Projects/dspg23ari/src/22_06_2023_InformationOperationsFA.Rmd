@@ -1,0 +1,75 @@
+---
+title: "22_06_2023_InformationOperationsFA.Rmd"
+author: "Sara Shallenberger"
+date: "2023-06-22"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pdftools)
+library(tesseract)
+library(stringr)
+library(rlist)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+# read in the document
+data <- pdf_data("./data/informationoperationsFA-da-pam-600-3-a.pdf")
+
+# getting relevant pages
+
+pages <- list.rbind(data[3:6])
+pagessep <- as.character(pages$text)
+fulltext <- paste(pagessep, collapse = " ")
+```
+
+```{r}
+# start the dataframe
+columns <- c("MOS", "Rank", "Assignment", "Type")
+
+# data frame
+dataframe <- data.frame(matrix(nrow = 100, ncol = length(columns)))
+
+# assigning column names
+colnames(dataframe) <- columns
+
+dataframe$MOS <- "Information Operations FA"
+```
+
+```{r}
+# get KDs
+v1 <- c(rep("CAP", 3), rep("MAJ", 6), rep("LTC", 4), rep("COL", 3))
+KDps <- unlist(str_extract_all(fulltext, "(?<=(Key)\\h(developmental)\\.\\h.{1,200}?((include)|((positions)\\h(at)))\\h).*?(?=\\.\\h\\(b\\))"))
+KDps <- unlist(str_split(KDps, "(\\.\\h)|(,\\h)|(\\h(and)\\h)|(\\/)"))
+KDps <- unlist(str_remove_all(KDps, "(\\h(?=st\\h))|(\\h((in)|(are))\\h.*$)|(^.*((with)|(within)|(command)|(of)|(at))\\h)"))
+KDps <- KDps[-c(8,15)]
+KDps <- unlist(str_remove_all(KDps, "(?<![Cc]orp)s$"))
+KDps[12:13] <- c("ASCC", "Battalion Command")
+KDps[c(1:12,14:15)] <- paste(KDps[c(1:12,14:15)], "Staff Officer")
+KDps <- unlist(str_replace_all(KDps, "Command", "Commander"))
+dataframe[(1:length(v1)), 2:4] <- c(v1, KDps, rep("KD", length(v1)))
+```
+
+```{r}
+# get DEVs
+v2 <- c(rep("CAP", 4), rep("MAJ", 15), rep("LTC", 11), rep("COL", 8))
+DEVps <- unlist(str_extract_all(fulltext, "(?<=below).*?(?=Self)"))
+DEVps <- unlist(str_remove_all(DEVps, "(^.{2})|(.{5}$)"))
+DEVps <- unlist(str_split(DEVps, "\\h\\(\\d\\)((\\h)|(\\.\\h))"))
+DEVps <- unlist(str_remove_all(DEVps, "^.*(include)\\h"))
+DEVps <- unlist(str_split(DEVps, "\\.\\h"))
+DEVps <- DEVps[-c(2,3,5,6,10,11:13,19:21)]
+DEVps <- unlist(str_split(DEVps, "(\\h(and)\\h)|(,\\h)"))
+DEVps <- unlist(str_remove_all(DEVps, "(^.*(at)\\h)|((an)\\h)|((and)\\h)|(\\.$)|(^.*(as)\\h)|(^.*(to)\\h)|(^.*:\\h)"))
+DEVps <- unlist(str_remove_all(DEVps, "(s$)|(^.*(?=NATO))|(\\h\\(.*$)|(^.*(as)\\h)"))
+DEVps[c(1:11, 15:17, 21:24, 28:30, 32, 35:36)] <- paste(DEVps[c(1:11, 15:17, 21:24, 28:30, 32, 35:36)], "Staff Officer")
+DEVps <- unlist(str_split(DEVps, "\\h(or)\\h"))
+DEVps <- DEVps[-c(19,33)]
+DEVps[c(18,31,33,38)] <- c("Government Agency Positions", "Government Agency Positions", "Army War College Proponent Director", "Government Agency Positions")
+dataframe[(17:(16+length(v2))), 2:4] <- c(v2, DEVps, rep("DEV", length(v2)))
+fulldata <- dataframe[1:54,]
+write.csv(fulldata, "./data/22_06_2023_InformationOperationsFA.csv")
+```

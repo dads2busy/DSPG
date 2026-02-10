@@ -1,0 +1,47 @@
+---
+title: "Donation Trend: An Analysis of the NCCS Data"
+subtitle: "Data Description: National Center for Charitable Statistics"
+---
+To observe altruistic trends, we also investigated state-wide data from the National Center for Charitable Statistics (NCCS). 
+
+NCCS derives our data files primarily from information that tax-exempt nonprofit organizations file with the Internal Revenue Service (IRS). These IRS databases provide comprehensive standardized data on tax-exempt organizations, but they do have certain limitations. The data produced by NCCS is designed to be used by researchers and policy-makers in their quantitative analyses and can serve as a starting point for more detailed survey or case study research. While they do employ various data checking procedures, it is important to note that their resources are limited, and they cannot verify every record in-depth systematically.
+
+IRS generates three type of files anually and NCCS creates three types of files. We are specifically interested in the core data files for our research. The NCCS Core Files, produced annually since 1989, combine descriptive information from the IRS Business Master File and financial variables from the IRS Return Transaction Files after they have been cleaned by NCCS.
+
+Specifically, we investigated the NCCS annual core files which compile IRS tax filings from tax-exempt charitable and non-profit organizations and contain extensive metrics such as geolocation, contributions, and revenue for each organization that files. We pulled and aggregated these files for fiscal years 2000 through 2019 and filtered for companies categorized under the health subsector (NTEE Major 5 subsector HE). However, it should be noted that because certain organizations receive filing extensions, not all filings during each fiscal year actually correspond with that fiscal year. Therefore, companies that received extensions for 2018 or 2019 are not represented in those files and the data for these years are incomplete. 
+
+
+Once ingested and filtered, we largely focused on contributions received by healthcare charities in the United States. We inflated this measure to represent 2022 dollars and removed outliers in this category. Below we look at trends in contributions as they relate to various economic indicators over time.
+
+
+
+We considered the total contributions to all public charities for each year starting from the year 2000 and have compared them with various economic indicators. The data that we get from NCCS is microdata and each data point represents a public charity along with attributes such as location and other attributes. We consolidate donations to include all the data points for a particular year and have tracked the total contributions over the years. To deduce te state of the economy we have considered yhe ecnolomic indicators such as Consumer Sentiment Index, Dow Jones Industrial Average, and Unemployment.
+
+
+
+```{r, echo = FALSE}
+library(htmltools)
+htmltools::includeHTML("./img/cont_trends.html")
+```
+
+<!-- ![Consumer Sentiment Index and Donations](img/nccs_csi.png){width=80% } -->
+
+The Consumer Sentiment Index is a key economic indicator that measures the confidence and optimism of consumers in the overall health of the economy. It is typically calculated through surveys and reflects consumers' perceptions of their current financial situation, as well as their expectations for future economic conditions. A high Consumer Sentiment Index suggests that consumers are more positive about the economy and are likely to spend more, contributing to economic growth. On the other hand, a low index indicates that consumers are less confident, which may lead to reduced spending and slower economic activity.
+
+
+<!-- ![Dow Jones Industrial Average and Donations](img/nccs_dji.png){width=80% } -->
+
+The Dow Jones Industrial Average (DJIA) is a widely recognized stock market index that represents a selection of 30 major companies traded on the New York Stock Exchange (NYSE) and the NASDAQ. The DJIA is often used as a barometer of the overall performance of the stock market and the broader economy. Changes in the DJIA reflect the collective stock price movements of the 30 companies included in the index. A rising DJIA is generally seen as a positive indicator of economic growth and investor confidence, while a declining DJIA may indicate economic uncertainty and lower investor sentiment. As such, both the Consumer Sentiment Index and the Dow Jones Industrial Average are essential tools for analysts and policymakers to gauge the health and direction of the economy.
+
+
+<!-- ![Unemployment and Donations](img/nccs_unemployment.png){width=80% } -->
+
+
+Unemployment is a crucial economic indicator that reflects the health and performance of an economy. It measures the percentage of the labor force that is actively seeking employment but unable to find a job. The relationship between unemployment and the economy is complex and interconnected, and it has significant implications for both individuals and the overall economic well-being.
+
+
+The figures above represents the comparison of contributions to health care charities compared against the pre-determined economic indicators. When looking at trends in the Dow Jones industrial average compared with trends in contributions (Figure 4), we see some similarities. Likewise, we see similar trends when comparing consumer sentiment and contributions (figure 3). Consumer sentiment measures how consumers are currently feeling about the state of the economy relative to the previous year. It is likely that as positive feelings about the economy increase, people are more inclined to donate. These observations are consistent with previous literature.
+
+
+
+

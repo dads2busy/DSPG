@@ -1,0 +1,329 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(sf)
+library(readr)
+library(dplyr)
+library(progress)
+library(data.table)
+library(tidyr)
+```
+
+# loading data
+
+```{r}
+bufferzone_df = fread("../data/iaproject/iabuffer_linked_all.csv",
+                      colClasses = c(GEOID20_block="character", GEOID10_block="character"))
+subscr_df = fread("../data/iaproject/iasubscr_linked_all.csv",
+                      colClasses = c(GEOID20_block="character", GEOID10_block="character"))
+```
+
+```{r}
+ookla2019 = readRDS("../data/reconnect_subscribers/ookla_data_reconnect_2019.RDS")
+ookla2020 = readRDS("../data/reconnect_subscribers/ookla_data_reconnect_2020.RDS")
+ookla2021 = readRDS("../data/reconnect_subscribers/ookla_data_reconnect_2021.RDS")
+ookla2019 = ookla2019[ookla2019$RUSID == "IA1701-A61", ]
+ookla2020 = ookla2020[ookla2020$RUSID == "IA1701-A61", ]
+ookla2021 = ookla2021[ookla2021$RUSID == "IA1701-A61", ]
+
+# ignoring the warning. The RDS was created using older version of sf. Refer to this post
+# https://stackoverflow.com/questions/61286108/error-in-cpl-transformx-crs-aoi-pipeline-reverse-ogrcreatecoordinatetrans
+
+st_crs(ookla2019) = 4326
+st_crs(ookla2019$geometry) <- 4326
+st_crs(ookla2019$tile_centroid_26918) <- 26918
+st_crs(ookla2020) = 4326
+st_crs(ookla2020$geometry) <- 4326
+st_crs(ookla2020$tile_centroid_26918) <- 26918
+st_crs(ookla2021) = 4326
+st_crs(ookla2021$geometry) <- 4326
+st_crs(ookla2021$tile_centroid_26918) <- 26918
+
+ookla2019$tile_centroid = st_transform(ookla2019$tile_centroid_26918, 4326)
+ookla2020$tile_centroid = st_transform(ookla2020$tile_centroid_26918, 4326)
+ookla2021$tile_centroid = st_transform(ookla2021$tile_centroid_26918, 4326)
+```
+
+# Kernel fitting: original
+
+```{r}
+subscr_point = st_as_sf(subscr_df[, c("best_lng", "best_lat")], coords = c("best_lng", "best_lat"), crs = 4326)
+
+kernel2021_hasdevice_normalized <- function(point, sigmasq, phi){
+  dist <- as.numeric( st_distance(point, ookla2021) )
+  weights <- sigmasq * exp(-(dist/phi)^2)
+  speed <- weighted.mean(ookla2021$avg_d_kbps, weights * ookla2021$devices)
+  return(speed)
+}
+
+kernel2021_nodevice_manual <- function(point, sigmasq, phi){
+  dist <- as.numeric( st_distance(point, ookla2021) )
+  weights <- 1 / (sqrt(pi)*phi) * exp(- (dist/phi)^2)
+  speed <- ookla2021$avg_d_kbps %*% weights
+  return(speed)
+}
+```
+
+
+```{r}
+pb = progress_bar$new(total = nrow(bufferzone_points))
+
+subscr_point$ookla_2021_avg_d_kbps <- NA
+
+for(i in 1:nrow(bufferzone_points)){
+  subscr_point$ookla_2021_avg_d_kbps[i] <- kernel2021_nodevice_manual(subscr_point[i,], sigmasq=1, phi=5000)
+  pb$tick()
+}
+```
+
+```{r}
+# experiment for the alternative: ignoring suspicious ones in the excluded towns surrounded by the project area
+
+project_hole = read_sf("../data/iaproject/project_holes.shp")
+ia_project_hole = project_hole[project_hole$`Project ID` == "IA1701-A61", "geometry"]
+st_crs(ia_project_hole) = 4326
+
+ookla_intersect <- st_intersects(ookla2021, ia_project_hole)
+ookla_intersect_ind <- sapply(ookla_intersect, function(x){x[1]})
+ookla_no_hole <- ookla2021 %>% filter(is.na(ookla_intersect_ind))
+
+# saveRDS(ookla_no_hole, '../data/iaproject/ooka2020_holefree.RDS')
+```
+
+# decision tree fitting
+
+```{r}
+set.seed(20230802)
+
+sample_index = sample(1:nrow(ookla2021), size = round(0.8*nrow(ookla2021)))
+data = data.frame(cbind(st_coordinates(ookla2021$tile_centroid), ookla2021$avg_d_kbps))
+colnames(data) = c("lng", "lat", "avg_d_mbps")
+data$avg_d_mbps = data$avg_d_mbps / 1000
+
+# train.data = data[sample_index, ]
+# test.data = data[-sample_index, ]
+train.data = data
+```
+
+```{r}
+library(rpart)
+library(caret)
+```
+
+```{r}
+train.data = train.data[train.data$avg_d_mbps < quantile(train.data$avg_d_mbps, 0.90), ]
+```
+
+
+```{r}
+tree_Tune <- train(avg_d_mbps ~ ., data = train.data, 
+                  method = "rpart", 
+                  preProcess = c("center", "scale"),
+                  tuneGrid = data.frame(.cp = seq(0, 0.01, 0.00001)),
+                  trControl = trainControl(
+                    method = "repeatedcv",
+                    repeats = 1, number = 5
+                    )
+                 )
+tree_Tune$bestTune
+```
+
+```{r}
+tree_Tune$results
+```
+
+```{r}
+tree.fit = rpart(avg_d_mbps ~ ., data = train.data, cp=tree_Tune$bestTune)
+plot(tree.fit)
+# text(tree.fit)
+```
+
+```{r}
+tree.fit$cptable[]
+```
+
+```{r}
+subscr_coor = subscr_df[,c('best_lng', 'best_lat')]
+colnames(subscr_coor) = c('lng', 'lat')
+subscr_coor$imputed_d_mbps = predict(tree.fit, subscr_coor)
+hist(subscr_coor$imputed_d_mbps)
+```
+
+```{r}
+x = predict(tree.fit, train.data[, c(1, 2)])
+hist(x)
+```
+
+```{r}
+mean(x)
+```
+
+```{r}
+diff = x - train.data$avg_d_mbps
+hist(diff)
+```
+
+```{r}
+scatter.smooth(x=train.data$avg_d_mbps, y=diff)
+```
+
+
+```{r}
+mean(train.data$avg_d_mbps)
+```
+
+```{r}
+subscr_points = st_as_sf(subscr_coor, coords = c("lng", "lat"), crs = 4326)
+
+tree.result2021 <- ggplot() + 
+  geom_sf(data = subscr_points, aes(geometry = geometry, color = imputed_d_mbps), alpha = 0.5) +
+  scale_color_gradient("Imputed Ookla Speed(mbps)",  low="red", high="green") + #limits = c(0, 250),
+  geom_sf(data = ookla2021, aes(geometry = geometry, fill = avg_d_kbps), show.legend = FALSE) +
+  scale_fill_continuous(low = 'white', high = 'black') + 
+  theme(legend.position="bottom")+ #ylim(42.65, 43.1) + xlim(-96.8, -96) +
+  ggtitle("Ookla Speed Imputation in 2019")
+
+tree.result2021
+```
+
+```{r}
+fivenum(subscr_points$imputed_d_mbps)
+```
+
+# Fit with only proximate ookla
+
+```{r}
+project_adjacent_area = read_sf("../data/iaproject/project_5mi_to_buffer.shp")
+st_crs(project_adjacent_area) = 4326
+
+ookla2021_intersect = st_intersects(ookla2021, project_adjacent_area)
+ookla2021_intersect_ind = sapply(ookla2021_intersect, function(x){x[1]})
+ookla2021_filtered = ookla2021 %>% filter(!is.na(ookla2021_intersect_ind))
+```
+
+```{r}
+sample_index = sample(1:nrow(ookla2021_filtered), size = round(0.8*nrow(ookla2021_filtered)))
+data = data.frame(cbind(st_coordinates(ookla2021_filtered$tile_centroid), ookla2021_filtered$avg_d_kbps))
+colnames(data) = c("lng", "lat", "avg_d_mbps")
+data$avg_d_mbps = data$avg_d_mbps / 1000
+```
+
+```{r}
+train.data = data
+train.data = train.data[train.data$avg_d_mbps < quantile(train.data$avg_d_mbps, 0.90), ]
+hist(train.data$avg_d_mbps)
+```
+
+```{r}
+tree_Tune <- train(avg_d_mbps ~ ., data = train.data, 
+                  method = "rpart", 
+                  preProcess = c("center", "scale"),
+                  tuneGrid = data.frame(.cp = seq(0, 0.01, 0.00001)),
+                  trControl = trainControl(
+                    method = "repeatedcv",
+                    repeats = 1, number = 10
+                    )
+                 )
+tree_Tune$bestTune
+```
+
+```{r}
+tree_Tune$results
+```
+
+```{r}
+tree.fit = rpart(avg_d_mbps ~ ., data = train.data, cp=tree_Tune$bestTune)
+plot(tree.fit)
+# text(tree.fit)
+```
+
+```{r}
+tail(tree.fit$cptable, 1)
+```
+
+
+```{r}
+subscr_coor = subscr_df[,c('best_lng', 'best_lat')]
+colnames(subscr_coor) = c('lng', 'lat')
+subscr_coor$imputed_d_mbps = predict(tree.fit, subscr_coor)
+hist(subscr_coor$imputed_d_mbps)
+```
+
+```{r}
+mean(subscr_coor$imputed_d_mbps)
+```
+
+```{r}
+mean(train.data$avg_d_mbps)
+```
+
+```{r}
+hist(subscr_df$Download.Speed[subscr_df$Download.Speed < quantile(subscr_df$Download.Speed, 0.9)])
+```
+
+```{r}
+hist(subscr_df$Download.Speed)
+```
+
+
+```{r}
+subscr_points = st_as_sf(subscr_coor, coords = c("lng", "lat"), crs = 4326)
+
+tree.result2021 <- ggplot() + 
+  geom_sf(data = subscr_points, aes(geometry = geometry, color = imputed_d_mbps), alpha = 0.5) +
+  scale_color_gradient("Imputed Ookla Speed(mbps)",  low="red", high="green") + #limits = c(0, 250),
+  geom_sf(data = ookla2021_filtered, aes(geometry = geometry, fill = avg_d_kbps), show.legend = FALSE) +
+  scale_fill_continuous(low = 'white', high = 'black') + 
+  theme(legend.position="bottom")+ #ylim(42.65, 43.1) + xlim(-96.8, -96) +
+  ggtitle("Ookla Speed Imputation in 2021")
+
+tree.result2021
+```
+
+# try random forest
+
+```{r}
+library(randomForest)
+```
+
+```{r}
+fit.rf <- randomForest(avg_d_mbps ~ ., data=train.data)
+```
+
+```{r}
+fit.rf$ntree
+```
+
+```{r}
+subscr_coor = subscr_df[,c('best_lng', 'best_lat')]
+colnames(subscr_coor) = c('lng', 'lat')
+subscr_coor$imputed_d_mbps = predict(fit.rf, subscr_coor)
+hist(subscr_coor$imputed_d_mbps)
+```
+
+```{r}
+mean(subscr_coor$imputed_d_mbps)
+```
+
+
+```{r}
+subscr_points = st_as_sf(subscr_coor, coords = c("lng", "lat"), crs = 4326)
+
+tree.result2021 <- ggplot() + 
+  geom_sf(data = subscr_points, aes(geometry = geometry, color = imputed_d_mbps), alpha = 0.5) +
+  scale_color_gradient("Imputed Ookla Speed(mbps)",  low="red", high="green") + #limits = c(0, 250),
+  geom_sf(data = ookla2021_filtered, aes(geometry = geometry, fill = avg_d_kbps), show.legend = TRUE) +
+  scale_fill_continuous(low = 'white', high = 'black', limits = c(0, 200000)) + 
+  theme(legend.position="bottom")+ #ylim(42.65, 43.1) + xlim(-96.8, -96) +
+  ggtitle("Ookla Speed Imputation in 2021")
+
+tree.result2021
+```
+
+```{r}
+sqrt(mean( (predict(fit.rf, train.data) - train.data$avg_d_mbps)^2 ))
+```
+

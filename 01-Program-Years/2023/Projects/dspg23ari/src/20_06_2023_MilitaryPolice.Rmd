@@ -1,0 +1,51 @@
+---
+title: "20_06_2023_MilitaryPolice.Rmd"
+author: "Sara Shallenberger"
+date: "2023-06-20"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pdftools)
+library(tesseract)
+library(stringr)
+library(rlist)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+# read in the document
+data <- pdf_data("./data/militarypolice-da-pam-600-3-a.pdf")
+
+# getting relevant pages
+
+pages <- list.rbind(data[5:7])
+pagessep <- as.character(pages$text)
+fulltext <- paste(pagessep, collapse = " ")
+```
+
+```{r}
+# start the dataframe
+columns <- c("MOS", "Rank", "Assignment", "Type")
+
+# data frame
+dataframe <- data.frame(matrix(nrow = 100, ncol = length(columns)))
+
+# assigning column names
+colnames(dataframe) <- columns
+
+dataframe$MOS <- "Military Police"
+dataframe$Rank[1:3] <- "LT"
+dataframe$Assignment[1:3] <- c("Platoon Leader", "Company XO", "Staff Officer")
+dataframe$Type[1:3] <- c("KD", rep("DEV", 2))
+```
+
+```{r}
+# get the KDs
+
+KDps <- unlist(str_extract_all(fulltext, "(Key)\\h(Developmental)((\\h\\(KD\\)\\h)|(\\h))(Assignments).*?(\\(\\d\\))"))
+KDps
+```
+

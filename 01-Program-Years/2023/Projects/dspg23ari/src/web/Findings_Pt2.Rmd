@@ -1,0 +1,178 @@
+---
+title: "Analyzing Data From Documents"
+subtitle: "Findings"
+---
+
+```{r include = FALSE}
+library(DT)
+library(tidyr)
+library(dplyr)
+
+colfunc <- colorRampPalette(c("white", "orange"))
+```
+
+## *Performance and Psychosocial Characteristics*
+
+Army Doctrine Publication serves as the baseline document. 
+The below analysis is conducted to determine the similarity between the good performer and bad performer GAT items. Most of the documents have a cosine similarity greater than 0.9 indicating high similarity. Since most of the words are common in the good performer and bad performer documents high similarity is observed.
+
+<div>
+<div class="column">
+<p align="center" style= "margin-top: 50px;">
+```{r echo = FALSE}
+data <- read.csv("../../data/BERT Similarity.csv") 
+data %>% 
+  mutate(Character = stringr::str_remove(Character, "GAT"),
+         Character = stringr::str_remove(Character, ".txt"),
+         Character = stringr::str_replace_all(Character, "_", " ")) %>%
+  rename("Global Assessment Tool (GAT) Item" = Character, "Cosine Similarity" = Cosine.Similarity, "Average Similarity" = Average.Similarity) %>%
+  datatable(caption = 'Table 1. Cosine Similarity and Average Similarity for Psychosocial Survey items from the GAT using BERT.',
+    options = list(pageLength = 18, dom = 'tip',
+                     initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'width': '90%'});",
+    "}")), rownames = FALSE) 
+```
+</p>
+</div>
+
+
+<div class="column">
+<p align="center" style= "margin-top: 50px;">
+```{r echo = FALSE}
+data <- read.csv("../../data/GP2 Similarity.csv") 
+data %>% 
+  mutate(Character = stringr::str_remove(Character, "GAT"),
+         Character = stringr::str_remove(Character, ".txt"),
+         Character = stringr::str_replace_all(Character, "_", " ")) %>%
+  rename("Global Assessment Tool (GAT) Item" = Character, "Cosine Similarity" = Cosine.Similarity, "Average Similarity" = Average.Similarity) %>%
+  datatable(caption = 'Table 2. Cosine Similarity and Average Similarity for Psychosocial Survey items from the GAT using GPT-2.',
+        options = list(pageLength = 18, dom = 'tip',
+                     initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'width': '90%'});",
+    "}")), rownames = FALSE) 
+```
+</p>
+</div>
+</div>
+
+<div style="clear: both">
+The below analysis is conducted to determine the similarity between the GAT items and ADP. Most of the documents have a cosine similarity greater than 0.8 indicating high conceptual similarity between GAT items and ADP. The ADP not only specifies the characteristics of a good performer it also specifies the characteristics a good performer should not exhibit.Therefore even the bad performer documents have high conceptual similarity to the ADP. 
+</div>
+<div align= "center">
+
+<div>
+<div class="column">
+<p align="center" style= "margin-top: 50px;">
+```{r echo = FALSE}
+library(tidyr)
+library(dplyr)
+library(DT)
+data <- read.csv("../../data/cosine_similarity_plot_data.csv") 
+
+data %>% filter(model == "BERT") %>% select(-X, -doc_one, -doc_two, -model, -avg_similarity) %>% 
+  mutate(cosine_similarity = round(cosine_similarity, 2)) %>%
+  select(value, cosine_similarity, color) %>%
+  rename("Global Assessment Tool (GAT) Item" = value, "Cosine Similarity" = cosine_similarity) %>%
+  datatable(caption = 'Table 3. Cosine Similarity between Psychosocial Survey items from the GAT and ADP 6-22 Army Leadership and the Profession Using BERT.',
+        options = list(pageLength = 36, dom = 'tip',
+                       columnDefs = list(list(visible=FALSE, targets=c("color"))),
+                     initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'width': '90%'});",
+    "}")), rownames = FALSE) %>% 
+  formatStyle("Global Assessment Tool (GAT) Item", 'color',
+      color = styleEqual(c("red", "dark green"), c('red', 'green'))) %>%
+  formatStyle("Cosine Similarity",
+    background = styleColorBar(data$cosine_similarity, 'steelblue')) 
+```
+</p>
+</div>
+
+<div class="column">
+<p align="center" style= "margin-top: 50px;">
+```{r echo = FALSE}
+library(tidyr)
+library(dplyr)
+library(DT)
+data <- read.csv("../../data/cosine_similarity_plot_data.csv") 
+
+data %>% filter(model == "GPT-2") %>% select(-X, -doc_one, -doc_two, -model, -avg_similarity) %>% 
+  mutate(cosine_similarity = round(cosine_similarity, 2)) %>%
+  select(value, cosine_similarity, color) %>%
+  rename("Global Assessment Tool (GAT) Item" = value, "Cosine Similarity" = cosine_similarity) %>%
+  datatable(caption = 'Table 3. Cosine Similarity between Psychosocial Survey items from the GAT and ADP 6-22 Army Leadership and the Profession Using GPT-2',
+        options = list(pageLength = 36, dom = 'tip',
+                       columnDefs = list(list(visible=FALSE, targets=c("color"))),
+                     initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'width': '90%'});",
+    "}")), rownames = FALSE) %>% 
+  formatStyle("Global Assessment Tool (GAT) Item", 'color',
+      color = styleEqual(c("red", "dark green"), c('red', 'green'))) %>%
+  formatStyle("Cosine Similarity",
+    background = styleColorBar(data$cosine_similarity, 'steelblue'))
+```
+</p>
+</div>
+</div>
+
+```{r echo = FALSE}
+library(tidyr)
+library(dplyr)
+library(DT)
+data <- read.csv("../../data/cosine_similarity_plot_data.csv") 
+
+data %>% filter(model == "GPT-2") %>% select(-X, -doc_one, -doc_two, -model, -cosine_similarity) %>% 
+  mutate(avg_similarity = round(avg_similarity, 2)) %>%
+  select(value, avg_similarity, color) %>%
+  rename("Global Assessment Tool (GAT) Item" = value, "Average Similarity" = avg_similarity) %>%
+  datatable(caption = 'Table 3. Average Similarity between Psychosocial Survey items from the GAT and ADP 6-22 Army Leadership and the Profession Using BERT and GPT-2',
+        options = list(pageLength = 36, dom = 'tip',
+                       columnDefs = list(list(visible=FALSE, targets=c("color"))),
+                     initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'width': '90%'});",
+    "}")), rownames = FALSE) %>% 
+  formatStyle("Global Assessment Tool (GAT) Item", 'color',
+      color = styleEqual(c("red", "dark green"), c('red', 'green'))) %>%
+  formatStyle("Average Similarity",
+    background = styleColorBar(data$avg_similarity, 'steelblue'))
+```
+
+</div>
+<br>
+<br>
+
+The below analysis is conducted to explore the prescriptive and descriptive behaviors associated with Soldier and unit performance.
+<br>
+<br>
+
+<div style="clear: both">
+
+## *Exploring Performance Behaviors*
+
+```{r echo = FALSE}
+read.csv("../../data/verbs.csv") %>% 
+  rename("Verb" = lemma, "Count" = count) %>%
+  datatable(caption = 'Table 2. The most frequently occuring verbs in the Joint Universal Task List.',
+    options = list(pageLength = 10, dom = 'tip'), rownames = FALSE)
+
+read.csv("../../data/top_verb_phrases.csv") %>% select(-X) %>%
+  rename("Verb" = lemma, "Count" = verb_count,
+          "Cooccurring Word" = item2, 
+         "Coccurence Count" = cooccurence_count) %>%
+  datatable(caption = 'Table 3: The most frequently occuring verbs in the Joint Universal Task List and the top five most frequently co-occuring words.',
+    options = list(pageLength = 10, dom = 'tip'), rownames = FALSE)
+
+read.csv("../../data/verbs_gat.csv") %>% arrange(-verb_sum) %>% 
+  mutate(document = stringr::str_remove(document, "GAT"),
+         document = stringr::str_remove(document, ".txt"),
+         document = stringr::str_replace_all(document, "_", " ")) %>%
+  rename("Global Assessment Tool (GAT) Item" = document, "Verb Alignment (Count)" = verb_count, "Verb Alignment (Weighted Count)" = verb_sum) %>%
+  datatable(caption = 'Table 4: Alignment of Joint Universal Task List verbs with GAT Items by Count and by Weighted Count. Weighted count takes into account the frequency of the verb within the Joint Universal Task List as well as the number of words in the GAT Item.',
+    options = list(pageLength = 10, dom = 'tip'), rownames = FALSE)
+```
+
+</div>

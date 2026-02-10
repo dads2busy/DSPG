@@ -1,0 +1,253 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+ver 01: use Zillow to find missing info of properties in BK dataset.
+Ver 02 update: add realtor and fastpeoplesearch as additional sources for properties missing info on Zillow.
+Ver 03 update: use Bing instead of Google for Bing has much less restriction on number of queries. While google gives a HTTP 429 error for too frequent requests after approximately 50 queries, we have not hit such limitation on Bing in our sample.
+
+```{r}
+library(readr)
+library(dplyr)
+library(data.table)
+library(stringr)
+library(tidyr)
+library(scales)
+library(rvest)
+```
+
+```{r}
+# load the data ------------------------------------
+subscr_addr <- read.csv('../data_joining/ndproject_subscriber_full_address.csv', header = TRUE, row.names = 1)
+buffer_addr <- read_csv('../data_joining/ndproject_bufferzone_full_address.csv', col_types = cols(.default= 'c'))
+
+# For unknown reason, this will cause error "duplicate 'row.names' are not allowed"
+# row.names(buffer_addr) = buffer_addr$dpid
+# buffer_addr = buffer_addr[-c(1)]
+
+subscr_addr[,c('bedrooms', 'bathrooms', 'sqft', 'text', 'source')] <- NA
+buffer_addr[,c('bedrooms', 'bathrooms', 'sqft', 'text', 'source')] <- NA
+
+subscr_addr$must_inc_number_address = gsub("^(\\w+)", "\"\\1\"", subscr_addr$full_address)
+buffer_addr$must_inc_number_address = gsub("^(\\w+)", "\"\\1\"", buffer_addr$full_address)
+
+col_order = c("full_address", "must_inc_number_address", "bedrooms", "bathrooms", "sqft", "text", "source")
+subscr_addr = subscr_addr[, col_order]
+buffer_addr = buffer_addr[, col_order]
+```
+
+```{r}
+# set_1<-subscr_addr[1:200,]
+#set_2<-bips[67:79,]
+#set_3<-bips[79:83,]
+# active_set<-set_1
+
+active_set = subscr_addr
+# active_set = buffer_addr[is.na(buffer_addr$source), ]
+# row.names(active_set) = row.names(buffer_addr)[is.na(buffer_addr$source)]  # keep row names after subsetting
+
+i = 1
+```
+
+```{r}
+is_not_valid = function(str){
+  # helper function to deal with character(0) or logical(0) issue
+  if(identical(str, character(0))){
+    return(TRUE)
+  }
+  if(is.na(str)){
+    return(TRUE)
+  }
+  return(FALSE)
+}
+
+search_result_select = function(html_page, domain_keyword, address, search_engine){
+  if (search_engine == "google"){
+    divs = rvest::html_nodes(html_page, "div")
+    result_text = NA
+    for (i in divs){
+      subdiv <- rvest::html_nodes(i, 'div')
+      for (j in subdiv){
+        if (grepl(domain_keyword, html_text(j), fixed = TRUE)){
+          result_text <- html_text(j)
+        }
+        if (!is.na(result_text)){
+          break
+        }
+      }
+      if(!is.na(result_text)){
+        break
+      }
+    }
+  }
+  if (search_engine == "bing"){
+    lis = rvest::html_nodes(page, "li")
+    result_text = NA
+    for (i in lis){
+      if (grepl(domain_keyword, html_text(i), fixed = TRUE)){
+          result_text <- html_text(i)
+      }
+      if (!is.na(result_text)){
+        break
+      }
+    }
+  }
+  
+  
+  if(!is.na(result_text)){
+    street_number_original = regmatches(address, regexpr("\\b\\d+\\b", address))
+    street_number_matched = street_number_original
+    
+    if(domain_keyword == "realtor" | domain_keyword == "zillow"){
+      street_number_matched = regmatches(result_text, regexpr("\\b\\d+\\b", result_text))
+    }
+    
+    if(domain_keyword == "fastpeoplesearch"){
+      street_number_matched = gsub(
+        "\\D", "",
+        regmatches(result_text, regexpr("\\.\\.\\.\\D*\\d+\\b", result_text))
+        )
+    }
+    
+    if (is_not_valid(street_number_matched)){
+      street_number_matched = ""
+    }
+    
+    if (street_number_original != street_number_matched){
+        result_text = NA
+    }
+    
+    result_text
+  }
+  
+  
+}
+```
+
+```{r}
+result_text_analyze = function(text){
+  if (identical(text, character(0))) {
+    return(data.frame("bedrooms" = NA, "bathrooms" = NA,  "sqft" = NA, "text" = NA))
+  }
+  
+  result_text = str_to_lower(text)
+  
+  sq_feet <- str_extract(result_text, "(\\d+,)?\\d+\\.?\\d*?(?=\\s(square feet))")
+  
+  if(is_not_valid(sq_feet)){
+    sq_feet <- str_extract(result_text, "(\\d+,)?\\d+\\.?\\d*?(?=\\s(sqft))")
+  }
+  if(is_not_valid(sq_feet)){
+    sq_feet <- str_extract(result_text, "(\\d+,)?\\d+\\.?\\d*?(?=\\s(square foot))")
+  }
+  if(is_not_valid(sq_feet)){
+    sq_feet <- str_extract(result_text, "(\\d+,)?\\d+\\.?\\d*?(?=\\s(sq ft))")
+  }
+  if(is_not_valid(sq_feet)){
+    sq_feet <- str_extract(result_text, "(\\d+,)?\\d+\\.?\\d*?(?=\\s(sq\\. ft\\.))")
+  }
+  
+  bed_count <- str_extract(result_text, "\\d+\\.?\\d*?(?=\\s(bed))")
+  if(is_not_valid(bed_count)){
+    bed_count <- str_extract(result_text, "\\d+\\.?\\d*?(?=\\s(-bed))")
+  }
+  
+  bath_count<- str_extract(result_text, "\\d+\\.?\\d*?(?=\\s(bath))")
+  if(is_not_valid(bath_count)){
+    bath_count<- str_extract(result_text, "\\d+\\.?\\d*?(?=\\s(-bath))")
+  }
+  
+  data.frame("bedrooms" = bed_count, "bathrooms" = bath_count,  "sqft" = sq_feet, "text" = text)
+}
+```
+
+```{r}
+count_row_valid_entries = function(row) {
+  # helper function to deal with fake zeroes in zillow result
+  non_na = row[!is.na(row)]
+  zeroes = sum(non_na == "0")
+  zerodot = sum(non_na == "0.0")
+  return(sum(!is.na(row)) - zeroes - zerodot)
+}
+```
+
+
+```{r}
+source_keywords = c("zillow","realtor", "fastpeoplesearch")
+search_engines = c("google", "bing")
+start = i
+engine = "bing"
+
+for(i in start : nrow(active_set)){
+  index = row.names(active_set)[i]
+  print(index)
+  flag429 = FALSE  # HTTP error 429 is for too frequent requests
+  
+  tryCatch({
+    Sys.sleep(1)  # if using Google, change sleep to be at least 5 seconds
+    
+    address <- active_set[index, 'must_inc_number_address']
+    url <- URLencode(paste0("https://www.", engine, ".com/search?q=",address))
+    page <- xml2::read_html(url)
+    
+    # We will loop through source keywords and choose the one with the most info
+    best_row = NA
+    best_source = NA
+    for (source in source_keywords){
+      result_text = search_result_select(page, source, address, engine)
+      
+      result_row = result_text_analyze(result_text)
+      
+      if (count_row_valid_entries(result_row) > count_row_valid_entries(best_row)){
+        best_row = result_row
+        best_source = source
+      }
+      if (sum(is.na(result_row)) == 0){
+        break
+      }
+    }
+    if (!is.null(nrow(best_row))){  # filter out empty matches that are just NA
+      best_row['source'] = best_source
+      row.names(best_row) = c(index)
+      active_set[index, c(3,4,5,6,7)] = best_row
+    }
+  },
+  error = function(e){
+    print(e)
+    
+    if(grepl("HTTP error 429", e, fixed = TRUE)){
+      flag429 <<- TRUE  # global assignment
+      print("Too frequent requests, change IP or retry later")
+    }
+  })
+  if (flag429) {
+    break
+  }
+  
+}
+```
+
+
+```{r}
+# save backup copies
+
+write.csv(active_set, "subscriber_scrapping_working.csv")
+# write.csv(active_set, "buffer_scrapped_working3.csv")
+```
+
+```{r}
+# keep row names after subsetting, replace any row in original data that appears in 
+# the active set with the processed row in active set
+row.names(active_set) = row.names(buffer_addr)[is.na(buffer_addr$source)]
+buffer_addr[match(row.names(active_set), row.names(buffer_addr)), ] = active_set
+write.csv(buffer_addr, "buffer_scrapped.csv")
+```
+
+```{r}
+print(sum(is.na(buffer_addr$sqft)))
+print((sum(is.na(buffer_addr$sqft))) / nrow(buffer_addr))
+print(sum(is.na(buffer_addr$bedrooms)))
+print(sum(is.na(buffer_addr$bathrooms)))
+```
+

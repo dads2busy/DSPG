@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>presentation.knit</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img id='dspg' class='center' src = 'img/black-logo.png' /></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Data Processing
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="geocoding.html">Geocoding</a>
+    </li>
+    <li>
+      <a href="webscrapping.html">Web Scraping</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="ookla_kernel.html">Ookla Imputation</a>
+    </li>
+    <li>
+      <a href="predictive_model.html">Predictive Model</a>
+    </li>
+    <li>
+      <a href="did.html">Matching</a>
+    </li>
+    <li>
+      <a href="findings.html">Findings</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="team.html">Team</a>
+</li>
+<li>
+  <a href="https://github.com/DSPG-Young-Scholars-Program/dspg23_broadband_website">
+    <span class="fa fa-github"></span>
+     
+    
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<style type="text/css">
+/* this chunk of code centers all of the headings */
+h1, h2, h3, h4, h5 {
+  text-align: center;
+}
+</style>
+<p><br> <br> <br></p>
+<div id="impact-of-rural-broadband-development-programs"
+class="section level1">
+<h1>Impact of Rural Broadband Development Programs</h1>
+<div id="assessing-the-usda-reconnect-program" class="section level2">
+<h2>Assessing the USDA ReConnect Program</h2>
+<p><br> <br> <br> <br></p>
+</div>
+<div id="data-science-for-the-public-good-intern"
+class="section level2">
+<h2>Data Science for the Public Good Intern</h2>
+<div id="steve-zhou-annie-xie" class="section level3">
+<h3>Steve Zhou <br> Annie Xie</h3>
+<p><br> <br></p>
+</div>
+</div>
+<div id="social-and-decision-analytics-division-university-of-virginia"
+class="section level2">
+<h2>Social and Decision Analytics Division, University of Virginia</h2>
+<div id="josh-goldstein-neil-kattampalil-leonel-siwe"
+class="section level3">
+<h3>Josh Goldstein <br> Neil Kattampalil <br> Leonel Siwe</h3>
+<p><br> <br> <br></p>
+</div>
+</div>
+<div id="sponsored-by" class="section level2">
+<h2>Sponsored by:</h2>
+<div
+id="john-pender-economic-research-service---u.s.-department-of-agriculture"
+class="section level3">
+<h3>John Pender <br> Economic Research Service - U.S. Department of
+Agriculture</h3>
+<p><br> <br> <br> <br> <br> <br> <br> <br></p>
+<center>
+<img src="img/reconnect_map.png" />
+</center>
+<p><br></p>
+</div>
+</div>
+<div id="the-usda-reconnect-program" class="section level2">
+<h2>The USDA ReConnect Program</h2>
+<div id="three-rounds-of-funding-completed-with-the-fourth-on-going"
+class="section level3">
+<h3>- Three rounds of funding completed, with the fourth on-going</h3>
+</div>
+<div id="projects-approved-and-3.86-billion-invested-since-2019"
+class="section level3">
+<h3>- 316 projects approved and $3.86 billion invested since 2019</h3>
+<p><br> <br></p>
+</div>
+</div>
+<div id="three-primary-goals-of-2023-dspg-summer-project"
+class="section level2">
+<h2>Three primary goals of 2023 DSPG Summer Project:</h2>
+<div
+id="improve-dataset-quality-at-household-level-through-geocoding-and-web-scraping"
+class="section level3">
+<h3>1. Improve dataset quality at household level through geocoding and
+web scraping</h3>
+</div>
+<div
+id="assess-the-impact-of-a-completed-reconnect-project-on-internet-connection"
+class="section level3">
+<h3>2. Assess the impact of a completed ReConnect project on internet
+connection</h3>
+</div>
+<div
+id="create-a-workflow-that-can-be-scaled-nationally-and-reproduced-for-future-projects"
+class="section level3">
+<h3>3. Create a workflow that can be scaled nationally and reproduced
+for future projects</h3>
+<p><br> <br> <br> <br> <br> <br> <br> <br></p>
+</div>
+</div>
+</div>
+<div id="methodology-difference-in-difference" class="section level1">
+<h1>Methodology: Difference-in-Difference</h1>
+<div
+id="compare-the-internet-speed-of-subscribers-inside-the-project-area-the-treatment-group-and-comparable-households-around-the-project-area-the-control-group-before-and-after-project-completion"
+class="section level4">
+<h4>Compare the internet speed of subscribers inside the project area
+(the treatment group) and comparable households around the project area
+(the control group) before and after project completion</h4>
+<p><br></p>
+</div>
+<div id="challenge-in-matching-treatment-and-control-households"
+class="section level2">
+<h2>(1) Challenge in matching treatment and control households</h2>
+<div id="solution-blackknight-property-dataset" class="section level3">
+<h3>Solution: BlackKnight property dataset</h3>
+</div>
+</div>
+<div id="challenge-in-determining-internet-speed"
+class="section level2">
+<h2>(2) Challenge in determining internet speed</h2>
+<div
+id="solution-build-a-predictive-model-based-on-subscription-data-in-2021"
+class="section level3">
+<h3>Solution: build a predictive model based on subscription data in
+2021</h3>
+<p><br> <br> <br> <br></p>
+</div>
+</div>
+</div>
+<div id="summary-of-datasets" class="section level1">
+<h1>Summary of datasets</h1>
+<table>
+<colgroup>
+<col width="16%" />
+<col width="24%" />
+<col width="36%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Dataset</th>
+<th align="center">Level</th>
+<th align="center">Key Contents</th>
+<th align="center">Year</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">BlackKnight Property Data</td>
+<td align="center">Household level</td>
+<td align="center">Housing characteristics (e.g. number of bedrooms),
+address, coordinates</td>
+<td align="center">2021</td>
+</tr>
+<tr class="even">
+<td align="right">ReConnect Subscription Data</td>
+<td align="center">Household level</td>
+<td align="center">Subscription speed, address, coordinates</td>
+<td align="center">2021</td>
+</tr>
+<tr class="odd">
+<td align="right">Ookla Speed Test Data</td>
+<td align="center">620m by 620m tiles</td>
+<td align="center">Average speed and number of tests within each tile,
+geometry of tiles</td>
+<td align="center">2019 - 2022</td>
+</tr>
+<tr class="even">
+<td align="right">Federal Commission of Communication (FCC) Broadband
+Data</td>
+<td align="center">Census block level</td>
+<td align="center">Broadband providers, maximum advertised speed for
+each provider within each census block</td>
+<td align="center">2019 - 2021</td>
+</tr>
+</tbody>
+</table>
+<p><br> <br> <br> <br> <br> <br> <br> <br> <br></p>
+</div>
+<div id="geocoding-schema" class="section level1">
+<h1>Geocoding Schema</h1>
+<div
+id="coordinates-and-addresses-are-key-to-linking-different-datasets-and-predicting-internet-speed"
+class="section level2">
+<h2>Coordinates and addresses are key to linking different datasets and
+predicting internet speed</h2>
+<center>
+<img src="img/bk_geocode_inspection.png" />
+</center>
+<p><br> <br></p>
+</div>
+</div>
+<div id="we-experimented-and-evaluated-three-geocoding-apis"
+class="section level1">
+<h1>We experimented and evaluated three geocoding APIs</h1>
+<table>
+<thead>
+<tr class="header">
+<th align="right">API</th>
+<th align="center">Bing</th>
+<th align="center">Census</th>
+<th align="center">OpenStreetMap</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">Limit</td>
+<td align="center">50,000 / day</td>
+<td align="center">10,000 / batch</td>
+<td align="center">1 / second</td>
+</tr>
+<tr class="even">
+<td align="right">Speed</td>
+<td align="center">0.2-0.25s / query</td>
+<td align="center">0.01-0.02s / query</td>
+<td align="center">1s / query</td>
+</tr>
+<tr class="odd">
+<td align="right">Match rate</td>
+<td align="center">98%</td>
+<td align="center">85%</td>
+<td align="center">73%</td>
+</tr>
+<tr class="even">
+<td align="right">Avg. Diff</td>
+<td align="center">26m</td>
+<td align="center">94m</td>
+<td align="center">229m</td>
+</tr>
+</tbody>
+</table>
+<p><br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br></p>
+</div>
+<div id="ookla-imputation" class="section level1">
+<h1>Ookla Imputation</h1>
+<br>
+<center>
+<div class="float">
+<img src="img/ookla_fitted.png"
+alt="Map of smoothed Ookla results for the sample project. Greyscale squares are raw Ookla data, chromatic circles are imputed results" />
+<div class="figcaption">Map of smoothed Ookla results for the sample
+project. Greyscale squares are raw Ookla data, chromatic circles are
+imputed results</div>
+</div>
+</center>
+<p><br></p>
+<div
+id="ookla-provides-data-as-the-average-speed-testing-result-in-a-600-by-600-meter-tile."
+class="section level3">
+<h3>Ookla provides data as the average speed testing result in a
+600-by-600 meter tile.</h3>
+</div>
+<div
+id="we-applied-a-gaussian-kernel-to-impute-speed-at-each-propery-based-on-their-lat-long."
+class="section level3">
+<h3>We applied a Gaussian kernel to impute speed at each propery based
+on their lat-long.</h3>
+<p><br> <br> <br> <br> <br> <br> <br> <br> <br> <br></p>
+</div>
+</div>
+<div
+id="a-predictive-model-is-estimated-using-the-2021-data-of-the-reconnect-subscribers"
+class="section level1">
+<h1>A predictive model is estimated using the 2021 data of the ReConnect
+subscribers</h1>
+<span class="math display">\[
+SubscriptionSpeed = \beta_0 + \beta_1ImputedOokla + \beta_2FCCMedAdSpeed
++ \vec{\beta_i}\vec{HousingFeatures} + e
+\]</span> <br>
+<center>
+<img src="img/regression.png" width="500" />
+</center>
+<p><br></p>
+<p><br> <br> <br> <br> <br> <br> <br> <br></p>
+</div>
+<div id="rural-buffer-zone" class="section level1">
+<h1>Rural Buffer Zone</h1>
+<center>
+<img src="img/bufferzone.png" width="500" />
+</center>
+<div
+id="to-ensure-the-reconnect-subscrbers-treatment-group-are-compared-to-similar-communities-we-choose-the-control-group-only-from-the-project-buffer-zone-which-is"
+class="section level2">
+<h2>To ensure the ReConnect subscrbers (treatment group) are compared to
+similar communities, we choose the control group only from the project
+buffer zone, which is</h2>
+<div id="the-surrounding-area-within-20-miles-of-the-project"
+class="section level3">
+<h3>- the surrounding area within 20 miles of the project</h3>
+</div>
+<div id="belongs-to-a-census-tract-that-is-rural-defined-by"
+class="section level3">
+<h3>- belongs to a census tract that is rural, defined by</h3>
+</div>
+<div id="a-rural-urban-commuting-area-ruca-code-at-least-7"
+class="section level3">
+<h3>- a Rural Urban Commuting Area (RUCA) code at least 7</h3>
+<p><br> <br> <br> <br> <br> <br> <br> <br></p>
+</div>
+</div>
+</div>
+<div id="matching-treatment-group-and-control-group"
+class="section level1">
+<h1>Matching treatment group and control group</h1>
+<br>
+<center>
+<img src="img/ookla_fitted.png" />
+</center>
+<p><br></p>
+<div
+id="we-implemented-a-matching-algorithm-based-on-between-subscriber-and-buffer-zone-properties-on-number-of-bedrooms-number-of-bathrooms-building-area-age-of-building-and-2021-assessed-value.-each-subscriber-is-matched-to-a-property-with-the-minimum-mahalanobis-distance."
+class="section level3">
+<h3>We implemented a matching algorithm based on between subscriber and
+buffer-zone properties on number of bedrooms, number of bathrooms,
+building area, age of building, and 2021 assessed value. Each subscriber
+is matched to a property with the minimum Mahalanobis distance.</h3>
+<p><br> <br> <br> <br> <br> <br> <br> <br></p>
+</div>
+</div>
+<div id="here-presents-the-difference-in-difference-analysis-results"
+class="section level1">
+<h1>Here presents the difference-in-difference analysis results</h1>
+<span class="math display">\[
+PredictedSpeed_{h,t} = \alpha + \beta treatment_h + \gamma year_t +
+\delta_{DD}treatment_h * year_t + e_{h,t}
+\]</span> <br>
+<center>
+<img src="img/didreg.png" width="500" />
+</center>
+<p><br></p>
+<div
+id="we-have-strong-evidence-to-believe-the-implementation-of-the-reconnect-project-brings-a-statistically-significant-improvement-to-internet-connection-in-the-project-area."
+class="section level2">
+<h2>We have strong evidence to believe the implementation of the
+ReConnect project brings a statistically significant improvement to
+internet connection in the project area.</h2>
+<p><br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
+<br> <br> <br></p>
+</div>
+</div>
+<div id="future-steps" class="section level1">
+<h1>Future Steps</h1>
+<p><br> <br></p>
+<div
+id="evaluate-additional-sources-to-supplement-ookla-imputation-such-as-m-lab."
+class="section level2">
+<h2>- Evaluate additional sources to supplement Ookla imputation, such
+as M-Lab.</h2>
+</div>
+<div
+id="explore-solutions-to-systematic-missing-of-property-info-in-certain-states."
+class="section level2">
+<h2>- Explore solutions to systematic missing of property info in
+certain states.</h2>
+</div>
+<div
+id="reproduce-the-analysis-as-newly-completed-projects-data-becomes-available."
+class="section level2">
+<h2>- Reproduce the analysis as newly completed projects data becomes
+available.</h2>
+<p><br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
+<br></p>
+</div>
+</div>
+<div id="thanks-for-coming-and-we-are-happy-to-take-questions."
+class="section level1">
+<h1>Thanks for coming, and we are happy to take questions.</h1>
+<p><br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
+<br> <br> <br> <br></p>
+</div>
+
+<hr />
+<div>
+  <table style="text-align:center;margin: auto;">
+  <tr>
+    <td style="text-align:center; font-size:10px;">
+    <img src="img/black-logo.png" height="75px">
+    </td>
+  </tr>
+  <tr>
+    <td style="text-align:center; font-size:10px; padding-top: 12px;">
+    <p>
+      Program Contacts:
+    <a href="mailto:jt9sz@virginia.edu">Joel Thurston</a> and <a href="mailto:cpm9w@virginia.edu">Cesar Montalvo</a>
+    </p>
+    </td>
+  </tr>
+  </table>
+</div>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

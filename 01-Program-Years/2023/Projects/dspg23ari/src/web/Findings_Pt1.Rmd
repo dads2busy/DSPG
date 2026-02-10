@@ -1,0 +1,84 @@
+---
+title: "Extracting Text from Documents"
+subtitle: "Insights"
+---
+
+#### The output from the first part of our project was a dataset of Officer Assignments by Branch/Functional Area, Type, and Rank. Explore or download our dataset below.
+
+```{r, echo = FALSE, message = FALSE}
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(stringdist)
+library(DT)
+library(data.table)
+library(htmltools)
+
+source("../../functions/clean_assignments.R")
+source("../../functions/match_strings.R")
+
+row <- c("Aviation", "KD", "LT", "platoon leader")
+
+data <- clean_assignments(path_to_data = "../../data") %>% mutate(Rank = ifelse(Rank == "CAP", "CPT", Rank)) %>% rowwise() %>% 
+  mutate(Assignment = gsub("[()]", "", Assignment)) %>% 
+  mutate(Assignment = str_remove(Assignment, "post -kd")) %>%
+  mutate(Assignment = str_remove(Assignment, "post -csl")) %>%
+  mutate(Assignment = ifelse(Assignment %like% "department of defensejiimarmyacom staff officer", "dod jiim staff officer/dod army staff officer/dod acom staff officer", Assignment)) %>% 
+    mutate(Assignment = ifelse(Assignment %like% "platoon leader 15d) in an aviation support company", "platoon leader", Assignment)) %>% 
+    mutate(Assignment = ifelse(Assignment %like% "captain-level company", "company command", Assignment)) %>%
+  mutate(Assignment = ifelse(Assignment %like% "xo xo", "xo", Assignment)) %>%
+  mutate(Assignment = ifelse(Assignment %like% "brigadedivision mp planner", "brigade division mp planner", Assignment)) %>%
+  mutate(Assignment = str_squish(str_remove(Assignment, "battallion"))) %>%
+  mutate(Assignment = str_squish(Assignment)) %>% filter(!is.na(Assignment)) %>%
+  mutate(MOS = str_remove(MOS, " Branch|FA")) %>% rbind(row)
+  
+
+data %>% datatable(caption = htmltools::tags$caption('Table 1. Officer Assignment Dataset ;
+                   MOS = Branch/Functional Area ;
+                   KD = Key Developmental Assignment ;
+                   DEV = Developmental/Broadening Assignment ; 
+                   LT = Lieutenant ;
+                   CPT = Captain ;
+                   MAJ = Major ;
+                   LTC = Lieutenant Colonel ;
+                   COL = Colonel'),
+          extensions = "Buttons", filter = 'top',
+            options = list(paging = TRUE,
+                           scrollX = TRUE, 
+                           searching = TRUE,
+                           ordering = TRUE,
+                           dom = 'Bfrtip',
+                           buttons = c('copy', 'csv', 'excel'),
+                           pageLength = 20), rownames = FALSE)
+```
+
+#### Below we present some summary descriptive statistics for the assignment dataset.
+
+We find that the majority (72%) of Assignments are Developmental/Broadening Assignments.
+```{r, echo = FALSE, message = FALSE}
+data %>% distinct(Assignment, Type) %>% group_by(Type) %>% summarise(count = n()) %>% 
+  datatable(caption = 'Table 2. Overall count of Assignments by Type. ; KD = Key Developmental ; DEV = Developmental/Broadening',
+    options = list(pageLength = 5, dom = 'tip'), rownames = FALSE)
+```
+
+We find that Cyber has the most unique Assignments, followed by Air Defense Artillery.
+```{r, echo = FALSE, message = FALSE}
+data %>% distinct(Assignment, Type, MOS) %>% 
+  group_by(MOS) %>% summarise(count = n()) %>% 
+  datatable(escape = FALSE, caption = 'Table 3. Overall count of Assignments by Branch/Functional Area. ; MOS = Branch/Functional Area',
+    options = list(pageLength = 14, dom = 'tip'), rownames = FALSE)
+```
+
+We found that Major had the most unique Assignments, followed by Lieutenant Colonel.
+```{r, echo = FALSE, message = FALSE}
+data %>% distinct(Assignment, Rank) %>% 
+  group_by(Rank) %>% summarise(count = n()) %>% 
+  datatable(caption = 'Table 4. Overall count of Assignments by Rank. ; 
+                   LT = Lieutenant ;
+                   CPT = Captain ;
+                   MAJ = Major ;
+                   LTC = Lieutenant Colonel ;
+                   COL = Colonel',
+    options = list(pageLength = 10, dom = 'tip'), rownames = FALSE)
+```
+

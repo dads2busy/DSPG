@@ -1,0 +1,180 @@
+---
+title: "06_06_2023AirDefenseArtillery"
+output: pdf_document
+date: "2023-06-06"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pdftools)
+library(tesseract)
+library(stringr)
+library(rlist)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+#reading pdf
+data <- pdf_data("./data/2021_PAM_600-3_ADA.pdf")
+```
+
+```{r}
+# MOS
+
+# extracting page 1
+page1data <- data[[1]]
+
+# making a character vector of all our words
+page1textsep <- as.character(page1data$text)
+
+# getting text of page 1
+page1text <- paste(page1textsep, collapse = " ")
+
+page1text
+# getting MOS
+MOS <- str_extract(page1text, pattern = "^.*?(?=\\h\\d)")
+```
+
+```{r}
+# trying things on a small chunk of the pdf
+
+# extracting page 4
+page4data <- data[[4]]
+
+# making a character vector of all our words
+page4textsep <- as.character(page4data$text)
+
+# getting the full text
+page4text <- paste(page4textsep, collapse = " ")
+
+# make a regex for stuff we want to extract
+pattern1 <- "(\\h[a-z]\\.\\h).*?(?=\\h[a-z]\\.\\h)|(\\h[a-z]\\.\\h).*?(?=$)"
+
+# make an example to test a regex on
+example <- "text. e. some text here. f. some more text. g. final text"
+
+# does it work? yep :)
+str_extract_all(example, pattern1)
+
+# try on page 4
+str_extract_all(page4text, pattern = pattern1)
+```
+
+```{r}
+# moving to larger chunks
+
+# let's make a bigger string
+pages4to7data <- list.rbind(data[4:7])
+pages4to7sep <- as.character(pages4to7data$text)
+fulltext <- paste(pages4to7sep, collapse = " ")
+
+# try extraction...works :) 
+sections <- str_extract_all(fulltext, pattern = pattern1)
+
+# get it out of list
+info <- unlist(sections[[1]])
+```
+
+```{r}
+# make an empty data frame to store data
+
+# variable name
+columns <- c("MOS", "Rank", "Assignment", "Type")
+
+# data frame
+dataframe <- data.frame(matrix(nrow = 100, ncol = length(columns)))
+
+# assigning column names
+colnames(dataframe) <- columns
+```
+
+```{r}
+# start paring down to assignments
+
+# empty character vector
+assignmentparagraphs <- character()
+
+#extract paragraphs
+for(i in info) {
+  assignmentparagraphs <- str_extract_all(info, pattern = "((?<=\\)\\h)(KD)\\h(Assignments)\\.\\h.*?(?=\\)\\h(Developmental)\\h(and)\\h(Broadening)\\h(Assignments)\\.))|((?<=\\)\\h)(Developmental)\\h(and)\\h(Broadening)\\h(Assignments)\\..*?(?=(Self)|(Desired)))") 
+}
+paragraphs <- unlist(assignmentparagraphs)
+KDps <- paragraphs[c(3,5,7,9)]
+DEVps <- paragraphs[c(4,6,8,10)]
+```
+
+
+```{r}
+# hard coding the lieutenant data
+
+# grabbing dev. assignments
+LTassignments <- unlist(str_extract_all(paragraphs[2], pattern = "(?<=include\\h).*?(?=\\,)|(?<=\\,\\h).*?(?=\\,)|(?<=and\\h).*?(?=\\.)"))
+
+# cleaning up assignments
+forward <- LTassignments[-1]
+forward
+#input data
+dataframe$MOS <- MOS
+dataframe[c(1:5),2] <- "LT"
+dataframe[1,3] <- "Platoon Leader"
+dataframe[1,4] <- "KD"
+dataframe[c(2:5),3] <- forward[1:4]
+dataframe[c(2:5),4] <- "DEV"
+```
+
+```{r}
+# making a function to return assignments
+
+myfunction <- function(input){
+  vector <- unlist(str_split(input, pattern = "\\h\\(.\\)\\h"))
+  return(vector)
+}
+
+# apply!
+KDslist <- unlist(lapply(KDps,myfunction))
+sample <- as.data.frame(KDslist)
+KDslist <- KDslist[-c(1,7,13,20)]
+KDslist <- unlist(str_remove_all(KDslist, "(\\..*$)|(\\(.*\\))|(\\h\\(.$)"))
+KDslist[5] <- "ADAM Cell OIC Assignments"
+KDslist <- unlist(str_remove_all(KDslist, "\\h((of)|(or))\\h(?!(Staff)).*$"))
+KDslist[c(2,4,9,18)] <- c("HHB Commander", "Detatchment Commander", "AAMDC Fire Control Officer", "Air Defense Division Chief")
+s2 <- as.data.frame(KDslist)
+v1 <- c(rep("CAP", 5), rep("MAJ", 5), rep("LTC", 6), rep("COL", 5))
+
+#add to dataframe
+
+dataframe[(6:(5+length(v1))), 2:4] <- c(v1, KDslist, rep("KD", length(v1)))
+```
+
+```{r}
+#devs
+v2 <- c(rep("CAP", 30), rep("MAJ", 17), rep("LTC", 9), rep("COL", 9))
+
+DEVslist <- unlist(lapply(DEVps, myfunction))
+DEVslist <- DEVslist[-c(1,16:17,35:36,46:47,55)]
+DEVslist <- unlist(str_remove_all(DEVslist, "(\\h\\(.{1,15}\\))|(\\h(within).*$)|(\\.$)"))
+cpt <- DEVslist[1:14]
+cpt <- unlist(str_split(cpt, ";\\h"))
+cpt <- cpt[-15]
+cpt[14] <- "Asymmetric Warfare Group"
+cpt <- unlist(str_remove_all(cpt, "(\\.\\()|(\\.\\)*$)|(\\h(positions))|(/internship)"))
+cpt <- unlist(str_split(cpt, "\\h(or)\\h"))
+cpt[c(8,18)] <- c("Battalion Tactical Director", "HRC positions")
+DEVslist
+DEVslist <- DEVslist[15:length(DEVslist)]
+DEVslist <- unlist(str_split(DEVslist, ";\\h"))
+DEVslist <- unlist(str_remove_all(DEVslist, "\\h\\(.*\\)"))
+DEVslist <- unlist(str_remove_all(DEVslist, "\\h(in)\\h.*$"))
+DEVslist[12] <- "fellowships"
+DEVslist <- c(cpt, DEVslist)
+dataframe[(27:(26+length(v2))), 2:4] <- c(v2, DEVslist, rep("DEV", length(v2)))
+```
+
+
+
+```{r}
+fulldata <- dataframe[1:91,]
+write.csv(fulldata, "./data/15_06_2023_ADAR.csv")
+```
+

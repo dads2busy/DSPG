@@ -1,0 +1,12 @@
+---
+title: "Analyzing Data From Documents"
+subtitle: "Goals"
+---
+
+#### The goals of this part of the project was to explore the broad connection between performance and psychosocial characteristics, as well as behaviors associated with performance. The Social and Decision Analytics Division (SDAD) will leverage the project's exploration to gain deeper insights into the connection between performance behaviors and psychosocial traits and build models of Soldier performance.
+
+<br>
+
+#### To achieve these goals, we analyzed a variety of Army texts, including survey items and Army Doctrine. Learn more on our <a href=Data_Pt2.html>data source</a> page.
+
+

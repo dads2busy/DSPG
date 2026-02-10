@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Extracting Text From Documents</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img id='dspg' class='center' src = 'img/black-logo.png' /></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Extracting Text From Documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Goals_Pt1.html">Goals</a>
+    </li>
+    <li>
+      <a href="Data_Pt1.html">Data</a>
+    </li>
+    <li>
+      <a href="Methods_Pt1.html">Methods</a>
+    </li>
+    <li>
+      <a href="Findings_Pt1.html">Insights</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyzing Data From Documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Goals_Pt2.html">Goals</a>
+    </li>
+    <li>
+      <a href="Data_Pt2.html">Data</a>
+    </li>
+    <li>
+      <a href="Methods_Pt2.html">Methods</a>
+    </li>
+    <li>
+      <a href="Findings_Pt2.html">Insights</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="team.html">Team</a>
+</li>
+<li>
+  <a href="https://github.com/DSPG-Young-Scholars-Program/dspg23ari">
+    <span class="fa fa-github"></span>
+     
+    
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Extracting Text From Documents</h1>
+<h3 class="subtitle">Methods</h3>
+
+</div>
+
+
+<div id="throughout-the-duration-of-this-project-we-have-thoroughly-examined-a-range-of-text-extraction-techniques.-by-documenting-these-findings-we-aim-to-facilitate-future-studies-enabling-them-to-leverage-the-knowledge-gained-from-our-research." class="section level4">
+<h4>Throughout the duration of this project, we have thoroughly examined a range of text extraction techniques. By documenting these findings, we aim to facilitate future studies, enabling them to leverage the knowledge gained from our research.</h4>
+</div>
+<div id="method-1.-image-upscaling" class="section level1">
+<h1>Method 1. Image Upscaling</h1>
+<p>Since the document contained an image encompassing ranks, assignments, and their types, we deemed it advantageous to extract the data from the image. However, the image itself was of notably low quality.</p>
+<p>Our initial approach involved upscaling the image to enhance its resolution. We experimented with various combinations, including 200x and 400x upscaling. While these methods did improve the image quality to some extent, the extracted assignments remained difficult to read and comprehend. Therefore, we transitioned to employing text extraction techniques using ChatGPT to overcome this challenge.</p>
+<p><img src="img/part1-imagebefore.jpg" style="width:60.0%" /> <img src="img/part1-imageafter.jpg" style="width:60.0%" /></p>
+<div class="column">
+<p style="text-align: center;">
+<h2>
+<strong>Advantages</strong>
+</h2>
+</p>
+<p style="text-align: left;">
+<ul>
+<li>Improved resolution</li>
+<li>Reduced noise</li>
+<li>Time efficiency.</li>
+</ul>
+</p>
+</div>
+<div class="column">
+<p style="text-align: center;">
+<h2>
+<strong>Disadvantages</strong>
+</h2>
+</p>
+<p style="text-align: left;">
+<ul>
+<li>Distorted results</li>
+<li>Illegible output,</li>
+<li>Only partial improvement in image quality.</li>
+</ul>
+</p>
+</p>
+</div>
+</div>
+<div id="method-2.-chat-gpt" class="section level1">
+<h1>Method 2. Chat-GPT</h1>
+<p>The methodology employed for text extraction using ChatGPT involved providing a prompt along with the relevant section of the document containing the assignments. Multiple prompts were tested and experimented with, ultimately selecting the prompt that yielded the most accurate results.</p>
+<p>A challenge arose as slight rearrangements of the words in the prompt led to different outputs from GPT. Another obstacle emerged when attempting to extract data for “Lieutenant Colonel” and “Colonel” assignments, as GPT failed to retrieve the desired information.</p>
+<div class="figure">
+<img src="img/part1-chatgpt.png" style="width:60.0%" alt="" />
+<p class="caption">Example Chat-GPT Prompt</p>
+</div>
+<div class="column">
+<p style="text-align: center;">
+<h2>
+<strong>Advantages</strong>
+</h2>
+</p>
+<p style="text-align: left;">
+<ul>
+<li>Ease of implementation</li>
+<li>Speed of implementation</li>
+<li>Ability to reuse prompts for differently formatted documents</li>
+<li>Effectiveness in extracting data across various test documents</li>
+</ul>
+</p>
+</div>
+<div class="column">
+<p style="text-align: center;">
+<h2>
+<strong>Disadvantages</strong>
+</h2>
+</p>
+<p style="text-align: left;">
+<ul>
+<li>Sensitive to user input</li>
+<li>Potentially generating varying outputs for identical prompts</li>
+<li>Less precision in extracting assignments</li>
+</ul>
+</p>
+</div>
+<div style="clear: both">
+<h1 id="method-3.-regular-expression-regex">Method 3. Regular Expression (Regex)</h1>
+<p>The final method we explored to extract data from the Army documents was the use of regular expressions, which match strings of interest in the text. Unlike the ChatGPT method, writing regular expressions took more time on the part of the scientist. Since each Branch used a unique formatting style, our regular expressions had to be modified for each document. A basic function using regular expressions would iterate through each character in the document and match to the sections following bullet points.</p>
+<div class="figure">
+<img src="img/part1-regex.png" style="width:60.0%" alt="" />
+<p class="caption">Example Text to Use Regex to Extract Data</p>
+</div>
+<h4 id="example-regex-function">Example Regex Function</h4>
+<p><code>myfunction &lt;- function(input){   vector &lt;- unlist(str_split(input, pattern = "\\h\\(.\\)\\h"))   return(vector) }</code></p>
+<p>While this highly supervised extraction method was more time-intensive, it also allowed for the most precise extraction of assignments of the three methods explored and allowed for better control of the output format.</p>
+<h4 id="we-chose-the-regular-expression-technique-as-the-final-method-to-extract-data-from-documents.-this-method-was-the-best-fit-for-our-set-of-data-because-we-had-a-small-number-of-documents-14-and-favored-reproducible-results-that-captured-the-most-individual-assignments-and-their-types-over-the-more-variable-outputs-produced-by-chatgpt.-we-noted-that-if-our-dataset-was-much-larger-this-method-would-not-be-ideal-because-of-how-time-intensive-it-was-to-make-edits-to-the-code-for-each-document-we-needed-to-analyze.-however-this-method-was-satisfactory-for-completing-our-goals-during-this-phase-of-the-project."><strong>We chose the regular expression technique as the final method to extract data from documents.</strong> This method was the best fit for our set of data because we had a small number of documents (14), and favored reproducible results that captured the most individual assignments and their types over the more variable outputs produced by ChatGPT. We noted that if our dataset was much larger, this method would not be ideal because of how time intensive it was to make edits to the code for each document we needed to analyze. However, this method was satisfactory for completing our goals during this phase of the project.</h4>
+</div>
+</div>
+
+<hr />
+<div>
+  <table style="text-align:center;margin: auto;">
+  <tr>
+    <td style="text-align:center; font-size:10px;">
+    <img src="img/black-logo.png" height="75px">
+    </td>
+  </tr>
+  <tr>
+    <td style="text-align:center; font-size:10px; padding-top: 12px;">
+    <p>
+      Program Contacts:
+    <a href="mailto:jt9sz@virginia.edu">Joel Thurston</a> and <a href="mailto:cpm9w@virginia.edu">Cesar Montalvo</a>
+    </p>
+    </td>
+  </tr>
+  </table>
+</div>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

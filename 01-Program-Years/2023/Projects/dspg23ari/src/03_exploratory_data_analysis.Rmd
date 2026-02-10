@@ -1,0 +1,94 @@
+---
+title: "Exploratory Data Analysis"
+output: html_document
+---
+
+```{r setup}
+# Load libraries
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(stringdist)
+```
+
+```{r}
+source("./functions/clean_assignments.R")
+source("./functions/match_strings.R")
+
+data <- clean_assignments(path_to_data = "./data")
+
+# 100% matching, we're not doing so hot
+regex <- data %>% filter(MOS == "Infantry") %>% mutate(join = 1) 
+gt <- read.csv("./data/23_06_2023_Infantry_GT.csv") 
+gt %>% left_join(regex, by = c("Assignment", "Rank", "Type", "MOS")) %>% group_by(Rank, Type, MOS) %>% mutate(total = n(), join = ifelse(is.na(join), 0, join)) %>%
+  mutate(perc = round((sum(join)/total)*100, 2)) %>% distinct(Rank, Type, total, perc)
+
+
+# fuzzymatching, does worse!
+gt <- read.csv("./data/23_06_2023_Infantry_GT.csv") %>% mutate(source = "gt")
+big_table <- data %>% filter(MOS == "Infantry") %>% mutate(source = "regex") %>% rbind(gt)
+
+matches <- match_strings(big_table$Assignment, big_table, .9)
+
+regex <- matches %>% filter(MOS == "Infantry", source == "regex") %>% select(-source) %>% mutate(join = 1)
+matches %>% filter(source == "gt") %>% select(-source) %>%
+  left_join(regex, by = c("Assignment", "Rank", "Type", "MOS")) %>% 
+  group_by(Rank, Type, MOS) %>% 
+  mutate(total = n(), join = ifelse(is.na(join), 0, join)) %>% 
+  mutate(perc = round((sum(join)/total)*100, 2)) %>% distinct(Rank, Type, total, perc)
+
+# looser matching, we're doing okay!
+library(fuzzyjoin)
+regex <- data %>% filter(MOS == "Infantry") %>% mutate(Rank = ifelse(Rank == "CAP", "CPT", Rank))
+gt <- read.csv("./data/23_06_2023_Infantry_GT.csv") %>% 
+  group_by(Rank, Type, MOS) %>% 
+  mutate(gt_total = n())
+match1 <- fuzzy_inner_join(y = gt, x = regex, by = c("Rank","Type", "MOS", "Assignment"),
+                match_fun = str_detect) %>%
+  select("Rank" = "Rank.x", "Type" = "Type.x", "MOS" = "MOS.x",
+           "Assignment" = "Assignment.x")
+match2 <- fuzzy_inner_join(x = gt, y = regex, by = c("Rank","Type", "MOS", "Assignment"),
+                match_fun = str_detect) %>%
+  select("Rank" = "Rank.x", "Type" = "Type.x", "MOS" = "MOS.x",
+           "Assignment" = "Assignment.x")
+match_stats <- rbind(match1, match2) %>% distinct() %>% 
+  group_by(Rank, Type, MOS) %>% 
+  mutate(matched = n()) %>%
+  distinct() %>%
+  mutate(matched = n()) %>% 
+  distinct(MOS, Rank, Type, matched)
+  
+regex <- data %>% filter(MOS == "Infantry") %>% mutate(Rank = ifelse(Rank == "CAP", "CPT", Rank)) %>%
+  group_by(Rank, Type, MOS) %>% 
+  mutate(regex_total = n()) %>% distinct(Rank, Type, MOS, regex_total)
+
+gt %>% select(-Assignment) %>% distinct() %>% left_join(match_stats) %>%
+  mutate(matched = ifelse(is.na(matched), 0, matched)) %>%
+  mutate(percent = round((matched/gt_total)*100, digits = 2)) %>%
+  left_join(regex) %>% mutate(regex_total = (ifelse(is.na(regex_total), 0,
+                                                    regex_total))) %>%
+  select(MOS, Rank, Type, gt_total, regex_total, matched, percent)
+```
+
+```{r}
+# Number of unique assignments
+data %>% select(Assignment) %>% distinct() %>% nrow()
+
+# KD and DEV Assignments
+data %>% distinct(Assignment, Type) %>% group_by(Type) %>% summarise(count = n())
+
+data %>% filter(Type == "KD") %>% distinct(Assignment, Type, MOS) %>% 
+  group_by(MOS) %>% summarise(count = n())
+
+data %>% filter(Type == "KD") %>% distinct(Assignment, Rank) %>% 
+  group_by(Rank) %>% summarise(count = n())
+
+data %>% filter(Type == "KD") %>%
+  group_by(Rank, Assignment) %>% summarise(count = n()) %>% arrange(-count)
+
+data %>% filter(Type == "KD") %>% distinct(MOS, Assignment) %>%
+  group_by(MOS, Assignment) %>% mutate(count = n()) %>% filter(count == 1) %>% 
+  ungroup(Assignment) %>%
+  mutate(singletons = sum(count)) %>% distinct(MOS, singletons) %>% arrange(-singletons)
+```
+
