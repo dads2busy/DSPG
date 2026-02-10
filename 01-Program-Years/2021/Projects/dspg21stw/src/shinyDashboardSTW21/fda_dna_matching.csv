@@ -1,0 +1,240 @@
+,clean fda company name,original fda company,fda row,corporate family,clean dna row,clean dna company,original dna company,fuzz ratio
+0,aaipharma,AAIPHARMA LLC,3,aaipharma,[3820],['aaipharma'],['AAIPharma Services Corp.'],[100]
+1,abbott,ABBOTT LABS,4,abbott,"[260, 273, 275]","['abbott', 'abbott', 'abbott']","['Abbott AG', 'Abbott Oy', 'Abbott Srl']","[100, 100, 100]"
+2,abbvie,"ABBVIE, ABBVIE INC","5, 8",abbvie,[488],['abbvie'],['AbbVie Inc.'],[100]
+3,abraxis bioscience,ABRAXIS BIOSCIENCE,11,abraxis bioscience,[3198],['abraxis bioscience'],"['Abraxis BioScience, Inc.']",[100]
+4,aci,ACI HEALTHCARE LTD,15,aci,"[699, 700]","['aci', 'aci']","['ACI International', 'ACI Limited']","[100, 100]"
+5,acs dobfar,"ACS DOBFAR, ACS DOBFAR SPA","20, 22",acs dobfar,[856],['acs dobfar'],['ACS Dobfar SpA'],[100]
+6,actavis elizabeth,ACTAVIS ELIZABETH,23,actavis elizabeth,"[46365, 46899]","['actavis elizabeth', 'actavis elizabeth']","['Actavis Elizabeth LLC', 'Actavis Elizabeth Llc']","[100, 100]"
+7,actelion,ACTELION PHARMS LTD,35,actelion,[931],['actelion'],['Actelion Ltd'],[100]
+8,air liquide america,"AIR LIQUIDE AMERICA LP, AIR LIQUIDE HEALTHCARE AMERICA CORP","43, 45",air liquide america,[1967],['air liquide america'],['Air Liquide America Corp'],[100]
+9,airgas,AIRGAS USA LLC,50,airgas,[1958],['airgas'],['Airgas Inc.'],[100]
+10,akorn,"AKORN, AKORN INC","52, 53",akorn,[2116],['akorn'],['Akorn Inc'],[100]
+11,alcon,"ALCON, ALCON PHARMS LTD","54, 55",alcon,[2248],['alcon'],['Alcon Inc'],[100]
+12,alembic,"ALEMBIC LTD, ALEMBIC PHARMS LTD","56, 57",alembic,[2298],['alembic'],['Alembic Ltd'],[100]
+13,alimera sciences,ALIMERA SCIENCES INC,59,alimera sciences,"[2560, 62012]","['alimera sciences', 'alimera sciences']","['Alimera Sciences Inc', 'Alimera Sciences Ltd']","[100, 100]"
+14,alkermes,"ALKERMES, ALKERMES INC","62, 63",alkermes,[2422],['alkermes'],['Alkermes PLC'],[100]
+15,allegis,ALLEGIS,64,allegis,[2354],['allegis'],['Allegis Group Inc'],[100]
+16,allergan,"ALLERGAN, ALLERGAN HOLDINGS","65, 66",allergan,"[2460, 2471, 62719]","['allergan', 'allergan', 'allergan']","['Allergan Limited', 'Allergan Inc', 'Allergan PLC']","[100, 100, 100]"
+17,allergan sales,ALLERGAN SALES LLC,67,allergan sales,[2662],['allergan sales'],['Allergan Sales LLC'],[100]
+18,allied,ALLIED PHARMA INC,68,allied,"[2244, 3809]","['allied', 'allied']","['Allied Capital Corp', 'Allied 100, LLC']","[100, 100]"
+19,alpharma,ALPHARMA PHARMS,69,alpharma,[2430],['alpharma'],['Alpharma Inc'],[100]
+20,alvogen,"ALVOGEN, ALVOGEN INC","72, 73",alvogen,[30371],['alvogen'],['Alvogen Group Inc.'],[100]
+21,amarin,AMARIN PHARMS,77,amarin,[20034],['amarin'],['Amarin Corp PLC'],[100]
+22,amgen,"AMGEN, AMGEN INC","81, 82",amgen,"[3042, 3047, 3048, 3049, 3055]","['amgen', 'amgen', 'amgen', 'amgen', 'amgen']","['Amgen Inc', 'Amgen AB', 'Amgen GmbH', 'Amgen Ltd', 'Amgen SAS']","[100, 100, 100, 100, 100]"
+23,andrx,ANDRX LABS LLC,96,andrx,[3472],['andrx'],['Andrx Corporation'],[100]
+24,angelini,ANGELINI PHARMA,97,angelini,[3535],['angelini'],['Angelini Group'],[100]
+25,ani,"ANI PHARMS, ANI PHARMS INC","98, 99",ani,[5074],['ani'],['ANI Technologies Pvt. Ltd.'],[100]
+26,antibiotice,ANTIBIOTICE,101,antibiotice,[3667],['antibiotice'],['Antibiotice SA'],[100]
+27,antrim,ANTRIM PHARMS LLC,102,antrim,[3699],['antrim'],['Antrim Energy Inc'],[100]
+28,apotex,"APOTEX, APOTEX CORP, APOTEX INC, APOTEX TECHNOLOGIES","106, 107, 108, 109",apotex,"[4088, 5294]","['apotex', 'apotex']","['Apotex Holdings Inc.', 'Apotex Inc']","[100, 100]"
+29,ascent,ASCENT PHARMS INC,120,ascent,[2933],['ascent'],"['Ascent Capital Group, Inc.']",[100]
+30,astrazeneca,"ASTRAZENECA, ASTRAZENECA AB, ASTRAZENECA LP, ASTRAZENECA PHARMS","124, 125, 126, 127",astrazeneca,"[123, 4978, 5000, 5002, 5013, 38676, 63617]","['astrazeneca', 'astrazeneca', 'astrazeneca', 'astrazeneca', 'astrazeneca', 'astrazeneca', 'astrazeneca']","['AstraZeneca AS', 'AstraZeneca GmbH', 'AstraZeneca Pty Ltd', 'AstraZeneca AB', 'AstraZeneca LP', 'AstraZeneca AG', 'AstraZeneca PLC']","[100, 100, 100, 100, 100, 100, 100]"
+31,aton,ATON,129,aton,[5214],['aton'],['ATON GmbH'],[100]
+32,avent,AVENT,144,avent,[5633],['avent'],['Avent Holdings Ltd'],[100]
+33,aveva,AVEVA,145,aveva,[9982],['aveva'],['Aveva Group PLC'],[100]
+34,aytu bioscience,AYTU BIOSCIENCE INC,147,aytu bioscience,[49319],['aytu bioscience'],['Aytu BioScience Inc.'],[100]
+35,barr,"BARR, BARR LABS INC","151, 153",barr,[6257],['barr'],['Barr Ltd'],[100]
+36,baxter,"BAXTER HLTHCARE, BAXTER HLTHCARE CORP","156, 157",baxter,"[6342, 6352, 6353, 6354, 6355, 9459, 9792, 9793]","['baxter', 'baxter', 'baxter', 'baxter', 'baxter', 'baxter', 'baxter', 'baxter']","['Baxter A/S', 'Baxter B.V.', 'Baxter Corporation', 'Baxter Oy', 'Baxter SpA', 'Baxter International Inc', 'Baxter Medical AB', 'Baxter S.A.S']","[100, 100, 100, 100, 100, 100, 100, 100]"
+37,bayer,"BAYER, BAYER HEALTHCARE LLC, BAYER HEALTHCARE PHARMS, BAYER HLTHCARE","158, 159, 160, 161",bayer,"[6372, 6376, 6379, 6395, 9808, 9809, 9836, 9838, 9844, 50329]","['bayer', 'bayer', 'bayer', 'bayer', 'bayer', 'bayer', 'bayer', 'bayer', 'bayer', 'bayer']","['Bayer AB', 'Bayer SpA', 'Bayer A/S', 'Bayer SAS', 'Bayer AG', 'Bayer Corporation', 'Bayer B.V.', 'Bayer Inc', 'Bayer plc', 'Bayer Oy']","[100, 100, 100, 100, 100, 100, 100, 100, 100, 100]"
+38,becton dickinson,BECTON DICKINSON CO,164,becton dickinson,"[6714, 6834, 6835, 6853]","['becton dickinson', 'becton dickinson', 'becton dickinson', 'becton dickinson']","['Becton Dickinson A/S', 'Becton Dickinson AG', 'Becton Dickinson Pty Ltd', 'Becton Dickinson GmbH']","[100, 100, 100, 100]"
+39,beximco,BEXIMCO USA,168,beximco,[7062],['beximco'],['BEXIMCO Group Ltd'],[100]
+40,bio-pharm,BIO-PHARM INC,170,bio-pharm,[7512],['bio-pharm'],['Bio-Pharm Incorporated'],[100]
+41,biocon,BIOCON LIMITED,171,biocon,"[6665, 7418]","['biocon', 'biocon']","['Biocon Ltd', 'Biocon, Inc.']","[100, 100]"
+42,biogen,BIOGEN,173,biogen,[28069],['biogen'],['Biogen Inc.'],[100]
+43,biogen idec,"BIOGEN IDEC, BIOGEN IDEC INC","174, 175",biogen idec,[7449],['biogen idec'],['Biogen Idec Ltd'],[100]
+44,boehringer ingelheim,BOEHRINGER INGELHEIM,181,boehringer ingelheim,"[8433, 8434, 8436, 8437, 8443, 8447]","['boehringer ingelheim', 'boehringer ingelheim', 'boehringer ingelheim', 'boehringer ingelheim', 'boehringer ingelheim', 'boehringer ingelheim']","['Boehringer Ingelheim AB', 'Boehringer Ingelheim Corporation', 'Boehringer Ingelheim GmbH', 'Boehringer Ingelheim Ltd', 'Boehringer Ingelheim International GmbH', 'Boehringer Ingelheim Pty Ltd']","[100, 100, 100, 100, 100, 100]"
+45,bracco,BRACCO,183,bracco,[8737],['bracco'],['Bracco SpA'],[100]
+46,braun,"B BRAUN, B BRAUN MEDICAL INC","148, 149",braun,"[6478, 6479, 8751, 8765]","['braun', 'braun', 'braun', 'braun']","['B. Braun Medical Inc', 'B. Braun Medical Ltd', 'Braun GmbH', 'The Braun Corporation']","[100, 100, 100, 100]"
+47,bristol-myers squibb,BRISTOL-MYERS SQUIBB,190,bristol-myers squibb,"[8926, 9147]","['bristol-myers squibb', 'bristol-myers squibb']","['Bristol-Myers Squibb AB', 'Bristol-Myers Squibb Co']","[100, 100]"
+48,btg,BTG INTERNATIONAL INC,191,btg,[9441],['btg'],['BTG PLC'],[100]
+49,cardinal,CARDINAL HEALTH 414,194,cardinal,"[9896, 10970, 11719, 12082, 18921, 32394]","['cardinal', 'cardinal', 'cardinal', 'cardinal', 'cardinal', 'cardinal']","['Cardinal Partners', 'Cardinal Health Inc', 'Cardinal Health 409 Inc', 'Cardinal Health 200 Inc', 'Cardinal Capital Partners Inc.', 'Cardinal Energy Group Inc.']","[100, 100, 100, 100, 100, 100]"
+50,carefusion,CAREFUSION 2200,195,carefusion,"[14558, 46867]","['carefusion', 'carefusion']","['CareFusion Corporation', 'Carefusion 203 Inc.']","[100, 100]"
+51,catalent,CATALENT,199,catalent,[11720],['catalent'],"['Catalent, Inc.']",[100]
+52,celgene,"CELGENE, CELGENE CORP","202, 203",celgene,"[11119, 12504]","['celgene', 'celgene']","['Celgene Corporation', 'Celgene Ltd']","[100, 100]"
+53,cephalon,CEPHALON,207,cephalon,"[14212, 36039, 50834, 63619]","['cephalon', 'cephalon', 'cephalon', 'cephalon']","['Cephalon Inc', 'Cephalon Ltd', 'Cephalon Srl', 'Cephalon GmbH']","[100, 100, 100, 100]"
+54,cft,CFT PHARMS LLC,209,cft,[37276],['cft'],['CFT S.p.A.'],[100]
+55,chattem,CHATTEM,213,chattem,[12078],['chattem'],['Chattem Inc'],[100]
+56,chiesi,CHIESI USA INC,216,chiesi,"[11761, 55512]","['chiesi', 'chiesi']","['Chiesi SA', 'Chiesi Ltd']","[100, 100]"
+57,cipla,"CIPLA, CIPLA LIMITED, CIPLA LTD","221, 222, 223",cipla,[12244],['cipla'],['Cipla Ltd'],[100]
+58,clinigen,CLINIGEN HLTHCARE,225,clinigen,[31818],['clinigen'],['Clinigen Group PLC'],[100]
+59,coastal,COASTAL PHARMS,227,coastal,[44551],['coastal'],['Coastal Energy Co'],[100]
+60,coopersurgical,COOPERSURGICAL,230,coopersurgical,[14296],['coopersurgical'],['CooperSurgical Inc'],[100]
+61,corepharma,COREPHARMA,233,corepharma,[13991],['corepharma'],['Corepharma L.L.C.'],[100]
+62,crown,CROWN LABS,239,crown,"[14647, 14878]","['crown', 'crown']","['Crown Holdings Inc.', 'Crown Capital Partners Inc.']","[100, 100]"
+63,cypress,CYPRESS PHARM,247,cypress,"[15678, 15709, 15714]","['cypress', 'cypress', 'cypress']","['The Cypress Group', 'Cypress Corp', 'Cypress Energy Partners LP']","[100, 100, 100]"
+64,daewoong,DAEWOONG PHARM CO,248,daewoong,[15816],['daewoong'],['Daewoong Co Ltd'],[100]
+65,daiichi sankyo,"DAIICHI SANKYO, DAIICHI SANKYO INC","249, 250",daiichi sankyo,"[15873, 52697]","['daiichi sankyo', 'daiichi sankyo']","['Daiichi Sankyo Company Limited', 'Daiichi Sankyo Inc']","[100, 100]"
+66,douglas,DOUGLAS PHARMS,260,douglas,[17890],['douglas'],['Douglas Group'],[100]
+67,dow,DOW PHARM,261,dow,[17452],['dow'],['Dow Inc.'],[100]
+68,duchesnay,DUCHESNAY,268,duchesnay,[17878],['duchesnay'],['Duchesnay Inc'],[100]
+69,eagle,EAGLE PHARMS,273,eagle,[23843],['eagle'],['American Eagle Energy Corp.'],[100]
+70,eci,ECI PHARMS LLC,274,eci,"[18363, 18600]","['eci', 'eci']","['ECI Partners LLP', 'ECI Inc.']","[100, 100]"
+71,ecolab,ECOLAB,276,ecolab,"[18401, 18403]","['ecolab', 'ecolab']","['Ecolab Pty Ltd', 'Ecolab Inc']","[100, 100]"
+72,ecr,ECR PHARMA,277,ecr,[18431],['ecr'],"['ECR International, Inc.']",[100]
+73,egalet,EGALET US INC,280,egalet,"[18630, 18631]","['egalet', 'egalet']","['Egalet Corporation', 'Egalet a/s']","[100, 100]"
+74,eisai,EISAI INC,281,eisai,"[18765, 18766, 18767, 18768]","['eisai', 'eisai', 'eisai', 'eisai']","['Eisai Co Ltd', 'Eisai Inc.', 'Eisai Ltd', 'Eisai SAS']","[100, 100, 100, 100]"
+75,eli lilly,"ELI LILLY AND CO, ELI LILLY CO","283, 284",eli lilly,"[18812, 18931, 18933, 33845]","['eli lilly', 'eli lilly', 'eli lilly', 'eli lilly']","['Eli Lilly and Company Limited', 'Eli Lilly Holdings Ltd', 'Eli Lilly International Corporation', 'Eli Lilly and Co']","[100, 100, 100, 100]"
+76,emd serono,"EMD SERONO, EMD SERONO INC","289, 290",emd serono,[50979],['emd serono'],['EMD Serono Inc'],[100]
+77,endo,"ENDO PHARM, ENDO PHARMS, ENDO PHARMS INC","292, 293, 294",endo,[19274],['endo'],['Endo International PLC'],[100]
+78,epic,"EPIC PHARMA, EPIC PHARMA LLC","297, 298",epic,"[19548, 19621, 36563, 55877]","['epic', 'epic', 'epic', 'epic']","['Epic Systems Corp', 'Epic Technologies Llc', 'Epic Health Services Inc', 'Epic Corporation']","[100, 100, 100, 100]"
+79,ethypharm,"ETHYPHARM, ETHYPHARM USA CORP","300, 301",ethypharm,[20036],['ethypharm'],['Ethypharm SA'],[100]
+80,exalenz bioscience,EXALENZ BIOSCIENCE,303,exalenz bioscience,[8843],['exalenz bioscience'],['Exalenz Bioscience Ltd'],[100]
+81,exela,"EXELA HOLDINGS, EXELA PHARMA SCS LLC","304, 306",exela,[52937],['exela'],['Exela Technologies Inc'],[100]
+82,exelixis,EXELIXIS,307,exelixis,[63164],['exelixis'],['Exelixis Inc'],[100]
+83,fdc,FDC LTD,309,fdc,[20872],['fdc'],['FDC Ltd'],[100]
+84,ferring,"FERRING, FERRING PHARMS INC","312, 313",ferring,"[21047, 22326]","['ferring', 'ferring']","['Ferring SAS', 'Ferring SpA']","[100, 100]"
+85,fosun,FOSUN PHARMA,318,fosun,[21981],['fosun'],['Fosun International Limited'],[100]
+86,fresenius kabi,FRESENIUS KABI USA,323,fresenius kabi,"[21443, 22167]","['fresenius kabi', 'fresenius kabi']","['Fresenius Kabi Ltd', 'Fresenius Kabi AG']","[100, 100]"
+87,galderma,"GALDERMA LABS, GALDERMA LABS LP","328, 329",galderma,[43512],['galderma'],['Galderma SA'],[100]
+88,ge,"GE HEALTHCARE, GE HLTHCARE INC","337, 338",ge,[24107],['ge'],['GE Medical Systems Ltd'],[100]
+89,genentech,"GENENTECH, GENENTECH INC","341, 342",genentech,[23375],['genentech'],['Genentech Inc'],[100]
+90,genzyme,"GENZYME, GENZYME CORP","344, 345",genzyme,[24298],['genzyme'],['Genzyme Corp'],[100]
+91,gilead sciences,GILEAD SCIENCES INC,347,gilead sciences,"[23647, 23648, 23656, 23682, 24913, 24915]","['gilead sciences', 'gilead sciences', 'gilead sciences', 'gilead sciences', 'gilead sciences', 'gilead sciences']","['Gilead Sciences GmbH', 'Gilead Sciences Ltd', 'Gilead Sciences Inc', 'Gilead Sciences Srl', 'Gilead Sciences International Ltd', 'Gilead Sciences Pty Limited']","[100, 100, 100, 100, 100, 100]"
+92,glaxosmithkline,"GLAXOSMITHKLINE, GLAXOSMITHKLINE LLC","351, 354",glaxosmithkline,"[23757, 23760, 23767, 23770, 23776, 23910, 24057, 24059, 24063]","['glaxosmithkline', 'glaxosmithkline', 'glaxosmithkline', 'glaxosmithkline', 'glaxosmithkline', 'glaxosmithkline', 'glaxosmithkline', 'glaxosmithkline', 'glaxosmithkline']","['GlaxoSmithKline AB', 'GlaxoSmithKline Capital plc', 'GlaxoSmithKline AG', 'GlaxoSmithKline Oy', 'GlaxoSmithKline Services Unlimited', 'GlaxoSmithKline Holdings Pty Ltd', 'GlaxoSmithKline Spa', 'GlaxoSmithKline PLC', 'GlaxoSmithKline B.V.']","[100, 100, 100, 100, 100, 100, 100, 100, 100]"
+93,granules india,"GRANULES INDIA, GRANULES INDIA LTD","360, 361",granules india,[24747],['granules india'],['Granules India Ltd'],[100]
+94,guerbet,GUERBET,363,guerbet,[25145],['guerbet'],['Guerbet SA'],[100]
+95,harris,HARRIS PHARM,369,harris,"[25520, 27173]","['harris', 'harris']","['Harris Corporation', 'Harris Group Inc']","[100, 100]"
+96,heritage,"HERITAGE PHARMA, HERITAGE PHARMS INC","373, 374",heritage,"[8564, 11827]","['heritage', 'heritage']","['American Heritage Holdings', 'American Heritage International Inc.']","[100, 100]"
+97,hi-tech pharmacal,HI-TECH PHARMACAL,382,hi-tech pharmacal,[26377],['hi-tech pharmacal'],['Hi-Tech Pharmacal Co. Inc.'],[100]
+98,hoffmann-la roche,HOFFMANN-LA ROCHE,393,hoffmann-la roche,"[26822, 26823]","['hoffmann-la roche', 'hoffmann-la roche']","['Hoffmann-La Roche Inc', 'Hoffmann-La Roche Limited']","[100, 100]"
+99,horizon,"HORIZON PHARMA, HORIZON PHARMA INC, HORIZON PHARMA USA","395, 396, 397",horizon,"[26202, 27218]","['horizon', 'horizon']","['Horizon Health Services Inc.', 'Horizon Holdings, LLC']","[100, 100]"
+100,hospira,"HOSPIRA, HOSPIRA INC","399, 400",hospira,"[26971, 27282]","['hospira', 'hospira']","['Hospira Inc', 'Hospira SpA']","[100, 100]"
+101,i,US PHARMS HOLDINGS I,899,i,"[20012, 21086]","['i', 'i']","['I3 Energy PLC', '3i Group PLC']","[100, 100]"
+102,icu,ICU MEDICAL INC,409,icu,[27950],['icu'],['ICU Medical Inc'],[100]
+103,idt australia,IDT AUSTRALIA LTD,410,idt australia,[28148],['idt australia'],['IDT Australia Limited'],[100]
+104,imclone,IMCLONE,411,imclone,[28560],['imclone'],['Imclone Systems Inc'],[100]
+105,immunex,IMMUNEX,412,immunex,[28640],['immunex'],['Immunex Corporation'],[100]
+106,incyte,INCYTE CORP,416,incyte,[28790],['incyte'],['Incyte Corp'],[100]
+107,indivior,INDIVIOR INC,418,indivior,[28155],['indivior'],['Indivior PLC'],[100]
+108,indoco remedies,INDOCO REMEDIES,419,indoco remedies,[29268],['indoco remedies'],['Indoco Remedies Ltd'],[100]
+109,insight,INSIGHT PHARMS,422,insight,"[17593, 29316]","['insight', 'insight']","['Insight Inc.', 'InSight Health Services Holdings Corp']","[100, 100]"
+110,intellipharmaceutics,INTELLIPHARMACEUTICS,426,intellipharmaceutics,[60966],['intellipharmaceutics'],['IntelliPharmaCeutics International Inc.'],[100]
+111,ipsen,"IPSEN INC, IPSEN PHARMA","434, 435",ipsen,"[29727, 29730, 32937]","['ipsen', 'ipsen', 'ipsen']","['Ipsen International GmbH', 'Ipsen SpA', 'Ipsen SA']","[100, 100, 100]"
+112,ipsen biopharm,IPSEN BIOPHARM LTD,433,ipsen biopharm,[29726],['ipsen biopharm'],['Ipsen Biopharm Ltd'],[100]
+113,ironwood,IRONWOOD PHARMS INC,438,ironwood,[29835],['ironwood'],['Ironwood Capital Ltd.'],[100]
+114,ivax,IVAX PHARMS INC,440,ivax,[30307],['ivax'],['Ivax Corporation'],[100]
+115,janssen,JANSSEN PHARMS,444,janssen,[30971],['janssen'],['Janssen Inc'],[100]
+116,janssen biotech,JANSSEN BIOTECH,443,janssen biotech,[13379],['janssen biotech'],['Janssen Biotech Inc'],[100]
+117,jubilant draximage,JUBILANT DRAXIMAGE,458,jubilant draximage,[45909],['jubilant draximage'],['Jubilant Draximage Inc'],[100]
+118,kadmon,KADMON PHARMS LLC,460,kadmon,[31390],['kadmon'],['Kadmon Holdings Inc.'],[100]
+119,kaleo,KALEO INC,461,kaleo,[1163],['kaleo'],['Kaleo Inc.'],[100]
+120,king,"KING PHARMS, KING PHARMS LLC","466, 467",king,[32254],['king'],['King Systems Inc.'],[100]
+121,kowa,KOWA CO,469,kowa,"[32478, 32479, 32480]","['kowa', 'kowa', 'kowa']","['Kowa Co Ltd', 'Kowa American Corporation', 'Kowa Group']","[100, 100, 100]"
+122,l perrigo,L PERRIGO CO,476,l perrigo,[34429],['l perrigo'],['L Perrigo Company Inc'],[100]
+123,lannett,"LANNETT, LANNETT CO INC, LANNETT HOLDINGS INC","479, 480, 481",lannett,[33078],['lannett'],['Lannett Co Inc'],[100]
+124,lantheus,LANTHEUS MEDICAL,483,lantheus,[39748],['lantheus'],"['Lantheus Holdings, Inc.']",[100]
+125,lehigh valley,LEHIGH VALLEY,488,lehigh valley,[33476],['lehigh valley'],['Lehigh Valley Technologies Inc.'],[100]
+126,lg chem,LG CHEM LTD,491,lg chem,[33653],['lg chem'],['LG Chem Ltd'],[100]
+127,lilly,LILLY,495,lilly,[34062],['lilly'],"['Lilly, S.A.']",[100]
+128,linde north america,LINDE NORTH AMERICA INC,499,linde north america,[8410],['linde north america'],['Linde North America Inc.'],[100]
+129,lloyd,LLOYD,500,lloyd,[13661],['lloyd'],['Lloyd and Partners Limited'],[100]
+130,loreal,LOREAL USA,502,loreal,[43187],['loreal'],"[""L'Oreal SA""]",[100]
+131,lotus,LOTUS PHARM CO LTD,503,lotus,[24505],['lotus'],['Group Lotus plc'],[100]
+132,lundbeck,LUNDBECK PHARMS LLC,508,lundbeck,"[34171, 34749, 34750]","['lundbeck', 'lundbeck', 'lundbeck']","['Lundbeck SAS', 'Lundbeck GmbH', 'Lundbeck Ltd']","[100, 100, 100]"
+133,lupin,"LUPIN, LUPIN LTD, LUPIN PHARMS","509, 511, 512",lupin,[34767],['lupin'],['Lupin Limited'],[100]
+134,m,3M,1,m,"[33223, 37340, 38604, 53031, 56261, 58045]","['m', 'm', 'm', 'm', 'm', 'm']","['M101 Corp', '3M Company', 'M2 Group Ltd.', 'M3, Inc.', '3M A/S', '24M Technologies Inc.']","[100, 100, 100, 100, 100, 100]"
+135,mallinckrodt,MALLINCKRODT INC,521,mallinckrodt,[28554],['mallinckrodt'],['Mallinckrodt PLC'],[100]
+136,mannkind,MANNKIND,524,mannkind,[37498],['mannkind'],['MannKind Corp'],[100]
+137,matheson tri-gas,MATHESON TRI-GAS INC,528,matheson tri-gas,[35366],['matheson tri-gas'],['Matheson Tri-Gas Inc'],[100]
+138,matrix,MATRIX LABS LTD,529,matrix,"[35359, 38583, 38606]","['matrix', 'matrix', 'matrix']","['Matrix Systems Inc', 'Matrix Technologies Inc.', 'Matrix Partners']","[100, 100, 100]"
+139,meda,MEDA PHARMS,535,meda,[36232],['meda'],['Meda AB'],[100]
+140,medac,MEDAC PHARMA INC,536,medac,[36167],['medac'],['Medac GmbH'],[100]
+141,medication,INTL MEDICATION,428,medication,[28582],['medication'],['International Medication Systems Ltd'],[100]
+142,medicines,"MEDICINES360, THE MEDICINES CO","537, 862",medicines,[36138],['medicines'],['The Medicines Company'],[100]
+143,medicure,MEDICURE,539,medicure,[33110],['medicure'],['Medicure Inc'],[100]
+144,medigene,MEDIGENE AG,540,medigene,[36179],['medigene'],['MediGene AG'],[100]
+145,medimmune,MEDIMMUNE,542,medimmune,"[10167, 35947]","['medimmune', 'medimmune']","['MedImmune Limited', 'MedImmune Inc']","[100, 100]"
+146,medtech,MEDTECH PRODUCTS,543,medtech,[36065],['medtech'],['Medtech SAS'],[100]
+147,merck,"MERCK, MERCK AND CO INC","544, 545",merck,"[19064, 36392, 38014]","['merck', 'merck', 'merck']","['Merck AB', 'Merck Oy', 'Merck S.p.A.']","[100, 100, 100]"
+148,merz,MERZ PHARMS,549,merz,[38209],['merz'],['Merz Incorporated'],[100]
+149,mikart,MIKART,555,mikart,[36864],['mikart'],['Mikart Incorporated'],[100]
+150,millennium,MILLENNIUM PHARMS,556,millennium,"[7332, 19513, 36884, 37146]","['millennium', 'millennium', 'millennium', 'millennium']","['Bank Millennium SA', 'American Millennium Corp Inc', 'Millennium Partners LP', 'Millennium Health, LLC']","[100, 100, 100, 100]"
+151,mission pharmacal,MISSION PHARMACAL CO,559,mission pharmacal,[37000],['mission pharmacal'],['Mission Pharmacal'],[100]
+152,msd,"MSD INTL, MSD INTL GMBH","564, 565",msd,[38267],['msd'],['MSD Capital LP'],[100]
+153,mylan,"MYLAN, MYLAN LABS, MYLAN LABS LTD, MYLAN PHARMA, MYLAN PHARMS INC, MYLAN TECHNOLOGIES","569, 573, 574, 575, 576, 579",mylan,"[38883, 38888, 38889]","['mylan', 'mylan', 'mylan']","['Mylan BVBA', 'Mylan N.V.', 'Mylan B.V.']","[100, 100, 100]"
+154,network,THE PHARMA NETWORK,863,network,"[2986, 39851, 41197]","['network', 'network', 'network']","['American Health Network Inc', 'Network International LLC', 'Network Services']","[100, 100, 100]"
+155,nexgen,"NEXGEN PHARMA, NEXGEN PHARMA INC","590, 591",nexgen,"[12696, 41892]","['nexgen', 'nexgen']","['NexGen Energy Ltd.', 'NexGen Medical Systems Inc.']","[100, 100]"
+156,norco,NORCO INC,597,norco,[40810],['norco'],['Norco Inc.'],[100]
+157,northstar,NORTHSTAR HLTHCARE,599,northstar,[34808],['northstar'],['Northstar Group Services Inc'],[100]
+158,nova,NOVA LABS LTD,601,nova,"[40896, 41661]","['nova', 'nova']","['Nova Holdings Corp', 'Nova Energy Ltd']","[100, 100]"
+159,novartis,"NOVARTIS, NOVARTIS PHARM, NOVARTIS PHARMS, NOVARTIS PHARMS CORP","602, 603, 604, 605",novartis,"[40904, 52630]","['novartis', 'novartis']","['Novartis Corporation', 'Novartis AG']","[100, 100]"
+160,novo nordisk,"NOVO NORDISK, NOVO NORDISK INC","611, 612",novo nordisk,"[40934, 40935, 40938]","['novo nordisk', 'novo nordisk', 'novo nordisk']","['Novo Nordisk Inc', 'Novo Nordisk A/S', 'Novo Nordisk Ltd']","[100, 100, 100]"
+161,nps,NPS PHARMS INC,613,nps,[41036],['nps'],['NPS Technologies Group Inc'],[100]
+162,nycomed,NYCOMED US,617,nycomed,[41959],['nycomed'],['Nycomed Limited'],[100]
+163,oc,OC PHARMA,621,oc,[42806],['oc'],"['OC Medical Holdings, Inc.']",[100]
+164,odyssey,ODYSSEY PHARMS,622,odyssey,[63064],['odyssey'],"['Odyssey Group International, Inc.']",[100]
+165,omeros,OMEROS,625,omeros,[42685],['omeros'],['Omeros Corporation'],[100]
+166,orexo,OREXO US INC,630,orexo,[43269],['orexo'],['Orexo AB'],[100]
+167,organon,ORGANON USA INC,632,organon,"[43135, 43151]","['organon', 'organon']","['Organon SA', 'Organon International Inc']","[100, 100]"
+168,orient,ORIENT PHARMA CO LTD,633,orient,[43132],['orient'],['Orient Corporation'],[100]
+169,orion,ORION PHARMA,635,orion,"[43181, 43182, 43206, 43212, 43228, 56970, 63997]","['orion', 'orion', 'orion', 'orion', 'orion', 'orion', 'orion']","['Orion Group Holdings Inc', 'ORION Corp', 'Orion Energy Systems, Inc.', 'Orion Health Inc.', 'Orion Oyj', 'ORION Holdings Corp', 'Orion Health Group Ltd']","[100, 100, 100, 100, 100, 100, 100]"
+170,osi,OSI PHARMS,639,osi,"[43298, 43305]","['osi', 'osi']","['OSI Group, LLC', 'OSI Systems, Inc.']","[100, 100]"
+171,otonomy,OTONOMY INC,644,otonomy,[43404],['otonomy'],['Otonomy Inc.'],[100]
+172,otsuka,"OTSUKA, OTSUKA PHARM, OTSUKA PHARM CO LTD","645, 647, 648",otsuka,"[42475, 43417]","['otsuka', 'otsuka']","['Otsuka Holdings Co., Ltd.', 'Otsuka Corp']","[100, 100]"
+173,otsuka america,OTSUKA AMERICA PHARM,646,otsuka america,[43425],['otsuka america'],['Otsuka America Inc'],[100]
+174,oxford,OXFORD PHARMS,651,oxford,"[43540, 43570]","['oxford', 'oxford']","['Oxford Capital Group, LLC', 'Oxford Capital Corp']","[100, 100]"
+175,pacific,PACIFIC PHARMA,652,pacific,"[3863, 43642, 44203]","['pacific', 'pacific', 'pacific']","['American Pacific Corp', 'Pacific National Bank', 'Pacific Partners']","[100, 100, 100]"
+176,par,"PAR PHARM, PAR PHARM INC","657, 658",par,"[43903, 57429]","['par', 'par']","['PaR Systems Inc', '3PAR Inc.']","[100, 100]"
+177,perrigo,"PERRIGO, PERRIGO CO, PERRIGO PHARMA INTL, PERRIGO PHARMS CO","668, 669, 673, 674",perrigo,[44495],['perrigo'],['Perrigo Company PLC'],[100]
+178,perrigo new york,PERRIGO NEW YORK,672,perrigo new york,[12398],['perrigo new york'],['Perrigo New York Inc'],[100]
+179,pfizer,"PFIZER, PFIZER INC, PFIZER LABS, PFIZER PHARMS","680, 682, 684, 685",pfizer,"[44602, 44603, 44604, 44607, 44608, 44610, 44643, 44648]","['pfizer', 'pfizer', 'pfizer', 'pfizer', 'pfizer', 'pfizer', 'pfizer', 'pfizer']","['Pfizer Inc', 'Pfizer AB', 'Pfizer AG', 'Pfizer B.V.', 'Pfizer Oy', 'Pfizer Ltd', 'Pfizer ApS', 'Pfizer S.A.']","[100, 100, 100, 100, 100, 100, 100, 100]"
+180,pharmacyclics,PHARMACYCLICS INC,691,pharmacyclics,[44701],['pharmacyclics'],['Pharmacyclics Inc'],[100]
+181,pharmalucence,PHARMALUCENCE,692,pharmalucence,[12274],['pharmalucence'],['Pharmalucence Inc.'],[100]
+182,pharmascience,PHARMASCIENCE INC,693,pharmascience,[44918],['pharmascience'],['Pharmascience Inc'],[100]
+183,pierre fabre,PIERRE FABRE,694,pierre fabre,[34437],['pierre fabre'],['Pierre Fabre SA'],[100]
+184,pierrel,PIERREL,696,pierrel,[45024],['pierrel'],['Pierrel SpA'],[100]
+185,pliva,PLIVA,700,pliva,[45300],['pliva'],['Pliva Inc'],[100]
+186,praxair,PRAXAIR INC,709,praxair,[45957],['praxair'],['Praxair Inc'],[100]
+187,praxair distribution,PRAXAIR DISTRIBUTION INC,707,praxair distribution,[46508],['praxair distribution'],['Praxair Distribution Inc'],[100]
+188,r,R2 PHARMA LLC,725,r,[49321],['r'],['R Systems International Limited'],[100]
+189,ranbaxy,"RANBAXY, RANBAXY LABS LTD","726, 727",ranbaxy,[47597],['ranbaxy'],['Ranbaxy Inc.'],[100]
+190,reckitt benckiser,RECKITT BENCKISER,728,reckitt benckiser,"[47824, 47868]","['reckitt benckiser', 'reckitt benckiser']","['Reckitt Benckiser Inc.', 'Reckitt Benckiser Group PLC']","[100, 100]"
+191,relypsa,RELYPSA INC,734,relypsa,[48159],['relypsa'],['Relypsa Inc.'],[100]
+192,rhodes,RHODES PHARMS,737,rhodes,[48467],['rhodes'],['Rhodes Technologies Inc.'],[100]
+193,ritedose,RITEDOSE CORP,740,ritedose,[26522],['ritedose'],['The Ritedose Corporation'],[100]
+194,roche,ROCHE,741,roche,[48899],['roche'],"['Roche Holdings, Inc.']",[100]
+195,rockwell,ROCKWELL MEDICAL INC,744,rockwell,[48955],['rockwell'],"['Rockwell Medical, Inc.']",[100]
+196,sandoz,"SANDOZ, SANDOZ INC","756, 757",sandoz,"[23360, 49931]","['sandoz', 'sandoz']","['Sandoz Inc.', 'Sandoz Ltd']","[100, 100]"
+197,sanofi,"SANOFI US, SANOFI US SERVICES","761, 762",sanofi,[49988],['sanofi'],['Sanofi SA'],[100]
+198,sanofi aventis,"SANOFI AVENTIS, SANOFI AVENTIS US","758, 759",sanofi aventis,"[49964, 53812]","['sanofi aventis', 'sanofi aventis']","['Sanofi Aventis SpA', 'Sanofi Aventis Inc']","[100, 100]"
+199,sanofi-aventis,SANOFI-AVENTIS US,763,sanofi-aventis,"[3878, 5610, 5703]","['sanofi-aventis', 'sanofi-aventis', 'sanofi-aventis']","['Sanofi-Aventis GmbH', 'Sanofi-Aventis Oy', 'Sanofi-Aventis AB']","[100, 100, 100]"
+200,santarus,SANTARUS INC,764,santarus,[52820],['santarus'],['Santarus Inc'],[100]
+201,santen,SANTEN,765,santen,"[41689, 52813]","['santen', 'santen']","['Santen S.A.S.', 'Santen Incorporated']","[100, 100]"
+202,scios,SCIOS LLC,771,scios,[50420],['scios'],['Scios Inc'],[100]
+203,seattle genetics,SEATTLE GENETICS,773,seattle genetics,[50751],['seattle genetics'],['Seattle Genetics Inc'],[100]
+204,seton,SETON PHARM,781,seton,[54154],['seton'],['Seton Company'],[100]
+205,shionogi,SHIONOGI INC,785,shionogi,[51408],['shionogi'],['Shionogi Inc'],[100]
+206,shire,"SHIRE, SHIRE LLC","786, 790",shire,[51412],['shire'],['Shire plc'],[100]
+207,sigma tau,SIGMA TAU,794,sigma tau,[52323],['sigma tau'],['SIGMA TAU S.p.A.'],[100]
+208,silvergate,SILVERGATE PHARMS,798,silvergate,"[52289, 52290]","['silvergate', 'silvergate']","['Silvergate Bank', 'Silvergate Capital Corporation']","[100, 100]"
+209,skinmedica,SKINMEDICA,799,skinmedica,[52009],['skinmedica'],"['SkinMedica, Inc.']",[100]
+210,skyepharma,SKYEPHARMA AG,800,skyepharma,[57885],['skyepharma'],['SkyePharma plc'],[100]
+211,smithkline beecham,SMITHKLINE BEECHAM,801,smithkline beecham,[50163],['smithkline beecham'],['SmithKline Beecham Corporation'],[100]
+212,sofgen,SOFGEN PHARMS,802,sofgen,[51069],['sofgen'],['Sofgen SA'],[100]
+213,sovereign,SOVEREIGN PHARMS,806,sovereign,"[50520, 53157]","['sovereign', 'sovereign']","['Sovereign Capital Partners LLP', 'Sovereign Systems LLC']","[100, 100]"
+214,spectrum,SPECTRUM PHARMS,810,spectrum,"[35179, 53210, 53298, 53459]","['spectrum', 'spectrum', 'spectrum', 'spectrum']","['Spectrum Group International Inc', 'Spectrum Group', 'Spectrum Health Systems Inc.', 'Spectrum ASA']","[100, 100, 100, 100]"
+215,sprout,SPROUT PHARMS,812,sprout,[53460],['sprout'],['Sprout Group'],[100]
+216,sunstar americas,SUNSTAR AMERICAS,831,sunstar americas,[31003],['sunstar americas'],['Sunstar Americas Inc.'],[100]
+217,takeda,TAKEDA PHARMS USA,837,takeda,[2721],['takeda'],['Takeda GmbH'],[100]
+218,teligent,"TELIGENT, TELIGENT PHARMA INC","849, 850",teligent,[28715],['teligent'],['Teligent Inc.'],[100]
+219,tesaro,TESARO INC,852,tesaro,[41050],['tesaro'],['TESARO Inc.'],[100]
+220,teva womens,TEVA WOMENS,860,teva womens,[17942],['teva womens'],"[""Teva Women's Health Inc""]",[100]
+221,theratechnologies,THERATECHNOLOGIES,866,theratechnologies,[56321],['theratechnologies'],['Theratechnologies Inc'],[100]
+222,theravance biopharma,THERAVANCE BIOPHARMA,867,theravance biopharma,[56119],['theravance biopharma'],['Theravance Biopharma Inc.'],[100]
+223,tolmar,TOLMAR,870,tolmar,[56946],['tolmar'],['TOLMAR Inc.'],[100]
+224,ucb,UCB INC,879,ucb,[58305],['ucb'],['UCB SA'],[100]
+225,unimark remedies,UNIMARK REMEDIES LTD,886,unimark remedies,[58805],['unimark remedies'],['Unimark Remedies Ltd'],[100]
+226,validus,VALIDUS PHARMS,915,validus,[60580],['validus'],"['Validus Holdings, Ltd.']",[100]
+227,vernalis,VERNALIS R AND D LTD,918,vernalis,[8907],['vernalis'],['Vernalis PLC'],[100]
+228,vertex,"VERTEX PHARMS, VERTEX PHARMS INC","920, 921",vertex,"[18193, 61073]","['vertex', 'vertex']","['Vertex Energy Inc.', 'Vertex Inc']","[100, 100]"
+229,vintage,"VINTAGE, VINTAGE PHARMS, VINTAGE PHARMS LLC","927, 928, 929",vintage,[59977],['vintage'],['Vintage Capital Partners'],[100]
+230,virtus,"VIRTUS PHARM, VIRTUS PHARMS","930, 931",virtus,[60448],['virtus'],['Virtus Health Ltd.'],[100]
+231,vivus,VIVUS,935,vivus,[60544],['vivus'],['Vivus Inc'],[100]
+232,warner chilcott,WARNER CHILCOTT,937,warner chilcott,[61250],['warner chilcott'],['Warner Chilcott plc'],[100]
+233,watson,"WATSON LABS, WATSON LABS INC, WATSON PHARMS INC","938, 939, 941",watson,[61681],['watson'],['Watson Inc.'],[100]
+234,wilshire,WILSHIRE PHARMS INC,948,wilshire,"[61913, 61915]","['wilshire', 'wilshire']","['Wilshire Bank', 'Wilshire Technologies Inc']","[100, 100]"
+235,wockhardt,"WOCKHARDT, WOCKHARDT LTD, WOCKHARDT USA","951, 953, 954",wockhardt,[61416],['wockhardt'],['Wockhardt Ltd'],[100]
+236,wockhardt bio,WOCKHARDT BIO AG,952,wockhardt bio,[62283],['wockhardt bio'],['Wockhardt Bio AG'],[100]
+237,wyeth,WYETH PHARMS INC,957,wyeth,"[1808, 15691]","['wyeth', 'wyeth']","['Wyeth LLC', 'Wyeth Ltd.']","[100, 100]"
+238,zambon,ZAMBON SPA,968,zambon,[63778],['zambon'],['Zambon Company SpA'],[100]

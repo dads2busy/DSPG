@@ -1,0 +1,57 @@
+---
+title: "Merge eads"
+author: "Crystal"
+date: "8/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+abstracts_all <- read_csv("~/git/dspg21RnD/data/dspg21RnD/abstracts_all.csv")
+abstracts_gather<- readRDS("~/git/dspg21RnD/shiny/data_shiny/abstracts_gather.rds")
+
+
+abstracts <- abstracts_gather%>%
+  spread(method, IS_TRUE)
+sum(duplicated(abstracts$PROJECT_ID))
+
+Eads_AI_abstracts_KL <- read_csv("~/git/dspg21RnD/data/dspg21RnD/Eads_AI_abstracts-KL.csv")%>%
+  select(DEPARTMENT, PROJECT_START_DATE, index, "original index", PROJECT_ID, is_ai_eads)
+
+sum(is.na(Eads_AI_abstracts_KL$DEPARTMENT))
+
+Eads_AI_abstracts_KL <- Eads_AI_abstracts_KL%>%
+   select(PROJECT_ID, is_ai_eads)
+# 
+ abstracts_final <- abstracts_all%>%
+   select(PROJECT_ID, DEPARTMENT)%>%
+   rename("DEPARTMENT_ORIGINAL" = "DEPARTMENT")%>%
+   left_join(abstracts, by = "PROJECT_ID")%>%
+   left_join(Eads_AI_abstracts_KL, by= "PROJECT_ID")
+# 
+# abstracts[c("IS_AI_OECD", "IS_AI_BERT", "is_ai_eads")][is.na(abstracts[c("IS_AI_OECD", "IS_AI_BERT", "is_ai_eads")])] <- FALSE
+# 
+sum(abstracts_final$is_ai_eads, na.rm=T) == sum(abstracts_final$`Term Matching + \n Topic Modeling`, na.rm=T)
+
+abstracts_gather <- abstracts_final%>%
+  select(PROJECT_ID,PROJECT_START_DATE, DEPARTMENT_ORIGINAL, `Term Matching`, `Term Matching + 
+ Topic Modeling`, BERT, is_ai_eads)%>%
+  gather(method, IS_TRUE, -c(PROJECT_START_DATE,DEPARTMENT_ORIGINAL, PROJECT_ID))%>%
+  filter(IS_TRUE== TRUE)%>%
+  rename("DEPARTMENT" = "DEPARTMENT_ORIGINAL")%>%
+  filter(method != )
+
+abstracts_gather%>%
+  group_by(method)%>%
+  mutate(DEPARTMENT_IS_NA = ifelse(is.na(DEPARTMENT_ORIGINAL), T, F))%>%
+  filter(IS_TRUE == TRUE)%>%
+  group_by(method)%>%
+  summarize(N= sum(DEPARTMENT_IS_NA))
+
+
+saveRDS(abstracts_gather, file = "~/git/dspg21RnD/shiny/data_shiny/abstracts_gather.rds")
+```
+

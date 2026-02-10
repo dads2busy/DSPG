@@ -1,0 +1,3 @@
+Open the html file via the Github desktop app to explore the interactive map
+
+Travel time for one of the districts seem off, checking on it

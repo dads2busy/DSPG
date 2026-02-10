@@ -1,0 +1,66 @@
+---
+title: "11 NMF Coherence Score Results"
+author: "Crystal"
+date: "7/20/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(mosaic)
+```
+
+# OECD Filtering Method
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+nmf_oecd <- read_csv("/data/dspg21RnD/nmf_OECD_10.csv")
+nmf_oecd <- nmf_oecd%>%
+  gather("iteration", "coherence_score", -n_topics)
+nmf_oecd$n_topics <- as.factor(nmf_oecd$n_topics)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+ggplot(data = nmf_oecd, aes(x = n_topics, y = coherence_score)) +
+  geom_boxplot()  +
+  labs(title = "NMF Coherence Score", subtitle = "AI Abstracts Using OECD Filtering Method", x= "Number of Topics", y = "Coherence Score (10 runs)") +
+  theme_minimal()
+```
+
+# AI WIKI Bert Filtering Method
+## Cutoff: mean+2*sd
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+nmf_bert <- read_csv("/data/dspg21RnD/nmf_bert_10.csv")
+nmf_bert <- nmf_bert%>%
+  gather("iteration", "coherence_score", -n_topics)
+nmf_bert$n_topics <- as.factor(nmf_bert$n_topics)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+ggplot(data = nmf_bert, aes(x = n_topics, y = coherence_score)) +
+  geom_boxplot()  +
+  labs(title = "NMF Coherence Score", subtitle = "AI Abstracts Using BERT Filtering Method (Cutoff: mean+ 2*sd )", x= "Number of Topics", y = "Coherence Score (10 runs)") +
+  theme_minimal()
+```
+
+## Cutoff: mean+2.5*sd
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+nmf_bert2 <- read_csv("/data/dspg21RnD/nmf_bert2_10.csv")
+nmf_bert2 <- nmf_bert2%>%
+  mutate(n_topics = c(5,10,15,20,25,30,35,40,45,50,75,100,125))%>%
+  gather("iteration", "coherence_score", -n_topics)
+nmf_bert2$n_topics <- as.factor(nmf_bert2$n_topics)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+ggplot(data = nmf_bert2, aes(x = n_topics, y = coherence_score)) +
+  geom_boxplot()  +
+  labs(title = "NMF Coherence Score", subtitle = "AI Abstracts Using BERT Filtering Method (Cutoff: mean+ 2.5*sd )", x= "Number of Topics", y = "Coherence Score (10 runs)") +
+  theme_minimal()
+```

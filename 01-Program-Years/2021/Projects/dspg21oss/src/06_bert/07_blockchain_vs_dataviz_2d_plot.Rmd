@@ -1,0 +1,85 @@
+---
+title: "Blockchain vs Dataviz embeddings"
+author: "Crystal"
+date: "8/1/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(mosaic)
+library("stringr")
+library("tidyr")
+library("dplyr")
+library("readr")
+library("tidyverse")
+library("DT")
+library("RPostgreSQL")
+library(ggforce)
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+setwd("/home/zz3hs/git/dspg21oss/data/dspg21oss/")
+embeddings <- read_csv("repo_embedding_3d_pca.csv")
+embeddings <- read_csv("repo_blockchain_dataviz_embedding_3d_pca.csv")
+
+#label <- read_csv("github_repos_157k_label.csv")
+#corpus_label <- read_csv("oss_software_labelled.csv")
+
+blockchain_label <- read_csv('repo_data_blockchain_score.csv')   
+dataviz_label <- read_csv('repo_data_dataviz_score.csv')   
+```
+
+
+
+# Corpus (ground truth repos) Embedding in 2d 
+```{r}
+
+
+blockchain_label_score <- blockchain_label%>%
+  select(slug, median_sentence_score,description)%>%
+  rename("score_blockchain" = "median_sentence_score")%>%
+  mutate(is_blockchain = ifelse(score_blockchain > 0.6, T, F))
+
+
+
+dataviz_label_score <- dataviz_label%>%
+  select(slug, median_sentence_score,description)%>%
+  rename("score_dataviz" = "median_sentence_score")%>%
+  mutate(is_dataviz = ifelse(score_dataviz > 0.6, T, F))
+
+
+
+df <- full_join(blockchain_label_score, dataviz_label_score, by="slug")
+
+df_embeddings <- embeddings%>%
+  left_join(df, by="slug")%>%
+  gather(software_type, IS_TYPE, -c(slug, description, x, y, z,score_blockchain, score_dataviz ))%>%
+  filter(IS_TYPE==T)
+  
+#df_out <- df_embeddings%>%
+#  select(slug, software_type)
+#write_csv(df_out, "repo_blockchain_dataviz.csv")
+
+ggplot(df_embeddings, aes(x = x, y = y)) + 
+  geom_point()  + 
+  aes(colour = software_type) + 
+  theme(legend.position = "right")+
+  labs(title = "First two principal components of repos classified as Blockchain, Dataviz from 157k repos")
+
+
+ggplot(df_embeddings, aes(x = y, y = z)) + 
+  geom_point()  + 
+  aes(colour = software_type) + 
+  theme(legend.position = "right")+
+    labs(title = "Second and third principal components of repos classified as Blockchain, Dataviz from 157k repos")
+```
+
+

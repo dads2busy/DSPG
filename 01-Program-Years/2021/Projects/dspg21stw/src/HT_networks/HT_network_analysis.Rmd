@@ -1,0 +1,327 @@
+---
+title: "HT_network_analysis"
+author: "Haleigh Tomlin"
+date: "7/7/2021"
+output: html_document
+---
+
+# Exploratory Network Analysis of Credentials and SOC codes
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# install.packages("statnet")
+# install.packages("igraph")
+# install.packages("tidyverse")
+# install.packages("devtools")
+# install.packages("intergraph")
+```
+
+```{r}
+library(statnet)
+#library(tidyverse)
+library(devtools)
+library(readxl)
+library(intergraph)
+```
+
+
+```{r}
+cert <- read_xlsx("ONET_SOC_credentials.xlsx")
+```
+
+```{r}
+head(cert)
+```
+
+
+We are interested in the usefullness of certifications.  How portable are they?  If you get a certification, how many different jobs can you do?  What are they?
+
+To answer this, we will have "certification" as our nodes, and edges will be jobs.  This way, we can assess the centrality of a certification to jobs, and how connected certifications are within job areas.  Then, we can create a list of certifications that are only useful in unique occupations.
+
+Making an edge-list:
+
+```{r}
+netmat <- cbind(cert$Certification.Name, cert$SOC)
+```
+
+```{r}
+head(netmat)
+```
+
+```{r}
+soc_type <- substr(netmat[,2], start = 1, stop = 2)
+```
+
+```{r}
+unique(soc_type)
+```
+
+```{r}
+netmat2 <- cbind(netmat, soc_type)
+```
+
+```{r}
+head(netmat2)
+```
+
+
+
+```{r}
+n_orig <- network(netmat, matrix.type = "edgelist", directed = F)
+```
+
+
+```{r}
+detach(package:statnet)
+library(igraph)
+
+```
+
+```{r}
+net.df <- data.frame(netmat)
+
+affiliation <- graph.data.frame(net.df, directed = FALSE)
+
+V(affiliation)$type <- V(affiliation)$name %in% net.df[,1]
+```
+
+
+
+```{r}
+op <- par(mar = rep(0,4))
+shapes <- c("circle", "square")
+colors <- c("blue", "red")
+
+plot(affiliation, vertex.color = colors[V(affiliation)$type+1],
+     vertex.shape = shapes[V(affiliation)$type+1],
+     vertex.size = 5, vertex.label = NA, layout = layout_with_kk)#, vertex.label.degree = -pi/20,
+     #vertex.label.dist = 1.2, vertex.label.cex = 0.9)
+par(op)
+```
+
+```{r}
+affiliation.pr <- bipartite.projection(affiliation)
+```
+
+```{r}
+affiliation.pr
+```
+
+```{r}
+class(affiliation)
+```
+
+```{r}
+plt.x <- c(rep(2,6), rep(4,4))
+plt.y <- c(7:2,6:3)
+lay <- as.matrix(cbind(plt.x, plt.y))
+```
+
+```{r}
+summary(affiliation)
+```
+
+```{r, fig.height = 10}
+shapes <- c("circle", "square")
+colors <- c("blue", "red")
+
+plot(affiliation, vertex.color = colors[V(affiliation)$type + 1],
+     vertex.shape = shapes[V(affiliation)$type + 1],
+     vertex.size = 8, vertex.label = NA, layout = layout_with_kk)
+```
+
+
+```{r}
+list.edge.attributes(affiliation.pr)
+```
+
+
+```{r}
+#proj 1 gives the edges
+affiliation.pr$proj1
+```
+
+```{r}
+#proj 2 gives the nodes
+affiliation.pr$proj2
+```
+
+
+
+```{r}
+graph.density(affiliation.pr$proj1)
+```
+
+```{r}
+graph.density(affiliation.pr$proj2)
+```
+
+```{r}
+net.soc <- affiliation.pr$proj1
+net.cred <- affiliation.pr$proj2
+```
+
+```{r}
+soc_adjacency <- get.adjacency(net.soc, sparse = FALSE, attr = "weight")
+```
+
+```{r}
+cred_adjacency <- get.adjacency(net.cred, sparse = FALSE, attr = "weight")
+```
+
+```{r, fig.height = 10}
+shapes <- c("circle", "square")
+colors <- c("blue", "red")
+
+op <- par(mfrow = c(1,2))
+plot(net.cred, vertex.color = "blue",
+     vertex.shape = "circle", main = "Credentials",
+     vertex.size = 3, vertex.label = NA)
+
+plot(net.soc, vertex.color = "red",
+     vertex.shape = "square", main = "SOC codes",
+     vertex.size = 7, vertex.label = NA)
+par(op)
+```
+
+
+
+```{r}
+detach(package:igraph)
+library(statnet)
+net <- network(cred_adjacency, matrix.type = "adjacency", directed = F)
+```
+
+```{r}
+summary(net, print.adj = F)
+```
+
+```{r}
+gplot(net, usearrows = F, displaylabels = F)
+```
+
+
+
+```{r}
+summary(net, print.adj = F)
+```
+
+Not a super dense network but there are certainly clusters.
+
+```{r}
+gden(net)
+```
+
+
+```{r}
+components(net)
+```
+
+That doesnt make sense, there should be less components than there are nodes
+
+```{r}
+lgc <- component.dist(net)
+gd <- geodist(lgc)
+max(gd$gdist)
+```
+ Having some trouble getting the # of components, and the diameter of the largest component.
+ 
+```{r}
+component.dist(net)
+```
+
+Clustering coefficient:
+
+```{r}
+gtrans(net, mode = "graph")
+```
+
+```{r, fig.height = 10}
+op <- par(mar = rep(1,4))
+gplot(net, displaylabels = F,
+      usearrows = F,
+      main = "Network of ONET Certifications",
+      vertex.col = "lightblue", vertex.cex = 1.3,
+      label.cex = 0.4, label.pos = 5)
+
+par(op)
+```
+
+```{r}
+net_igraph <- asIgraph(net)
+```
+
+Next I will make nodes bigger if they have higher centrality
+
+```{r}
+deg <- degree(net_igraph)
+cls <- closeness(net_igraph)
+bet <- betweenness(net_igraph)
+```
+
+```{r}
+rescale <- function(nchar, low, high) {
+  min_d <- min(nchar)
+  max_d <- max(nchar)
+  rscl <- ((high - low)* (nchar - min_d)) / (max_d - min_d) + low
+  rscl
+}
+```
+
+
+```{r, fig.height = 10, dev = 'png'}
+op <- par(mar = rep(1,4))
+gplot(net, displaylabels = F,
+      usearrows = F,
+      main = "Network of ONET Certifications",
+      vertex.col = "lightblue", vertex.cex = rescale(deg,1,6))
+
+par(op)
+```
+
+
+
+
+trying to make a table of the Centrality of each credential (modeled off page 99 in Luke networks book. https://link.springer.com/book/10.1007/978-3-319-23883-8)
+
+
+#detach(package:statnet)
+library(igraph)
+
+df.prom <- data.frame(
+  degree = degree(net_igraph),
+  closeness = closeness(net_igraph),
+  betweenness = betweenness(net_igraph)
+)
+
+#row.names(df.prom) <- net_igraph %v% "vertex.names"
+
+df.promsort <- df.prom[order(-df.prom$degree),]
+cd <- centralization(net_igraph, degree)
+cc <- centralization(net_igraph, closeness)
+cb <- centralization(net_igraph, betweenness)
+
+df.promsort <- rbind(df.promsort, c(cd,cc,cb))
+
+row.names(df.promsort)[18] <- "\\emph{Centralization}"
+
+
+```{r}
+#detach(package:igraph)
+library(statnet)
+```
+
+```{r}
+list.network.attributes(net)
+```
+
+```{r}
+list.vertex.attributes(net)
+```
+
+
+

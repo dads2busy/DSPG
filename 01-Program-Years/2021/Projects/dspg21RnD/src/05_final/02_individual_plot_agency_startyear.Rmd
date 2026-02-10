@@ -1,0 +1,251 @@
+---
+title: "Individual Plot on agency and start year"
+author: "Crystal"
+date: "8/2/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tidyr)
+#setwd("~/git/dspg21RnD/shiny")
+#getwd()
+```
+
+
+
+
+```{r}
+uva_colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+abstracts_gather<- readRDS("~/git/dspg21RnD/shiny/data_shiny/abstracts_gather.rds")
+
+setwd("/home/zz3hs/git/dspg21RnD/shiny/")
+# all abstracts
+abstracts_all <- read_csv("git/dspg21RnD/data/dspg21RnD/abstracts_all.csv")
+
+```
+
+#check number of na departments for each method
+```{r}
+abstracts_gather%>%
+  group_by(method)%>%
+  mutate(DEPARTMENT_IS_NA = ifelse(is.na(DEPARTMENT), T, F))%>%
+  group_by(method)%>%
+  summarize(N= sum(DEPARTMENT_IS_NA))
+```
+
+
+
+#all abstracts
+```{r}
+abstracts_all_na <- abstracts_all%>%
+  filter(is.na(DEPARTMENT))
+
+
+agency <- abstracts_all %>%
+  filter(!is.na(DEPARTMENT))%>% 
+  group_by(DEPARTMENT) %>% 
+  count()
+
+png("www/all_data_agency.png", width = 500, height = 300)
+
+ggplot(agency, aes(x= reorder(DEPARTMENT, (n)), y=n))+
+  geom_bar(stat='identity', fill = uva_colors[3])+
+  theme_minimal() +
+  labs(title = "Federal RePORTER Grant Abstracts Funding Agencies", x = "Agency", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12))
+
+ dev.off()
+```
+
+
+```{r}
+png("www/all_data_start_year.png", width = 500, height = 300)
+abstracts_all %>% 
+  mutate(d=as.Date(PROJECT_START_DATE, format="%m/%d/%Y")) %>% 
+  mutate(d=format(d,"%Y")) %>% 
+  filter(d< "2020") %>% 
+  filter(d> "2007")%>%
+  group_by(d) %>% 
+  count() %>% 
+  ggplot(aes(x=d, y=n))+
+  geom_bar(stat='identity', fill  = uva_colors[3])+
+  theme_minimal()+
+  #theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Federal RePORTER Grant Abstracts Start Year", x = "Start Year", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12))
+
+dev.off()
+```
+
+# OECD
+```{r}
+abstracts_method <- abstracts_gather %>% 
+  filter(method  == "Term Matching")
+
+```
+
+
+```{r}
+agency <- abstracts_method %>%
+  filter(!is.na(DEPARTMENT))%>% 
+  group_by(DEPARTMENT) %>% 
+  count()
+
+png("/home/zz3hs/git/dspg21RnD/shiny/www/oecd_agency.png", width = 500, height = 300)
+
+ggplot(agency, aes(x= reorder(DEPARTMENT, (n)), y=n))+
+  geom_bar(stat='identity', fill = uva_colors[3])+
+  theme_minimal() +
+  labs(title = "Funding Agencies of Projects Related to Artificial intelligence", x = "Agency", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12))
+
+ dev.off()
+
+
+```
+
+```{r}
+png("www/oecd_start_year.png", width = 500, height = 300)
+abstracts_method %>% 
+  mutate(d=as.Date(PROJECT_START_DATE, format="%m/%d/%Y")) %>% 
+  mutate(d=format(d,"%Y")) %>% 
+  filter(d<"2019") %>% 
+  filter(d> "2007")%>%
+  group_by(d) %>% 
+  count() %>% 
+  ggplot(aes(x=d, y=n))+
+  geom_bar(stat='identity', fill  = uva_colors[3])+
+  theme_minimal()+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Start Year of Projects Related to Artificial intelligence", x = "Start Year", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12))
+
+dev.off()
+```
+
+
+# EADS
+```{r}
+abstracts_method <-abstracts_gather%>%
+ filter(method == "Term Matching + \n Topic Modeling")
+# abstracts_method <- abstracts %>% 
+#   filter(is_ai_eads == T)
+#abstracts_method <- abstracts_gather %>% 
+#  filter(method == "Term Matching + \n Topic Modeling")
+```
+
+
+```{r}
+agency <- abstracts_method %>%
+  filter(!is.na(DEPARTMENT))%>% 
+  group_by(DEPARTMENT) %>% 
+  count()
+
+png("www/eads_agency.png", width = 500, height = 300)
+
+ggplot(agency, aes(x= reorder(DEPARTMENT, (n)), y=n))+
+  geom_bar(stat='identity', fill = uva_colors[3])+
+  theme_minimal() +
+  labs(title = "Funding Agencies of Projects Related to Artificial intelligence", x = "Agency", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12))
+
+dev.off()
+
+
+```
+
+
+```{r}
+png("www/eads_start_year.png", width = 500, height = 300)
+abstracts_method %>% 
+  mutate(d=as.Date(PROJECT_START_DATE, format="%m/%d/%Y")) %>% 
+  mutate(d=format(d,"%Y")) %>% 
+  filter(d<"2019") %>% 
+  filter(d> "2007")%>%
+  group_by(d) %>% 
+  count() %>% 
+  ggplot(aes(x=d, y=n))+
+  geom_bar(stat='identity', fill  = uva_colors[3])+
+  theme_minimal()+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Start Year of Projects Related to Artificial intelligence", x = "Start Year", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12))
+
+dev.off()
+```
+
+
+
+# BERT
+```{r}
+abstracts_method <- abstracts_gather %>% 
+  filter(method == "BERT")
+
+```
+
+
+```{r}
+agency <- abstracts_method %>%
+  filter(!is.na(DEPARTMENT))%>% 
+  group_by(DEPARTMENT) %>% 
+  count()
+
+png("www/bert_agency.png", width = 500, height = 300)
+
+ggplot(agency, aes(x= reorder(DEPARTMENT, (n)), y=n))+
+  geom_bar(stat='identity', fill = uva_colors[3])+
+  theme_minimal() +
+  labs(title = "Funding Agencies of Projects Related to Artificial intelligence", x = "Agency", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12))
+
+dev.off()
+
+
+```
+
+
+```{r}
+png("www/bert_start_year.png", width = 500, height = 300)
+abstracts_method %>% 
+  mutate(d=as.Date(PROJECT_START_DATE, format="%m/%d/%Y")) %>% 
+  mutate(d=format(d,"%Y")) %>% 
+  filter(d<"2019") %>% 
+  filter(d> "2007")%>%
+  group_by(d) %>% 
+  count() %>% 
+  ggplot(aes(x=d, y=n))+
+  geom_bar(stat='identity', fill  = uva_colors[3])+
+  theme_minimal()+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Start Year of Projects Related to Artificial intelligence", x = "Start Year", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12))
+
+dev.off()
+```
+

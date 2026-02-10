@@ -1,0 +1,13 @@
+name: shinyDashboardSTW21
+title: shinyDashboardSTW21
+username:
+account: marekjozsef
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4426327
+bundleId: 4893152
+url: https://marekjozsef.shinyapps.io/shinyDashboardSTW21/
+when: 1628206586.71274
+lastSyncTime: 1628206586.71274
+asMultiple: FALSE
+asStatic: FALSE

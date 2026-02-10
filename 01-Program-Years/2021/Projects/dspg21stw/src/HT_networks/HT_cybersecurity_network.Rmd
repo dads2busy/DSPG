@@ -1,0 +1,281 @@
+---
+title: "cybersecurity_network"
+author: "Haleigh Tomlin"
+date: "7/21/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(igraph)
+library(network)
+library(readxl)
+library(tidyr)
+library(tidyverse)
+```
+
+```{r}
+cyber <- read_xlsx("Cyber.xlsx")
+```
+
+```{r}
+cyber
+```
+
+```{r}
+table(cyber$STW)
+```
+
+```{r}
+table(cyber$InDemand)
+```
+
+```{r}
+length(unique(cyber$ONETSOC))
+length(unique(cyber$ONETSOCTITLE))
+length(unique(cyber$Certification))
+```
+
+So, we want to make a network object now.  
+
+What we want to know is how credentials get you from STW to STEM, right?  So maybe in this case, we have the nodes as jobs and the ties as credentials.  Then, the node attributes will be STW vs STEM.
+
+```{r}
+cybermat <- cyber %>% select(ONETSOCTITLE, Certification)
+cybermat_codes <- cyber %>% select(ONETSOC, Certification)
+```
+
+```{r}
+dim(cybermat_codes)
+```
+
+
+```{r}
+cybermat
+```
+
+```{r}
+cybermat_attributes1 <- cyber %>% select(name = ONETSOCTITLE, STW, Level, InDemand)
+cybermat_attributes2 <- cyber %>% select(name = Certification, STW, Level, InDemand)
+```
+
+
+```{r}
+cybermat_attributes1 <- cybermat_attributes1[!duplicated(cybermat_attributes1$name),]
+cybermat_attributes2 <- cybermat_attributes2[!duplicated(cybermat_attributes2$name),]
+```
+
+```{r}
+cybermat_attributes1
+cybermat_attributes2
+```
+
+```{r}
+cybermat_attributes <- rbind(cybermat_attributes1, cybermat_attributes2)
+```
+
+```{r}
+dim(cybermat_attributes)
+table(duplicated(cybermat_attributes))
+table(duplicated(cybermat_attributes$name))
+```
+
+```{r}
+cybermat_attributes <- cybermat_attributes[!duplicated(cybermat_attributes$name),]
+```
+
+```{r}
+cybermat_attributes
+```
+
+```{r}
+length(unique(cyber$ONETSOCTITLE)) + length(unique(cyber$Certification))
+```
+
+```{r}
+data.frame(cybermat)
+```
+
+```{r}
+table(cybermat$ONETSOCTITLE %in% cyber$ONETSOCTITLE)
+table(cybermat$ONETSOC %in% cyber$ONETSOC)
+table(cybermat$Certification %in% cyber$Certification)
+```
+
+
+```{r making an igraph object}
+g <- graph.data.frame(cybermat, directed = FALSE, vertices = cybermat_attributes)
+```
+
+```{r}
+print(g, e=TRUE, v=TRUE)
+```
+
+
+
+```{r, fig.height = 10 cyber graph}
+plot(g, vertex.size = 4, vertex.color = "lightblue", edge.color = "black", main = "cyber", vertex.label.degree = -pi/6, vertex.label.cex = 0.5, vertex.label = NA)
+```
+
+```{r, fig.height = 10}
+plot(g, vertex.size = 3, vertex.color = "lightblue", edge.color = "black", main = "cyber", vertex.label.degree = -pi/6, vertex.label.cex = 0.5, vertex.label = NA, layout = layout_with_kk)
+```
+
+So, this is interesting.  We have 2 components, and within cybersecurity it is pretty interconnected.  There are some that have less connections to the center.
+
+
+```{r, fig.height = 10}
+plot(g, vertex.size = 3, vertex.color = "lightblue", edge.color = "black", main = "cyber", vertex.label.degree = -pi/6, vertex.label.cex = 0.5, vertex.label = NA, layout = layout_in_circle)
+```
+
+```{r}
+table(duplicated(cybermat_codes))
+```
+
+```{r}
+gsize(g)
+vcount(g)
+```
+
+
+```{r}
+cybermat_codes <- cybermat_codes[!duplicated(cybermat_codes),]
+```
+
+```{r}
+dim(cybermat_codes)
+```
+
+```{r}
+head(cybermat_codes)
+```
+
+
+
+```{r}
+icyber <- graph.data.frame(cybermat_codes, directed = F)
+```
+
+V(net)$type <- FALSE
+V(net)$type[V(net)$name%in%dat$perpetrator] <- TRUE
+proj_net <- bipartite.projection(net)
+OR
+V(net)$type <- bipartite.mapping(net)$type
+proj_net <- bipartite.projection(net)
+
+```{r}
+V(icyber)$type <- bipartite.mapping(icyber)$type
+icyber.pr <- bipartite.projection(icyber)
+
+
+#V(icyber)$type[V(icyber)$name %in% cybermat_codes] <- TRUE
+#icyber.pr <- bipartite.projection(icyber)
+```
+
+
+```{r, fig.height = 10}
+plot(icyber,vertex.shape=ifelse(V(icyber)$type,"circle","square"), vertex.color = ifelse(V(icyber)$type, "green", "red"), vertex.label = NA, vertex.size = 3, main = "cybersecurity affiliation network", directed = F)
+```
+
+vertex.label = ifelse(degree(g) > 2, V(g)$label, NA)
+
+```{r, fig.height = 10}
+plot(icyber,vertex.color=ifelse(V(icyber)$type,"green","red"), vertex.size = 3, main = "cybersecurity affiliation network", directed = F, layout = layout_with_kk, vertex.label = NA)
+```
+
+
+```{r}
+head(cyber)
+```
+
+```{r}
+cyber <- cyber %>% select(ONETSOCTITLE, Certification, STW, Origin, Certifier, Level, InDemand)
+```
+
+ [1] "Forensic Science Technicians"                                        "Network and Computer Systems Administrators"                        
+ [3] "Information Security Analysts"                                       "Computer Systems Analysts"                                          
+ [5] "Software Developer"                                                  "Software Quality Assurance Analysts and Testers"                    
+ [7] "Computer Programmers"                                                "Information Technology Project Managers"                            
+ [9] "Computer and Information Systems Managers"                           "Computer User Support Specialists"                                  
+[11] "Computer Network Support Specialists"                                "Electrical and Electronic Engineering Technologists and Technicians"
+[13] "Information Security Engineers"                                      "Intelligence Analyst"                                               
+[15] "Detectives and Criminal Investigators"                               "Police Identification and Records Officers"
+
+```{r}
+cybermat_attributes <- cybermat_attributes %>% mutate(socname = case_when(name == "Forensic Science Technicians" ~ "Forensic\nScience\nTechnicians",
+                                                                          name == "Network and Computer Systems Administrators" ~ "Network\nand Computer\nSystems\nAdministrators",
+                                                                          name == "Information Security Analysts" ~ "Information\nSecurity\nAnalysts",
+                                                                          name == "Computer Systems Analysts" ~ "Computer\nSystems\nAnalysts",
+                                                                          name == "Software Developer" ~ "Software\nDeveloper",
+                                                                          name == "Software Quality Assurance Analysts and Testers"~ "Software\nQuality\nAssurance\nAnalysts\nand Testers",
+                                                                          name == "Computer Programmers" ~ "Computer\nProgrammers",
+                                                                          name == "Information Technology Project Managers" ~ "Information\nTechnology\nProject\nManagers",
+                                                                          name == "Computer and Information Systems Managers" ~ "Computer\nand\nInformation\nSystems\nManagers",
+                                                                          name == "Computer User Support Specialists" ~ "Computer\nUser\nSupport\nSpecialists",
+                                                                          name == "Computer Network Support Specialists" ~ "Computer\nNetwork\nSupport\nSpecialists",
+                                                                          name == "Electrical and Electronic Engineering Technologists and Technicians" ~ "Electronic\nEngineering\nTechnicians",
+                                                                          name == "Information Security Engineers" ~ "Information\nSecurity\nEngineers",
+                                                                          name == "Intelligence Analyst" ~ "Intelligence\nAnalyst",
+                                                                          name == "Detectives and Criminal Investigators" ~ "Detectives\nand Criminal\nInvestigators",
+                                                                          name == "Police Identification and Records Officers" ~ "Police\nIdentification\nand Records\nOfficers"))
+```
+
+
+```{r}
+cyber <- cyber[!duplicated(cyber),]
+```
+
+```{r}
+cyber <- cyber %>% select(-c(Origin,Certifier, Level, InDemand))
+```
+
+```{r}
+cyber <- cyber[!duplicated(cyber),]
+cyber
+```
+
+
+```{r}
+g_test <- graph.data.frame(cyber, directed = F, vertices = cybermat_attributes)
+```
+
+
+```{r}
+V(g_test)$type <- bipartite.mapping(g_test)$type
+g_test.pr <- bipartite.projection(g_test)
+```
+
+
+
+
+```{r, fig.width = 20, fig.height = 20}
+plot(g_test,vertex.shape=ifelse(V(g_test)$type,"circle","square"),
+     vertex.color = ifelse(V(g_test)$type == F, ifelse(V(g_test)$STW == "STW", cbPalette[5], cbPalette[1]), cbPalette[4]),
+     vertex.label = ifelse(V(g_test)$type == F, V(g_test)$socname, NA),
+     vertex.label.cex = 0.65,
+     vertex.label.dist = 0,
+     vertex.label.color = "black",
+     vertex.size = ifelse(V(g_test)$type, 1.5, 9.3),
+     directed = F, xaxs = i, yaxs = i)
+legend("topright", legend = c("STW: yellow squares", "STEM: gray squares", "Certifications: green circles"), bty = "n", title = "Legend", cex = 1.5)
+```
+
+
+
+```{r}
+#install.packages("ggraph")
+library(ggraph)
+```
+
+```{r, fig.height = 10, fig.width = 10}
+ggraph(g_test) +
+  geom_edge_link(color = "gray") +   
+  geom_node_point(color = "orange", size = 2)+
+  geom_node_text(aes(label = ifelse(V(g_test)$type == F, V(g_test)$name, NA), size=0.3, repel=T, parse = T)) +
+  theme_void()
+```
+
+

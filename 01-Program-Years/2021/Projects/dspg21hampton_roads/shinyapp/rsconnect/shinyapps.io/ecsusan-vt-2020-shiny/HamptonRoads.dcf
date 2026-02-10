@@ -1,0 +1,13 @@
+name: HamptonRoads
+title: HamptonRoads
+username:
+account: ecsusan-vt-2020-shiny
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4446312
+bundleId: 4879604
+url: https://ecsusan-vt-2020-shiny.shinyapps.io/HamptonRoads/
+when: 1627904886.06683
+lastSyncTime: 1627904886.06683
+asMultiple: FALSE
+asStatic: FALSE

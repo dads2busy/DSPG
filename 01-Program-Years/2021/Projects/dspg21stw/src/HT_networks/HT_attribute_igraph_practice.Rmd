@@ -1,0 +1,192 @@
+---
+title: "edge_practice"
+author: "Haleigh Tomlin"
+date: "7/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(igraph)
+library(network)
+library(readxl)
+```
+
+In this markdown, I will practice with our data and assigning node and edge attributes in igraph from our affiliation network.
+
+We have credentials connected to SOC occupation codes.  This means that there are multiple credentials connected to one SOC code, but also credentials that are connected to multiple SOC codes.  This means that we could visualize it as credentials (nodes) being connected in being required by the same SOC code (edge).  We could also visualize it as SOC codes (nodes) being connected by sharing credential requirements (edges).
+
+A different example of this would be students nested within classrooms or teachers. Some students in classroom A may also be together in classroom B, while other students are together in classroom C.  The classes may be connected by having students in both, but the students may be connected by sharing classes with each other.
+
+Our data:
+
+```{r}
+cert <- read_xlsx("ONET_SOC_credentials.xlsx")
+netmat <- cbind(cert$Certification.Name, cert$SOC)
+```
+```{r}
+colnames(netmat) <- c("source", "target")
+```
+
+
+```{r}
+head(data.frame(netmat))
+```
+
+Since this is not an edge-list in the way I want, I am going to use igraph to read it as an affiliation network, then use a bipartite projection to get the adjacency matrix for the certifications, as well as for the SOC codes.
+
+```{r}
+stwnet <- graph.data.frame(data.frame(netmat), directed = F)
+
+```
+
+```{r}
+stwnet <- simplify(stwnet, remove.loops = T)
+```
+
+```{r}
+V(stwnet)$type <- V(stwnet)$name %in% netmat[,1]
+```
+
+```{r}
+stwnet$name
+```
+
+```{r}
+#V(stwnet.cred)$name
+```
+
+```{r}
+id <- c(1:vcount(stwnet.cred))
+```
+
+```{r}
+login <- V(stwnet.cred)$name
+```
+
+```{r}
+nodelist <- data.frame(cbind(id, login))
+```
+
+
+```{r}
+head(nodelist)
+```
+
+```{r}
+  # degree, weighted degree, k core and modularity
+   nodelist$deg_cent <- degree(stwnet.cred)
+  nodelist$wtd_deg_cent <- strength(stwnet.cred)
+  nodelist$eigen_cent <- eigen_centrality(stwnet.cred)$vector
+  nodelist$page_rank <- page_rank(stwnet.cred)$vector
+  nodelist$auth_score <- authority.score(stwnet.cred)$vector
+  nodelist$hub_score <- hub.score(stwnet.cred)$vector
+  nodelist$k_core <- coreness(stwnet.cred)
+  components <- components(stwnet.cred)
+  nodelist$component <- components$membership
+  louvain <- cluster_louvain(stwnet.cred)
+  nodelist$louvain_comm <- louvain$membership
+   fstgrdy <- fastgreedy.community(stwnet.cred)
+  nodelist$fstgrdy_comm <- fstgrdy$membership
+```
+
+```{r}
+head(nodelist)
+```
+
+
+```{r}
+V(stwnet)$type <- V(stwnet)$name %in% netmat[,1]
+
+#should I do this for edges too?
+# E(stwnet)$soc <- E(stwnet)$name %in% netmat[,2]
+
+#Also, is this how I will do vertex/edge attributes?
+```
+
+```{r igraph object}
+stwnet
+```
+
+
+
+```{r bipartite projection}
+stwnet.pr <- bipartite.projection(stwnet)
+```
+
+```{r}
+stwnet.pr
+```
+
+943 unique creds, 133 unique stw
+
+with 2 kinds of nodes, do net stats on them separately
+
+narrow down by: - main component(s), cut out nodes/edges by weight 
+
+we could bring it into gephi for the visualization, find out what we care about and what we want visualized
+
+create the corresponding nodelist that has the attributes, leftjoin centrality stats onto the nodelist
+
+Now, getting each projection out of the stwnet.pr -- proj1 are the SOC codes.  proj2 are the credentials, which we can see above.  These look like edge-lists
+
+```{r}
+stwnet.soc <- affiliation.pr$proj1
+stwnet.cred <- affiliation.pr$proj2
+```
+
+```{r}
+edgelist <-data.frame(source = get.edgelist(stwnet.cred)[,1], target = get.edgelist(stwnet.cred)[,2])
+```
+
+```{r}
+rownames(edgelist) <- NULL
+```
+
+
+```{r adjacency matrices}
+soc_adjacency <- get.adjacency(stwnet.soc, sparse = FALSE, attr = "weight")
+cred_adjacency <- get.adjacency(stwnet.cred, sparse = FALSE, attr = "weight")
+```
+
+So, I want to be able to set node and tie attributes.  For example, I want to have a grouping of STW occupations based on the first 2 digits of the SOC codes, so that we can color-code, or subset
+
+Here are the unique codes:
+
+"11" "13" "15" "17" "19" "27" "29" "33" "35" "43" "47" "49" "51" "53"
+
+```{r}
+soc_type <- substr(netmat[,2], start = 1, stop = 2)
+netmat2 <- cbind(netmat, soc_type)
+```
+
+```{r}
+data.frame(netmat2)
+```
+
+That would be a vertex attribute.  Another would be Vicki's variable for how well each occupation is expected to do in the next few years -- and this will be a continuous variable.  Can we put a gradient on the ties so it shows negative to positive in the next 10 years?  then perhaps on our interactive graph we could select "only those above zero" as an option
+
+
+
+## when adding in tie/edge attributes, how do I know that they will be in the same order once they are in the network graph?  Or can I add it all in in one data frame when I am making the network object?
+
+idea: take the stwnet.pr and just assign the 'soc_type' column as attributes?
+
+```{r}
+V(stwnet.pr)$soc_type <- netmat2[,3]
+```
+
+
+
+
+# Affiliation network graph
+
+Vicki wants to graph each subset as an affiliation but have the center be the subsetted occupation title (cyber security), from that, have SOC titles branched out, and from that, have the credentials branched out.
+
+
+# Interactive graphs.
+
+I have been playing around with the NetworkD3 package, but it is a little finnicky especially with a big graph.  I didn't really like the visNetwork function, because it made it just look weird and not give much info.  Maybe there are other features that I can change on it, though.  That one was suggested for if I was using a shiny app, though.

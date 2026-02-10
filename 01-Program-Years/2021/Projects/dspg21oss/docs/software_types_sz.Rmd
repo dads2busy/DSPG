@@ -1,0 +1,79 @@
+---
+title: "classification_source_sz"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Statistical languages:
+Python: https://betterprogramming.pub/the-22-most-used-python-packages-in-the-world-7020a904b2e (determines popularity by pull requests/downloads)
+
+scala: https://index.scala-lang.org/search?sort=stars&topics=scala&q=*&page=1 (most popular based on stars)
+
+R: https://www.r-pkg.org/downloaded (based on downloaded packages)
+
+Julia: https://juliapackages.com/trending?sort=stars (sort by stars)
+
+Stata/SAS not on csv?
+Stata: https://www.stata.com/features/overview/whats-hot-ssc-archive/
+
+
+
+Web, app, game programming:
+Javascript: https://javascript.plainenglish.io/top-10-most-popular-javascript-libraries-to-use-in-2021-5da60f187992 (Oct, 2020: based on # of downloads, dependencies and github stars), https://bestofjs.org/projects (ommitted guides to js)
+
+java: https://techbeacon.com/app-dev-testing/most-popular-java-tools-every-phase-development
+
+typescript: https://libraries.io/search?keywords=typescript&languages=TypeScript&licenses=ISC&order=desc&sort=stars (sort by stars, ignored other languages)
+
+php: https://medium.com/issuehunt/50-most-popular-php-projects-on-github-c8cf6a242eb9 (based on github stars, ignored ones that would either classify under other projects [wechat] or projects that had generic names [october])
+
+dart: https://github.com/yissachar/awesome-dart
+
+Kotlin: https://awesomeopensource.com/projects/kotlin-library
+
+lua: https://github.com/LewisJEllis/awesome-lua
+
+coffeescript: https://arcturo.github.io/library/coffeescript/06_applications.html
+
+erlang: https://github.com/drobakowski/awesome-erlang
+
+elixir: https://libraries.io/search?languages=Elixir&order=desc&sort=rank
+
+jsonet
+
+general, multipuprpose:
+go:https://www.geeksforgeeks.org/top-5-golang-frameworks-in-2020/
+https://awesomeopensource.com/projects/golang-package
+https://github.com/topics/go?o=desc&q=go+packages&s=stars
+
+ruby: https://rubygems.org/stats?page=2
+
+c++: https://www.techgeekbuzz.com/cpp-libraries/
+
+c#: https://visualstudiomagazine.com/articles/2019/12/03/top-csharp-libraries.aspx
+https://dotnet.libhunt.com/packages/c#
+
+groovy: https://libraries.io/search?languages=Groovy&order=desc&page=4&sort=stars
+
+perl: https://metacpan.org/favorite/leaderboard
+
+haskell: https://www.dummies.com/programming/10-must-have-haskell-libraries-for-functional-programming/
+https://serokell.io/blog/best-haskell-open-source-projects
+
+rust: https://awesomeopensource.com/projects/rust-library
+https://jondot.medium.com/12-killer-rust-libraries-you-should-know-c60bab07624f
+
+swift: https://swiftpack.co/
+
+objective-c: https://github.com/search?l=Objective-C&o=desc&p=3&q=objective-c&s=stars&type=Repositories (isolate repos that aren't used for other languages too)
+
+c: https://en.cppreference.com/w/c/links/libs
+
+ocaml: https://opam.ocaml.org/packages/index-popularity.html
+
+fortran: https://github.com/rabbiabram/awesome-fortran
+
+matlab: https://github.com/mikecroucher/awesome-MATLAB

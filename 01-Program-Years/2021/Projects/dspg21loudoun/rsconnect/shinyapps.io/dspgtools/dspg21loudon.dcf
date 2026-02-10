@@ -1,0 +1,12 @@
+name: dspg21loudon
+title: dspg21loudon
+username:
+account: dspgtools
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4453113
+bundleId: 4884968
+url: https://dspgtools.shinyapps.io/dspg21loudon/
+when: 1628020317.28492
+asMultiple: FALSE
+asStatic: FALSE

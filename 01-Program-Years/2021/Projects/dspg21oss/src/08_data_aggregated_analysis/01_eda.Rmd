@@ -1,0 +1,157 @@
+---
+title: "01_viz"
+author: "Crystal"
+date: "7/16/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#rm(list = ls())
+# load packages
+for (pkg in c("tidyverse", "data.table", "R.utils", "RPostgreSQL", "cowplot", "stringr", "stringi",  "dplyr", "leaflet", "leaflet.extras", "tools", "statebins", "mosaic", "psych")) {library(pkg, character.only = TRUE)}
+
+```
+
+```{r}
+conn <- dbConnect(drv = PostgreSQL(), 
+                  dbname = "sdad", 
+                  host = "10.250.124.195", 
+                  port = 5432, 
+                  user = Sys.getenv("db_userid"), 
+                  password = Sys.getenv("db_pwd"))
+
+# overwrite the pats_update table on pgAdmin
+repos <- dbGetQuery(conn, "SELECT * FROM gh_2007_2020.repos;")
+#repos_data <- dbGetQuery(conn, "SELECT * FROM gh_2007_2020.repos_subset_157k;")
+
+dbDisconnect(conn)
+
+```
+
+```{r}
+#https://coolors.co/232d4b-2c4f6b-0e879c-60999a-d1e0bf-d9e12b-e6ce3a-e6a01d-e57200-fdfdf
+uva_color_palette <- 
+c("#232D4B", #1.space cadet
+  "#2C4F6B", #2.indigo dye
+  "#0E879C", #3.blue munsell
+  "#60999A", #4.cadet blue
+  "#D1E0BF", #5.tea green
+  "#D9E12B", #6.pear
+  "#E6CE3A", #7.citrine
+  "#E6A01D", #8.marigold
+  "#E57200" , #9.princeton orange
+  "#FDFDFD" #10.white
+)
+```
+
+```{r}
+repos <- repos%>%
+  mutate(scraped = ifelse(commits > 349, T,F))%>%
+  mutate(below100 = ifelse(commits<100, "Below 100", "Above 100"))
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+describe(repos$commits)
+```
+
+
+# Original plot
+```{r}
+plot1_original = repos%>%
+ # filter(commits > 0 & commits <200000)%>%
+  ggplot(aes(x = commits)) + 
+  geom_histogram(bins=30) +
+  aes(fill = scraped) + 
+  labs(title = "", y = "count") + 
+  theme(legend.position = "top") +
+#  scale_y_continuous(trans='log2')+
+  theme_minimal()  + 
+  theme(legend.position = "top") + 
+  scale_fill_manual(values=c(uva_color_palette[2], uva_color_palette[7]))
+
+plot1_original
+```
+
+
+# Exclude 0's
+```{r}
+plot2_nozero = repos%>%
+  filter(commits > 0 )%>%
+  ggplot(aes(x = commits)) + 
+  geom_histogram(bins=30) +
+  aes(fill = scraped) + 
+  labs(title = "", y = "log(count)") + 
+  scale_y_continuous(trans='log2')+
+  theme_minimal()  + 
+  theme(legend.position = "top") + 
+  scale_fill_manual(values=c(uva_color_palette[2], uva_color_palette[7]))
+
+plot2_nozero
+```
+
+# Middle values
+```{r}
+plot3_middle_values = repos%>%
+  filter(commits > 0 & commits <200000)%>%
+  ggplot(aes(x = commits)) + 
+  geom_histogram(binwidth = 345) +
+  aes(fill = scraped) + 
+  labs(title = "", y = "log(count)") + 
+  theme(legend.position = "top") +
+  scale_y_continuous(trans='log2')+
+  theme_minimal() + 
+  scale_fill_manual(values=c(uva_color_palette[2], uva_color_palette[7]))+ 
+  theme(legend.position = "top")
+
+plot3_middle_values
+```
+
+
+# Middle values
+```{r}
+plot4_cutoff100 = repos%>%
+  filter(commits > 0 & commits <200000)%>%
+  ggplot(aes(x = commits)) + 
+  geom_histogram(binwidth = 30) +
+  aes(fill = scraped) + 
+  labs(title = "", y = "log(count)") + 
+  theme(legend.position = "top") +
+  scale_y_continuous(trans='log2')+
+  theme_minimal() + 
+  scale_fill_manual(values=c(uva_color_palette[2], uva_color_palette[7]))+ 
+  theme(legend.position = "top")+ 
+  facet_wrap( ~ below100, nrow = 1)
+
+plot4_cutoff100
+```
+
+
+
+
+```{r}
+repos_analysis = repos%>%
+  mutate(commits_zero = ifelse(commits == 0, TRUE, FALSE))%>%
+  mutate(commits_lt_50  = ifelse(commits < 50, TRUE, FALSE))%>%
+  mutate(commits_lt_100  = ifelse(commits < 100, TRUE, FALSE))
+
+repos_analysis%>%
+  group_by(commits_zero, scraped)%>%
+  summarize(N=n())
+
+repos_analysis%>%
+  group_by(commits_lt_50, scraped)%>%
+  summarize(N=n())
+
+repos_analysis%>%
+  group_by(commits_lt_100, scraped)%>%
+  summarize(N=n())
+```
+

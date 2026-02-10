@@ -1,0 +1,187 @@
+---
+title: "Baseline Skills"
+output: 
+  html_document:
+    theme: cerulean
+---
+```{js echo=FALSE}
+
+   document.getElementsByTagName('a')[0].innerHTML = '<img src="./images/DSPG_white-01.png" width="120px" />'
+
+   document.getElementsByClassName('navbar-header')[0].style = 'margin-top:-10px;'
+
+```
+
+
+The first piece of our analysis begins with learning about baseline skills. This was a definition from Burning Glass and includes soft and more generalized skills for the workplace. These skills are seen across most SOC and MOS codes because of how general they are; however, these are highly employable skills and therefore important to veterans for their resumes. 
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+root.dir = rprojroot::find_rstudio_root_file()
+```
+
+
+```{r, echo=FALSE}
+library(data.table)
+library(tidytable)
+library(maditr)
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(stargazer)
+```
+
+```{r data}
+mos_skills<-readRDS("./data/working/mos_skill.Rds") %>% as.data.table()
+soc_skills<-readRDS("./data/working/soc_skill_bls_long.Rds")%>% as.data.table()
+skill_net<-read_csv("./data/working/skill_network.csv")%>% as.data.table()
+skill_uq<-read_csv("./data/working/skill_network_unique.csv") %>% as.data.table()
+
+all_skills_soc<-readRDS("./data/working/all_soc_skill_bls_long.Rds") %>% as.data.table()
+
+all_skills_wage<-all_skills_soc %>% select(socname, tot_emp, a_mean) %>% unique()
+all_skills_wage<-all_skills_wage[complete.cases(all_skills_wage), ]
+all_skills_wage[,3]<-sapply(all_skills_wage[,3], as.numeric)
+#generate tables used for the rest of the document
+skills_top<-sort(table(soc_skills$skill), decreasing=TRUE)
+skills_top<-skills_top%>% sort(decreasing = TRUE) %>% as.data.table()
+# misc
+colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+mos_1<-c("Cannon Crewmember", "Cavalry Scout", "Combat Engineer", "Combat Medic Specialist", "Infantryman")
+mos_2<-c('Intelligence Analyst', "M1 Armor Crewman", "Military Police", "Unit Supply Specialist", "Wheeled Vehicle Repairer")
+```
+
+### Exploratory Data Analysis
+
+Within baseline skills, Army personnel have opportunities to fill an average of 185,900 jobs within each SOC code. They have an opportunity to earn an average of 51,000 dollars in these same jobs. This is an average across 170 jobs, therefore there is room for upwards of 31 million veterans to earn jobs in these fields, if they only served veteran groups.
+
+```{r Summary Statistics, echo=FALSE}
+baseline_skills_wage<-all_skills_soc %>% select(socname, tot_emp, a_mean) %>% unique()
+baseline_skills_wage<-all_skills_wage[complete.cases(all_skills_wage), ]
+baseline_skills_wage[,3]<-sapply(baseline_skills_wage[,3], as.numeric)
+```
+
+```{r stargaxer, results="asis"}
+Variables <- c("Employment", "Salary")
+summary_table <- data.frame(Variables)
+summary_table$Mean[1] <- mean(baseline_skills_wage$tot_emp)
+summary_table$Mean[2] <- mean(baseline_skills_wage$a_mean)
+summary_table$SD[1] <- sd(baseline_skills_wage$tot_emp)
+summary_table$SD[2] <- sd(baseline_skills_wage$a_mean)
+summary_table$Min[1] <- min(baseline_skills_wage$tot_emp)
+summary_table$Min[2] <- min(baseline_skills_wage$a_mean)
+summary_table$Max[1] <- max(baseline_skills_wage$tot_emp)
+summary_table$Max[2] <- max(baseline_skills_wage$a_mean)
+
+knitr::kable(summary_table)
+```
+
+#####  Skill Frequency
+
+The most common baseline skills accrued in the Army are highly employable and salient skills. These include communication, organization, detail-orientation, problem solving, and excel. These skills are common to the Army and civilian jobs and should be included on resumes by veterans to highlight how translatable their skills are from the Army to civilian life. 
+
+```{r Baseline Skill Frequency, echo=FALSE}
+freq_skill<-table(soc_skills$skill) %>% as.data.table()
+freq_skill<-freq_skill[order(-N)] %>% top_n.(10)
+ggplot(freq_skill, aes(x=reorder(V1, -N), y=N))+geom_bar(stat='identity', fill=colors[1]) +
+  labs(x = "Baseline Skill Frequency", y = NULL, title = "Army SOC Code Baseline Skills")+
+  scale_x_discrete(labels = str_wrap(freq_skill$V1, width = 10))+
+  guides(x =  guide_axis(angle = 45))
+```
+
+```{r variation}
+# socs <- read_rds("./data/working/soc_skill_bls_long.Rds")
+# crosswalk <- read_excel("./data/original/crosswalk.xlsx")
+# 
+# # MOS to SOC (Long)
+# mos_skill_long <- left_join(crosswalk, socs, by = c("O*NET-SOC Code" = "onet"))
+# 
+# mos_skill_long %>%
+#   transmute(source = `Army MOS Title`, target = skill) %>%
+#   na.omit()%>%
+#   select(source, target) %>%
+#   group_by(source, target) %>%
+#   mutate(freq = n())%>%
+#   ungroup() %>%
+#   unique() %>%
+#   filter(source %in% mos_1) %>%
+#   group_by(target) %>%
+#   mutate(n = n(), sd1 = sd(freq), sd2 = sd(n)) %>%
+#   ungroup() %>%
+#   group_by(source) %>%
+#   arrange(desc(sd1)) %>%
+#   top_n(5) %>%
+#   ungroup() %>%
+#   ggplot(aes(sd1, fct_reorder(target, sd1), fill = source)) +
+#   scale_fill_manual(values=colors) +
+#   geom_col(show.legend = FALSE) +
+#   facet_wrap(~source, ncol = 1, scales = "free") +
+#   labs(x = "Standard Deviation of Skill", y = NULL,
+#        title = "Baseline Skill Variation by MOS")
+# 
+# skill_net %>%
+#   na.omit()%>%
+#   select(target, source, sd) %>%
+#   unique() %>%
+#   filter(source %in% mos_2) %>%
+#   slice_max(sd, n = 5) %>%
+#   ungroup() %>%
+#   ggplot(aes(sd, fct_reorder(target, sd), fill = source)) +
+#   scale_fill_manual(values=colors) +
+#   geom_col(show.legend = FALSE) +
+#   facet_wrap(~source, ncol = 1, scales = "free") +
+#   labs(x = "Standard Deviation of Skill", y = NULL,
+#        title = "Baseline Skill Variation by MOS")
+
+```
+#### Unique Skills
+
+We define unique skills as those that are not present in all 10 MOS's. Across these 10, the most unique are types of languages learned. Tis signals that language acquisition is the most unique of skill traits to come out of Army jobs. This inherently makes sense. In the Army you'll learn lots of similar baseline skills like communication, physical skills, and discipline, but languages are more tuned to which specific job you may do.
+
+```{r, echo=FALSE}
+skill_uq %>%
+  na.omit()%>%
+  select(target, source, e_freq) %>%
+  filter(source %in% mos_1) %>%
+  group_by(target) %>%
+  mutate(freq = sum(e_freq)) %>%
+  ungroup() %>%
+  group_by(source) %>%
+  unique()%>%
+  slice_max(freq, n = 5) %>%
+  ungroup() %>%
+  ggplot(aes(freq, fct_reorder(target, freq), fill = source)) +
+  scale_fill_manual(values=colors) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~source, ncol = 1, scales = "free") +
+  labs(x = "Skill Frequency Weighted by Employment", y = NULL,
+       title = "Unique Baseline Skill Frequency")
+```
+
+```{r Part 2, echo=FALSE}
+skill_uq %>%
+  na.omit()%>%
+  select(target, source, e_freq) %>%
+  filter(source %in% mos_2) %>%
+  group_by(target) %>%
+  mutate(freq = sum(e_freq)) %>%
+  ungroup() %>%
+  group_by(source) %>%
+  unique()%>%
+  slice_max(freq, n = 5) %>%
+  ungroup() %>%
+  ggplot(aes(freq, fct_reorder(target, freq), fill = source)) +
+  scale_fill_manual(values=colors) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~source, ncol = 1, scales = "free") +
+  labs(x = "Skill Frequency Weighted by Employment", y = NULL,
+       title = "Unique Baseline Skill Frequency")
+```
+
+### Networks
+Each of the top 10 MOS's possess an overlapping set of baseline skills, thus, indicating that veterans, despite which Army job they may occupy, will likely acquire similar baseline skills. The one exception may be for the Infantryman job which, as indicated by its smaller node and text size, contains fewer of these skills.
+
+![](./images/baseline.png) 
+

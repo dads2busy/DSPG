@@ -1,0 +1,13 @@
+name: NDVIShinyApp
+title: NDVIShinyApp
+username:
+account: solocuriousgeorge
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4429139
+bundleId: 4865274
+url: https://solocuriousgeorge.shinyapps.io/NDVIShinyApp/
+when: 1627492464.94891
+lastSyncTime: 1627492464.94891
+asMultiple: FALSE
+asStatic: FALSE

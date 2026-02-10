@@ -1,0 +1,68 @@
+---
+title: "01_validated_repo"
+author: "Crystal"
+date: "7/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+```
+
+
+```{r}
+library(readxl)
+oss_software_labelled_c_sz <- read_excel("/home/zz3hs/git/dspg21oss/data/dspg21oss/labelled_repo/oss_software_labelled_c_sz.xlsx")
+View(oss_software_labelled_c_sz)
+```
+
+```{r}
+setwd("/home/zz3hs/git/dspg21oss/data/dspg21oss/labelled_repo")
+pattern = list.files(pattern="*.xlsx")
+
+for (i in 1:length(pattern)) assign(pattern[i], read_excel(pattern[i]))
+```
+
+```{r}
+file_names = list.files( "/home/zz3hs/git/dspg21oss/data/dspg21oss/labelled_repo",pattern=NULL, all.files=FALSE, full.names=FALSE)
+file_names[1]
+```
+
+
+```{r}
+clean = function(df){
+  df_clean = df%>%
+    select(-description, -language, -topics, -commits, -forks, -watchers, -stars)
+  return(df_clean)
+}
+  
+oss_software_labelled_ai_co = clean(oss_software_labelled_ai_co.xlsx)
+oss_software_labelled_blockchain_co = clean(oss_software_labelled_blockchain_co.xlsx)
+oss_software_labelled_c_sz = clean(oss_software_labelled_c_sz.xlsx)
+oss_software_labelled_database_co = clean(oss_software_labelled_database_co.xlsx)
+oss_software_labelled_dataviz_co = clean(oss_software_labelled_dataviz_co.xlsx)
+oss_software_labelled_java_sz = clean(oss_software_labelled_java_sz.xlsx)
+oss_software_labelled_js_sz = clean(oss_software_labelled_js_sz.xlsx)
+oss_software_labelled_php_sz = clean(oss_software_labelled_php_sz.xlsx)
+oss_software_labelled_python_sz = clean(oss_software_labelled_python_sz.xlsx)
+```
+
+```{r}
+software_type = oss_software_labelled_ai_co%>%
+  full_join(oss_software_labelled_blockchain_co, by = "slug")%>%
+  full_join(oss_software_labelled_c_sz, by = "slug")%>%
+  full_join(oss_software_labelled_database_co, by = "slug")%>%
+  full_join(oss_software_labelled_dataviz_co, by = "slug")%>%
+  full_join(oss_software_labelled_java_sz, by = "slug")%>%
+  full_join(oss_software_labelled_js_sz, by = "slug")%>%
+  full_join(oss_software_labelled_php_sz, by = "slug")%>%
+  full_join(oss_software_labelled_python_sz, by = "slug")
+
+write.csv(software_type, "/home/zz3hs/git/dspg21oss/data/dspg21oss/oss_software_labelled.csv", row.names = FALSE)
+```
+

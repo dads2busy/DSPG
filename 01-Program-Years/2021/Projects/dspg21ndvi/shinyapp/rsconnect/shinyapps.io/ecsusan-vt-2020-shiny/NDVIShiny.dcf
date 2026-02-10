@@ -1,0 +1,13 @@
+name: NDVIShiny
+title:
+username:
+account: ecsusan-vt-2020-shiny
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4436297
+bundleId: 4881622
+url: https://ecsusan-vt-2020-shiny.shinyapps.io/NDVIShiny/
+when: 1627939908.60869
+lastSyncTime: 1627939908.60869
+asMultiple: FALSE
+asStatic: FALSE

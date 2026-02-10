@@ -1,0 +1,27 @@
+name: "ari-website"
+output_dir: "../../../docs"
+navbar:
+  title:
+  left:
+    - text: "Overview"
+      href: index.html
+    - text: "Data"
+      href: data.html
+    - text: "Literature Review"
+      href: lit.html
+    - text: "Methods"
+      href: methods.html
+    - text: "Findings"
+      menu:
+        - text: "Main Findings"
+          href: main.html
+        - text: "Baseline Skills"
+          href: baseline.html
+        - text: "All Skills"
+          href: all_skill.html
+        - text: "Industry Case Study"
+          href: industry.html
+    - text: "Limitations and Implications"
+      href: limit.html
+    - text: "Team"
+      href: team.html

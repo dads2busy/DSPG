@@ -1,0 +1,12 @@
+name: dspg21rappk
+title: dspg21rappk
+username:
+account: dspgtools
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4452778
+bundleId: 4884698
+url: https://dspgtools.shinyapps.io/dspg21rappk/
+when: 1628014769.28955
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,0 +1,112 @@
+---
+title: "11 NMF Coherence Score Results"
+author: "Crystal"
+date: "7/20/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(mosaic)
+```
+
+# OECD Filtering Method
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+nmf_oecd <- read_csv("/Users/czang/Documents/UVA/2021DSPG/CrystalCode/dspg21RnD/shiny/data_shiny/nmf_OECD_10.csv")
+nmf_oecd <- nmf_oecd%>%
+  gather("iteration", "coherence_score", -n_topics)%>%
+  mutate(method = "Term Matching")
+nmf_oecd$n_topics <- as.factor(nmf_oecd$n_topics)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+ggplot(data = nmf_oecd, aes(x = n_topics, y = coherence_score)) +
+  geom_boxplot()  +
+  labs(title = "NMF Coherence Score", subtitle = "AI Abstracts Using OECD Filtering Method", x= "Number of Topics", y = "Coherence Score (10 runs)") +
+  theme_minimal()
+```
+
+
+# Eads Filtering Method
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+nmf_eads <- read_csv("/Users/czang/Documents/UVA/2021DSPG/CrystalCode/dspg21RnD/shiny/data_shiny/nmf_eads_10.csv")
+nmf_eads <- nmf_eads%>%
+  gather("iteration", "coherence_score", -n_topics)%>%
+  mutate(method = paste0("Term Matching + ", "\n", " Topic Modeling"))
+nmf_eads$n_topics <- as.factor(nmf_eads$n_topics)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+ggplot(data = nmf_eads, aes(x = n_topics, y = coherence_score)) +
+  geom_boxplot()  +
+  labs(title = "NMF Coherence Score", subtitle = "AI Abstracts Using Eads' Filtering Method", x= "Number of Topics", y = "Coherence Score (10 runs)") +
+  theme_minimal()
+```
+
+
+# AI WIKI Bert Filtering Method
+## Cutoff: mean+2*sd
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# nmf_bert <- read_csv("//Users/czang/Documents/UVA/2021DSPG/CrystalCode/dspg21RnD/shiny/data_shiny/nmf_bert_10.csv")
+# nmf_bert <- nmf_bert%>%
+#   gather("iteration", "coherence_score", -n_topics)%>%
+#   mutate(method = "BERT")
+# nmf_bert$n_topics <- as.factor(nmf_bert$n_topics)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# ggplot(data = nmf_bert, aes(x = n_topics, y = coherence_score)) +
+#   geom_boxplot()  +
+#   labs(title = "NMF Coherence Score", subtitle = "AI Abstracts Using BERT Filtering Method (Cutoff: mean+ 2*sd )", x= "Number of Topics", y = "Coherence Score (10 runs)") +
+#   theme_minimal()
+```
+
+## Cutoff: mean+2.5*sd
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+nmf_bert2 <- read_csv("//Users/czang/Documents/UVA/2021DSPG/CrystalCode/dspg21RnD/shiny/data_shiny/nmf_bert2_10.csv")
+nmf_bert2 <- nmf_bert2%>%
+  mutate(n_topics = c(5,10,15,20,25,30,35,40,45,50,75,100,125))%>%
+  gather("iteration", "coherence_score", -n_topics)%>%
+  mutate(method = "BERT")
+nmf_bert2$n_topics <- as.factor(nmf_bert2$n_topics)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+ggplot(data = nmf_bert2, aes(x = n_topics, y = coherence_score)) +
+  geom_boxplot()  +
+  labs(title = "NMF Coherence Score", subtitle = "AI Abstracts Using BERT Filtering Method (Cutoff: mean+ 2.5*sd )", x= "Number of Topics", y = "Coherence Score (10 runs)") +
+  theme_minimal()
+```
+
+
+```{r}
+uva_colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+nmf_coherence <- rbind(nmf_bert2, nmf_eads, nmf_oecd)
+
+
+nmf_coherence$method <- factor(nmf_coherence$method, levels = c("Term Matching",paste0("Term Matching + ", "\n", " Topic Modeling"), "BERT" ))
+
+table(nmf_coherence$method)
+ggplot(data = nmf_coherence, aes(x = n_topics, y = coherence_score)) +
+  geom_boxplot(aes(fill = method))  +
+  labs(title = "NMF Coherence Score Comparison", subtitle = "Measuring Topic Model Performance on Each Filtering Method", x= "Number of Topics", y = "Coherence Score (10 runs)") +
+  theme_minimal()+
+  scale_fill_manual(values=c(uva_colors[2], uva_colors[4], uva_colors[9]))+
+  theme_minimal()+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12)) +
+  guides(fill=guide_legend(title="Filtering Method"))
+```
+

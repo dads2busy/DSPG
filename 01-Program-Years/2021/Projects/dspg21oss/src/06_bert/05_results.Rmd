@@ -1,0 +1,313 @@
+---
+title: "Bert Classification"
+author: "Crystal"
+date: "7/29/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library("stringr")
+library("tidyr")
+library("dplyr")
+library("readr")
+library("tidyverse")
+library("DT")
+library("RPostgreSQL")
+```
+
+
+1. Used median sentence scores as repo embedding score
+2. If median sentence score is greater than mean + 2*sd --> catogorize into that software type
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+setwd("/home/zz3hs/git/dspg21oss/data/dspg21oss/")
+
+repo_score<- read_csv("repo_sim_scores_stats_co.csv")
+label <- read_csv("oss_software_labelled.csv")
+
+
+github_repos_157k <- read_csv("github_repos_157k.csv")
+sum(is.na(github_repos_157k$slug)) #slugs exit
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+#term matching labels
+ls = c("prog_java", "prog_php", "prog_python", "prog_javascript", "prog_clang", "app_blockchain_all", "app_database_all", "topics_ai", "topics_dataviz")
+
+repo_term_matching_label = label%>%
+  gather("software_type", "is_type",-slug)%>%
+  filter(software_type %in% ls)%>%
+  mutate(IS_TYPE = ifelse(is.na(is_type), F, T))%>%
+  select(-is_type)%>% 
+  distinct(slug, software_type, .keep_all = T)%>%
+  spread(software_type, IS_TYPE)
+
+colnames(repo_term_matching_label) <- c("slug", "app_blockchain_tm", "app_database_tm", "prog_clang_tm","prog_java_tm", "prog_javascript_tm", "prog_php_tm", "prog_python_tm", "topics_ai_tm", "topics_dataviz_tm")
+
+colSums(repo_term_matching_label[2:10])
+```
+
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+ids = colnames(repo_score)
+```
+
+
+# Skewness
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+skewness_id = c()
+for (i in (1:length(ids))){
+  id = ids[i]
+  if (grepl("skewness", id)){
+    skewness_id <- append(skewness_id, id) 
+  }
+}
+repo_score_skewness <- repo_score%>%
+  select(slug, skewness_id)%>%
+  gather(software_type, skewness_score,-slug)
+
+ggplot(repo_score_skewness, aes(x = skewness_score)) +
+  geom_histogram(binwidth = 0.21) + 
+  facet_wrap(~software_type, ncol = 3) + 
+  labs(title = "Skewness Distribution for each software type")+
+  geom_vline(xintercept = -1,col="red" )+
+  geom_vline(xintercept = 1 ,col="red")
+```
+
+# Mean
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+mean_id = c()
+for (i in (1:length(ids))){
+  id = ids[i]
+  if (grepl("mean", id)){
+    mean_id <- append(mean_id, id) 
+  }
+}
+repo_score_mean <- repo_score%>%
+  select(slug, mean_id)%>%
+  gather(software_type, mean,-slug)
+
+ggplot(repo_score_mean, aes(x = mean)) +
+  geom_histogram(binwidth = 0.05) + 
+  facet_wrap(~software_type, ncol = 3) + 
+  labs(title = "Mean Distribution for each software type")
+```
+
+# Max
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+max_id = c()
+for (i in (1:length(ids))){
+  id = ids[i]
+  if (grepl("max", id)){
+    max_id <- append(max_id, id) 
+  }
+}
+repo_score_max <- repo_score%>%
+  select(slug, max_id)%>%
+  gather(software_type, max,-slug)
+
+ggplot(repo_score_max, aes(x = max)) +
+  geom_histogram(binwidth = 0.05) + 
+  facet_wrap(~software_type, ncol = 3) + 
+  labs(title = "Max Distribution for each software type")
+```
+
+# Medain
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+median_id = c()
+for (i in (1:length(ids))){
+  id = ids[i]
+  if (grepl("median", id)){
+    median_id <- append(median_id, id) 
+  }
+}
+
+repo_score_median <- repo_score%>%
+  select(slug, median_id,description)%>%
+  gather(software_type, median,-c(slug, description))
+
+#deduplicate
+#repo_score_median_dup = repo_score_median %>% 
+#  group_by(slug, software_type) %>%
+#  summarize(N=n())
+
+repo_score_median_dedup = repo_score_median %>% 
+  distinct(slug, software_type, .keep_all = T)
+
+
+tb = repo_score_median_dedup%>%
+  group_by(software_type)%>%
+  summarize(mean = mean(median), sd = sd(median), cutoff = mean+2*sd)
+
+tb%>%
+  datatable()
+
+ggplot(repo_score_median, aes(x = median)) +
+  geom_histogram(binwidth = 0.05) + 
+  facet_wrap(~software_type, ncol = 3) + 
+  labs(title = "Median Distribution for each software type")
+```
+
+# Classification
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+repo_score_median_dedup_classify<- repo_score_median_dedup%>%
+  group_by(software_type)%>%
+  mutate(cutoff = mean(median)+2*sd(median))%>%
+  mutate(is_type = ifelse(median > cutoff, T, F))%>%
+  select(slug, software_type, is_type, description, median)%>%
+  mutate(median = round(median, digits=2))
+  
+repo_score <- repo_score_median_dedup_classify%>%
+  select(slug, software_type, median)%>%
+  mutate(software_type = ifelse(software_type =="ai_median_score", "topics_ai",
+                                ifelse(software_type == "blockchain_median_score", "app_blockchain",
+                                       ifelse(software_type == "clang_median_score", "prog_clang", 
+                                              ifelse(software_type == "database_median_score", "app_database",
+                                                    ifelse(software_type =="dataviz_median_score", "topics_dataviz",
+                                ifelse(software_type == "java_median_score", "prog_java",
+                                       ifelse(software_type == "javascript_median_score", "prog_javascript", 
+                                              ifelse(software_type == "php_median_score", "prog_php", 
+                                                     ifelse(software_type == "python_median_score", "prog_python", "other"))))))))))%>%
+  rename("similarity_score" = "median")
+
+slugs <- read_csv("repo_classified_slugs.csv")
+repo_score_out <- repo_score%>%
+  left_join(slugs, by = "slug")%>%
+  filter(bert == T)
+#saveRDS(repo_score_out, "/home/zz3hs/git/dspg21oss/shiny/data_shiny/repo_score.rds")
+
+
+```
+
+```{r}
+repo_score_median_dedup_classify <- repo_score_median_dedup_classify%>%
+  select(-median)
+
+tb  = repo_score_median_dedup_classify%>%
+  group_by(software_type,is_type)%>%
+  summarize(N=n())
+
+tb%>%
+  datatable()
+
+#example tensorflow
+repo_score_median_dedup_classify%>%
+  filter(slug=="tensorflow/tensorflow")%>%
+  datatable()
+
+#finalize bert lablled dataset
+repo_score_wide = repo_score_median_dedup_classify%>%
+  spread(software_type, is_type)%>%
+  select(-description)
+
+sum(is.na(github_repos_157k$slug))
+
+
+colnames(repo_score_wide) <- c("slug","topics_ai_bert", "app_blockchain_bert", "prog_clang_bert","app_database_bert", "topics_dataviz_bert", "prog_java_bert", "prog_javascript_bert", "prog_php_bert", "prog_python_bert")
+```
+
+# Join term matching label and bert label
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+length(unique(github_repos_157k_label$slug))
+length(unique(repo_score_wide$slug))
+length(unique(repo_term_matching_label$slug))
+
+#original data merge with bert labels
+github_repos_157k_label =  left_join(github_repos_157k, repo_score_wide, by ="slug")
+
+#bert labelled data merge with term matching labels
+github_repos_157k_label = left_join(github_repos_157k_label, repo_term_matching_label, by ="slug")
+
+colnames(github_repos_157k_label)
+#fill in na with false
+github_repos_157k_label = github_repos_157k_label%>%
+  mutate_each(funs(replace(., is.na(.), F)), app_blockchain_tm, app_database_tm,prog_clang_tm, prog_java_tm, prog_javascript_tm, prog_php_tm, prog_python_tm, topics_ai_tm, topics_dataviz_tm)
+
+#convert from wide format to long format
+tm_ids =  c("app_blockchain_tm", "app_database_tm", "prog_clang_tm","prog_java_tm", "prog_javascript_tm", "prog_php_tm", "prog_python_tm", "topics_ai_tm", "topics_dataviz_tm")
+
+bert_ids = c("topics_ai_bert", "app_blockchain_bert", "prog_clang_bert","app_database_bert", "topics_dataviz_bert", "prog_java_bert", "prog_javascript_bert", "prog_php_bert", "prog_python_bert")
+
+
+github_repos_157k_label_long = github_repos_157k_label%>%
+  gather(software_type, IS_TYPE, -c(slug,description, readme, language,topics,commits,forks,stars,watchers))%>%
+  mutate(method = ifelse(software_type %in% tm_ids, "term_matching",
+                         ifelse(software_type %in% bert_ids, "bert", "not_classified")))%>% 
+  distinct(slug, software_type, .keep_all = T)%>%
+  mutate(software_type = ifelse(software_type %in% c("topics_ai_bert", "topics_ai_tm"), "topics_ai",
+                         ifelse(software_type %in% c("app_blockchain_bert", "app_blockchain_tm"), "app_blockchain",
+                         ifelse(software_type %in% c("prog_clang_bert", "prog_clang_tm"), "prog_clang",
+                         ifelse(software_type %in% c("app_database_bert", "app_database_tm"), "app_database",
+                         ifelse(software_type %in% c("topics_dataviz_bert", "topics_dataviz_tm"), "topics_dataviz",
+                         ifelse(software_type %in% c("prog_java_bert","prog_java_tm"), "prog_java",
+                         ifelse(software_type %in% c("prog_javascript_bert", "prog_javascript_tm"), "prog_javascript",
+                         ifelse(software_type %in% c("prog_php_bert", "prog_php_tm"), "prog_php",
+                         ifelse(software_type %in% c("prog_python_bert", "prog_python_tm"), "prog_python", NA))))))))))
+sum(is.na(github_repos_157k_label_long$software_type))
+
+github_repos_157k_label_long <- github_repos_157k_label_long%>%
+  spread(method, IS_TYPE)
+
+# there are 20124 deduplicated repos (2 same entries for the same slug+software type)
+# dup = github_repos_157k_label_long %>% 
+#   group_by(slug, software_type) %>%
+#   filter(n() > 1)
+#example tensorflow
+github_repos_157k_label_long%>%
+  filter(slug=="tensorflow/tensorflow")%>%
+  select(slug, description, language, software_type, bert,term_matching)%>%
+  datatable()
+
+#write.csv(github_repos_157k_label_long, "/project/class/bii_sdad_dspg/uva_2021/dspg21oss/github_repos_157k_label.csv", row.names = F)
+```
+
+# Check the repos that are classified as AI
+```{r}
+ai = github_repos_157k_label_long%>%
+  filter(software_type == "topics_ai")%>%
+  filter(bert == T)
+```
+
+# Summarize count by software type
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+summary_table <- github_repos_157k_label_long%>%
+  filter(bert == TRUE)%>%
+  group_by(software_type)%>%
+  summarize(n=n())%>%
+  arrange(-n)%>% 
+  mutate(prc = round(n / 157538, 2))%>% 
+  mutate(category_type = ifelse(test = str_detect(string = software_type, pattern = "^sys_"), yes = "system", no = ""),
+         category_type = ifelse(test = str_detect(
+           string = software_type, pattern = "^prog_"), yes = "programming", no = category_type),
+         category_type = ifelse(test = str_detect(
+           string = software_type, pattern = "^app_"), yes = "applications", no = category_type),
+         category_type = ifelse(test = str_detect(
+           string = software_type, pattern = "^topics_"), yes = "applications", no = category_type),
+         category_type = ifelse(test = str_detect(
+           string = software_type, pattern = "database"), yes = "system", no = category_type),
+         category_type = ifelse(test = str_detect(
+           string = software_type, pattern = "virtual"), yes = "system", no = category_type))
+
+summary_table%>%
+  datatable()
+
+ggplot(data=summary_table, aes(x=reorder(software_type, n), y=n, fill=category_type)) +
+  geom_bar(stat="identity") +
+  coord_flip() +
+  scale_fill_manual(values=c("#56B4E9", "#232D4B", "#E57200")) +
+  theme_minimal() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5)) +
+  ggtitle("OSS Software Types Detected") +
+  labs(caption = "Based on 7.3M GitHub Repo Descriptions") +
+  scale_y_continuous(breaks=c(0, 200000, 400000, 600000, 800000), 
+                     labels=c("0", "200k", "400k", "600k", "800k"))
+```
+

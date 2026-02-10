@@ -1,0 +1,133 @@
+---
+title: "03_comparison"
+author: "Ziwei Crystal Zang"
+date: "8/4/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(mosaic)
+library(gt)
+```
+
+
+```{r}
+
+uva_colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+abstracts_gather <- readRDS("/home/zz3hs/git/dspg21RnD/shiny/data_shiny/abstracts_gather.rds")
+abstracts_gather <- abstracts_gather%>%
+  filter(method != "is_ai_eads")
+
+abstracts_gather$method <- factor(abstracts_gather$method, levels = c("Term Matching", "Term Matching + \n Topic Modeling","BERT" ))
+```
+
+
+```{r}
+abstracts_gather%>%
+  group_by(method)%>%
+  rename("Filtering Method" ="method")%>%
+  summarize(N=n(), "Percent (%)" = round(N/700000*100, digits = 2))%>%
+  gt()%>%
+  tab_header(
+    title = "Comparison of The Number of Abstracts that are Classified as AI",
+    subtitle = "From 2008 to 2018")
+```
+
+
+# Agency Count
+```{r}
+agency <- abstracts_gather %>%
+  filter(!is.na(DEPARTMENT))%>% 
+  group_by(DEPARTMENT, method)%>%
+  count()
+
+png("/home/zz3hs/git/dspg21RnD/shiny/www/all_agency.png", width = 1000, height = 600, res = 150)
+
+ggplot(agency, aes(x= reorder(DEPARTMENT, (n)), y=n))+
+  geom_bar(stat='identity', position = "dodge", aes(fill = agency$method))+
+  theme_minimal() +
+  labs(title = "Funding Agencies of Projects Related to Artificial intelligence", x = "Agency", y = "Number of Abstracts")+
+  scale_fill_manual(values=c(uva_colors[2], uva_colors[4], uva_colors[9]))+
+  theme_minimal()+
+  labs(title = "Funding Agencies of Projects Related to Artificial intelligence", x = "Agency", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12)) +
+  guides(fill=guide_legend(title="Filtering Method"))
+
+dev.off()
+```
+
+
+# Agency Percentage
+```{r}
+agency <- abstracts_gather %>%
+  filter(!is.na(DEPARTMENT))%>% 
+  group_by(DEPARTMENT, method)%>%
+  summarize(ai_projects_by_agency = n(), num_projects_by_agency = first(num_projects_by_agency))%>%
+  mutate(perc = ai_projects_by_agency/num_projects_by_agency )
+
+png("/home/zz3hs/git/dspg21RnD/shiny/www/all_agency_perc.png", width = 1000, height = 600, res = 150)
+
+ggplot(agency, aes(x= reorder(DEPARTMENT, (perc)), y=perc))+
+  geom_bar(stat='identity', position = "dodge", aes(fill = agency$method))+
+  theme_minimal() +
+  labs(title = "Funding Agencies of Projects Related to Artificial intelligence", x = "Agency", y = "Number of Abstracts")+
+  scale_fill_manual(values=c(uva_colors[2], uva_colors[4], uva_colors[9]))+
+  theme_minimal()+
+  labs(title = "Funding Agencies of Projects Related to Artificial intelligence", x = "Agency", y = "Percentage")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12)) +
+  guides(fill=guide_legend(title="Filtering Method"))
+
+dev.off()
+```
+
+
+```{r}
+png("www/all_start_year.png", width = 1000, height = 600, res = 150)
+
+abstracts_gather %>% 
+  mutate(d=as.Date(PROJECT_START_DATE, format="%m/%d/%Y")) %>% 
+  mutate(d=format(d,"%Y")) %>% 
+  filter(d<"2019") %>% 
+  filter(d> "2007")%>%
+  ggplot( aes(x = d)) + 
+  geom_bar(stats ="count", position = "dodge") + 
+  aes(fill = method) + 
+  labs(title = "") + 
+  theme(legend.position = "right")+
+  scale_fill_manual(values=c(uva_colors[2], uva_colors[4], uva_colors[9]))+
+  theme_minimal()+
+  labs(title = "Start Year of Projects Related to Artificial intelligence", x = "Start Year", y = "Number of Abstracts")+
+  theme(plot.title = element_text(size=13), 
+        axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12)) +
+  guides(fill=guide_legend(title="Filtering Method"))
+  
+dev.off()
+
+```
+
+
+```{r}
+ab <- abstracts_gather%>%
+  group_by(PROJECT_ID)%>%
+  summarize(N= sum(IS_TRUE))
+
+ab%>%
+  group_by(N)%>%
+  summarize(N=n(), perc = N/sum(N))
+
+```
+

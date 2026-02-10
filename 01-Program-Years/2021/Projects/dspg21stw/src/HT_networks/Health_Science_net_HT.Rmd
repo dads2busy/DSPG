@@ -1,0 +1,179 @@
+---
+title: "Health_Science_HT"
+author: "Haleigh Tomlin"
+date: "7/27/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(RColorBrewer)
+library(network)
+library(igraph)
+```
+
+
+colorBlindness: https://cran.r-project.org/web/packages/colorBlindness/vignettes/colorBlindness.htm
+
+
+```{r}
+hs_data <- read_xlsx("Health_Science.xlsx")
+```
+
+```{r}
+table(hs_data$...6)
+```
+
+^^ I put these SOCs in emily's code.
+```{r}
+hs_stem_creds <- read.csv("hs_stem_credentials.csv")
+```
+
+```{r}
+#hs_stem_creds <- hs_stem_creds %>% select(SOC, Cert = Certification.Name)
+```
+
+joining back to the HS data.
+
+```{r}
+hs_data
+```
+
+```{r}
+hs_data <- hs_data %>% mutate(ONETSOC = substr(Code, start = 1, stop = 7))
+hs_data <- hs_data %>% mutate(STEM = `...6`) 
+hs_data <- hs_data %>% select(ONETSOC, Code, STEM, Occupation)
+```
+
+```{r}
+hs_stem_creds <- hs_stem_creds %>% select(Certification_Name = Certification.Name, SOC) %>% mutate(ONETSOC = substr(SOC, start = 1, stop = 7))
+```
+
+```{r}
+hs_stem_creds
+```
+```{r}
+hs <- hs_data %>% left_join(hs_stem_creds, by = c("Code" = "SOC", "ONETSOC"))
+```
+
+
+```{r}
+hs2
+```
+
+```{r}
+stw_certs <- d %>% select(ONETSOC = SOC, Cert = Certification.Name)
+```
+
+```{r}
+hs2 <- hs %>% left_join(stw_certs, by = "ONETSOC")
+```
+
+```{r}
+hs2$Certification_Name <- as.character(hs2$Certification_Name)
+hs2$Certification <- ifelse(is.na(hs2$Certification_Name), hs2$Cert, hs2$Certification_Name)
+
+```
+
+```{r}
+hs2 <- hs2 %>% mutate(Occupation = gsub(" ", "\n", Occupation))
+```
+
+
+```{r}
+hs2 <- hs2 %>% select(ONETSOC, Certification, Occupation, STEM)
+```
+
+```{r}
+hs_attributes1 <- hs2 %>% select(name = ONETSOC, Occupation, STEM)
+hs_attributes2 <- hs2 %>% select(name = Certification, Occupation, STEM)
+
+hs_attributes1 <- hs_attributes1[!duplicated(hs_attributes1$name),]
+hs_attributes2 <- hs_attributes2[!duplicated(hs_attributes2$name),]
+
+hs_attributes <- rbind(hs_attributes1, hs_attributes2)
+```
+
+
+```{r}
+hs2 <- na.omit(hs2)
+hs2 <- hs2[!duplicated(hs2),]
+hsci <- graph.data.frame(hs2)
+
+
+nodelist <- data.frame(name = igraph::V(hsci)$name)
+
+nodelist <- nodelist %>% left_join(hs_attributes, by = "name")
+
+health_sci <- graph.data.frame(hs2, directed = F, vertices = nodelist)
+V(health_sci)$type <- bipartite.mapping(health_sci)$type
+```
+
+
+ifelse(V(health_sci)$type, "circle", "square")
+
+```{r, fig.height = 20, fig.width = 20}
+plot(health_sci,
+     vertex.shape = ifelse(V(health_sci)$type, "circle", "square"),
+     vertex.color = ifelse(V(health_sci)$type == F, ifelse(V(health_sci)$STEM == "STW", cbPalette[5], cbPalette[1]), cbPalette[4]),
+     vertex.size = ifelse(V(health_sci)$type, 2, 10),
+     vertex.label = ifelse(V(health_sci)$type == F, V(health_sci)$Occupation, NA),
+     vertex.label.color = "black",
+     vertex.label.cex = 0.5,
+     edge.width = 1.5,
+     layout = layout_nicely, xaxs = i, yaxs = i)
+legend("topright", legend = c("STW: yellow squares", "STEM: gray squares", "Certifications: green circles"), bty = "n", title = "Legend", xjust = 0, cex = 1.5)
+```
+
+```{r}
+get_network_stats(health_sci)
+```
+
+
+```{r}
+hs[hs$Occupation == "Nursing Assistants",]
+```
+
+
+
+Health Sciences graph instead of nursing
+
+For Health sciences, cybersecurity, manu we will have stem/stw
+
+
+```{r}
+all_df <- read_xlsx("All_Career_Clusters.xlsx")
+```
+
+```{r}
+all_df
+```
+
+Vicki: "Occupation clusters include occupations from different major occupation groups."
+
+So, I should join this to the bigger DF and then I can make a drop down?
+
+```{r}
+unique(all_df$`Code`[all_df$`Career Cluster` == "Manufacturing"])
+```
+
+
+```{r}
+table(d$SOC %in% all_df$Code)
+table(d$SOCNAME %in% all_df$Occupation)
+```
+
+```{r}
+test <- substr(all_df$Code, start = 1, stop = 7)
+```
+
+```{r}
+table(d$SOC %in% test)
+```
+

@@ -1,0 +1,64 @@
+---
+title: "05_pats"
+author: "Crystal"
+date: "6/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Objective
+This file is used to update access tokens and write to the pgAdmin database
+
+# Warning
+Make sure you don't have any pats written in this file
+
+# Current pats data
+```{r}
+rm(list = ls())
+# load packages
+for (pkg in c("tidyverse", "data.table", "R.utils", "RPostgreSQL", "cowplot", "stringr", "stringi",  "dplyr", "leaflet", "leaflet.extras", "tools", "statebins")) {library(pkg, character.only = TRUE)}
+
+# connect to postgresql to get our data
+conn <- dbConnect(drv = PostgreSQL(),
+                  dbname = "sdad",
+                  host = "10.250.124.195", 
+                  port = 5432, 
+                  user = Sys.getenv("db_userid"),
+                  password = Sys.getenv("db_pwd"))
+# query the city code data
+#pats <- dbGetQuery(conn, "SELECT * FROM gh_2007_2020.pats;")
+pats_update <- dbGetQuery(conn, "SELECT * FROM gh_2007_2020.pats_update;")
+
+
+# disconnect from postgresql database 
+dbDisconnect(conn)
+```
+
+# Write new pats to pgAdmin
+```{r}
+# delete after you write it to the database
+login <- c()
+
+token <- c()
+
+pats = as.data.frame(cbind(login, token))
+
+pats_update = rbind(pats_update, pats)
+
+conn <- dbConnect(drv = PostgreSQL(), 
+                  dbname = "sdad", 
+                  host = "10.250.124.195", 
+                  port = 5432, 
+                  user = Sys.getenv("db_userid"), 
+                  password = Sys.getenv("db_pwd"))
+
+# overwrite the pats_update table on pgAdmin
+dbWriteTable(conn, c("gh_2007_2020", "pats_update"), 
+             pats_update, row.names = FALSE, overwrite=TRUE)
+
+dbDisconnect(conn)
+```
+

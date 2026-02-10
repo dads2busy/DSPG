@@ -1,0 +1,38 @@
+---
+title: "01_text_cleaning"
+author: "Crystal"
+date: "8/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Get the text column
+text <- data_fix$text
+# Set the text to lowercase
+text <- tolower(text)
+# Remove mentions, urls, emojis, numbers, punctuations, etc.
+text <- gsub("@\\w+", "", text)
+text <- gsub("https?://.+", "", text)
+text <- gsub("\\d+\\w*\\d*", "", text)
+text <- gsub("#\\w+", "", text)
+text <- gsub("[^\x01-\x7F]", "", text)
+text <- gsub("[[:punct:]]", " ", text)
+# Remove spaces and newlines
+text <- gsub("\n", " ", text)
+text <- gsub("^\\s+", "", text)
+text <- gsub("\\s+$", "", text)
+text <- gsub("[ |\t]+", " ", text)
+# Put the data to a new column
+data_fix["fix_text"] <- text
+head(data_fix$fix_text, 10)
+```
+
+
+
+# "paritytech/polkadot" is cleaned as na in the eng clean file 
+
+
