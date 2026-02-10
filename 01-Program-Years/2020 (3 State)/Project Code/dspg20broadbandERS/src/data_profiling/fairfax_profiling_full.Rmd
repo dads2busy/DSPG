@@ -1,0 +1,309 @@
+---
+title: "Full Fairfax Profiling"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE, message=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FALSE)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(sf)  
+# install.packages('venn')
+library(venn)
+# install.packages('ggthemes')
+library(ggthemes)
+# install.packages('DataExplorer')
+library(DataExplorer)
+```
+
+
+## First 6 Variables
+
+```{r functions}
+# functions for completeness from Devika
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- (len - (blanks + true_na + written_na)) / len
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+```{r}
+#Load data 
+library(readr)
+fairfax_housing_2018_geo <- read_csv("~/git/dspg20broadbandERS/data/fairfax-data/fairfax_housing_2018_geo.csv")
+
+first_six <- fairfax_housing_2018_geo %>%
+            select(PARCEL_ID, NUM_UNITS, HOUSING_TYPE, YEAR_BUILT, LONGITUDE, LATITUDE)
+```
+
+
+```{r eval = F}
+# To find the no. of NAs in the variable 
+sum(is.na(fairfax_housing_2018_geo$PARCEL_ID))
+sum(is.na(fairfax_housing_2018_geo$NUM_UNITS))
+sum(is.na(fairfax_housing_2018_geo$HOUSING_TYPE))
+sum(is.na(fairfax_housing_2018_geo$YEAR_BUILT))
+# 453 NAs in the YEAR_BUILT variable 
+sum(is.na(fairfax_housing_2018_geo$LONGITUDE))
+sum(is.na(fairfax_housing_2018_geo$LATITUDE))
+
+```
+
+
+Table for completeness of Variables
+
+```{r}
+#completeness of variables
+check_complete(first_six) %>% knitr::kable()
+```
+
+
+
+General exploration of the first 6 variables
+
+```{r}
+#General exploration of the variables
+plot_intro(first_six)
+
+#distribution of types of housing units
+housing_dist_plot <- ggplot(first_six, aes(x=HOUSING_TYPE)) +
+  geom_bar(fill="light blue", position="stack") +
+                   geom_text(stat = "count", aes(y = ..count.., label = ..count..), position = "identity", vjust=-0.3 ) +
+  labs(x = "Hosuing Type", y = "Count")+
+  theme(
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold.italic")
+  )
+housing_dist_plot
+
+# DataExplorer method to plot Housing Type
+plot_bar(first_six$HOUSING_TYPE) 
+
+#There are only 8 mobile houses in the entire dataset. 
+
+################################################################################
+
+#distribution of the year houses were built in
+plot_histogram(first_six$YEAR_BUILT)
+
+################################################################################
+
+#number of units distribution by Year built
+#Most houses were built in the mid to late 1900s. 
+num_units <- first_six[, c("NUM_UNITS", "YEAR_BUILT")]
+plot_scatterplot(num_units, by="NUM_UNITS")
+
+# 26 houses were built before the year 1800
+house_1700s <- first_six %>%
+                filter(YEAR_BUILT < "1800")
+house_1700s
+count(house_1700s)
+
+#Only 1 house was built in most years
+house <- house_1700s[, c("NUM_UNITS", "YEAR_BUILT")]
+plot_scatterplot(house, by="NUM_UNITS")
+
+
+```
+
+
+
+Distribution of Housing Type Variable
+
+```{r}
+#distribution of types of housing units
+housing_dist_plot <- ggplot(first_six, aes(x=HOUSING_TYPE, fill=HOUSING_TYPE)) +
+  geom_bar( position="stack") +
+                   geom_text(stat = "count", aes(y = ..count.., label = ..count..), position = "identity", vjust=-0.3 ) +
+  labs(x = "Hosuing Type", y = "Count")+
+  theme(
+    axis.title.x = element_text(size = 0, face = "bold"),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+    axis.title.y = element_text(size = 10, face = "bold.italic")
+  )
+housing_dist_plot
+```
+
+
+Distribution of the year houses were built in
+
+```{r} 
+#distribution of the year houses were built in
+plot_histogram(first_six$YEAR_BUILT)
+```
+
+
+Distribution of the number of units
+
+```{r}
+#number of units distribution
+#returns strange results
+plot_histogram(first_six$NUM_UNITS)
+
+```
+
+
+Number of units built per year
+
+```{r}
+#scatterplot form of the same
+num_units <- first_six[, c("NUM_UNITS", "YEAR_BUILT")]
+plot_scatterplot(num_units, by="NUM_UNITS") 
+```
+
+## Second 6 Variables
+
+Profiling fairfax data, specifically the variables WATER, SEWER, GAS, VALUE_LAND, VALUE_BUILDING, & VALUE_TOTAL.
+
+
+```{r}
+check_complete(select(fairfax_housing_2018_geo, 7:12)) %>% knitr::kable()
+```
+
+Trying out DataExplorer package.
+
+```{r}
+introduce(fairfax_housing_2018_geo)
+plot_missing(fairfax_housing_2018_geo)
+```
+
+Plotting frequencies for categorical variables WATER, SEWER, and GAS.
+
+```{r}
+f <- ggplot(data = fairfax_housing_2018_geo)
+f + geom_bar(mapping = aes(x = WATER, fill = WATER))
+f + geom_bar(mapping = aes(x = SEWER, fill = SEWER))
+f + geom_bar(mapping = aes(x = GAS, fill = GAS))
+```
+
+Looking at value distributions. Lowest and highest 1% are removed.
+
+```{r}
+value_total <- na.omit(fairfax_housing_2018_geo[, "VALUE_TOTAL"])
+total <- sort(data.matrix(value_total))
+lower <- length(total) %/% 100
+upper <- length(total) - lower
+total_mid <- total[lower:upper]
+hist(total_mid)
+```
+
+```{r}
+value_building <- na.omit(fairfax_housing_2018_geo[, "VALUE_BUILDING"])
+building <- sort(data.matrix(value_building))
+lower <- length(building) %/% 100
+upper <- length(building) - lower
+building_mid <- building[lower:upper]
+hist(building_mid)
+```
+
+```{r}
+value_land <- na.omit(fairfax_housing_2018_geo[, "VALUE_LAND"])
+land <- sort(data.matrix(value_land))
+lower <- length(land) %/% 100
+upper <- length(land) - lower
+land_mid <- land[lower:upper]
+hist(land_mid, xlim = c(29000, 743000))
+```
+
+Quick check to see if VALUE_LAND and VALUE_BUILDING sum to VALUE_TOTAL.
+
+```{r}
+sum(land) + sum(building)
+sum(total)
+```
+
+
+## Final 6 Variables 
+
+```{r}
+# select six variables in question
+d_six <- select(fairfax_housing_2018_geo, 13:18)
+```
+
+We use a custom function to check for completion of the six variables in question. The results are below:
+
+```{r}
+# check completeness
+check_complete(d_six) %>% knitr::kable()
+```
+
+We confirm these results for the six variables in question using the DataExplorer package:
+
+```{r}
+introduce(d_six)
+```
+
+We plot the missing values of the six variables in question to see proportions:
+
+```{r}
+plot_missing(d_six)
+```
+
+
+```{r}
+d_six <- update_columns(d_six, "GEOID", as.factor)
+```
+
+We plot the continuous variables:
+
+```{r}
+plot_histogram(d_six)
+```
+
+To read the continuous variables better we plot them individually:
+
+```{r}
+ggplot(data = d_six, aes(x=BEDROOMS))+
+  geom_histogram()
+```
+
+
+```{r}
+ggplot(data = d_six, aes(x=BATHROOMS))+
+  geom_histogram()
+```
+
+```{r}
+ggplot(data = d_six, aes(x=LIVING_AREA))+
+  geom_histogram()
+```
+
+We plot the categorical variables:
+
+```{r}
+plot_bar(d_six)
+```
+

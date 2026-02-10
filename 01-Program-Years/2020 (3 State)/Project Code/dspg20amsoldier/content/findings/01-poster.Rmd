@@ -1,0 +1,568 @@
+---
+title: "2020 DSPG Symposium Presentation"
+description: "Symposium Presentation of the 2020 DSPG American Soldier Project"
+weight: 1
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE);
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) ;
+# load necessary libraries
+library(tidytext)
+library(ggplot2)
+# to install ggradar, run the line commented out below
+# devtools::install_github("ricardo-bion/ggradar", dependencies = TRUE)
+library(ggradar)
+library(tibble)
+library(scales)
+library(fmsb)
+library(data.table)
+library(tidyverse)
+library(here)
+library(wordcloud)
+library(SnowballC)
+library(igraph)
+library(ggraph)
+library("RPostgreSQL")
+library(stringi)
+library(textstem)
+library(dplyr)
+library(tidyr)
+library(widyr)
+library(stringr)
+library(BTM)
+library(udpipe)
+library(networkD3)
+library(DT)
+```
+
+```{r, include=FALSE}
+source(here::here("src", "load_data.R"));
+source(here::here("src", "sentiment_analysis.R"));
+source(here::here("src", "word_selection.R"))
+
+
+colors <- c("#e57200", "#232d4b");
+```
+
+```{css, echo=FALSE}
+/* this chunk of code centers all of the headings */
+h1, h2, h3, h4 {
+  text-align: center;
+}
+
+p {
+  font-size: 18px;
+}
+
+li {
+  font-size: 18px;
+}
+
+.emphasized {
+  font-size: 26px;
+}
+
+```
+
+```{r, include=FALSE}
+remove_words <- function(text, words) {
+  pattern <- paste(words, collapse = "|");
+  text <- str_replace_all(text, pattern, "");
+  return(text);
+}
+
+get_nrc_sentiments <- function(data) {
+  # tokenize and join with nrc sentiment lexicon
+  tokens <- data %>%
+    unnest_tokens(word, text) %>%
+    inner_join(get_sentiments("nrc"));
+
+  # compute sentiments
+  sentiments <- tokens %>%
+    group_by(index, racial_group, response_type, outfits, sentiment) %>%
+    count() %>%
+    spread(sentiment, n, fill = 0);
+ 
+   # normalize sentiments
+  sentiments <- sentiments %>%
+    mutate(word_count = anger + anticipation + disgust + fear + joy + negative + positive + sadness + surprise + trust) %>%
+    filter(word_count > 0) %>%
+    mutate(anger = anger / word_count,
+           anticipation = anticipation / word_count,
+           disgust = disgust / word_count,
+           fear = fear / word_count,
+           joy = joy / word_count,
+           negative = negative / word_count,
+           positive = positive / word_count,
+           sadness = sadness / word_count,
+           surprise = surprise / word_count,
+           trust = trust / word_count);
+  return(sentiments);
+};
+
+radar <- function(sentiments, race, res_type) {
+  group_mean <- dplyr::as_data_frame(sentiments) %>%
+  filter(racial_group == race & response_type == res_type) %>%
+  select(c("anger",
+           "anticipation",
+           "disgust",
+           "fear",
+           "joy",
+           "negative",
+           "positive",
+           "sadness",
+           "surprise",
+           "trust")) %>%
+  summarise_all(mean)
+
+group_mean_melted <- melt(group_mean)
+plot_data <- rbind(rep(max(group_mean_melted$value), 10), rep(min(group_mean_melted$value), 10), group_mean);
+
+radarchart(plot_data,
+           cglcol = "grey",
+           cglty = 1);
+}
+
+radar2 <- function(sentiments, group1, group2, title = "Sentiment Analysis Results") {
+  group1_mean <- dplyr::as_data_frame(sentiments) %>%
+  filter(racial_group == group1[1] & response_type == group1[2]) %>%
+  select(c("anger",
+           "anticipation",
+           "disgust",
+           "fear",
+           "joy",
+           "negative",
+           "positive",
+           "sadness",
+           "surprise",
+           "trust")) %>%
+  summarise_all(mean)
+  
+  group2_mean <- dplyr::as_data_frame(sentiments) %>%
+  filter(racial_group == group2[1] & response_type == group2[2]) %>%
+  select(c("anger",
+           "anticipation",
+           "disgust",
+           "fear",
+           "joy",
+           "negative",
+           "positive",
+           "sadness",
+           "surprise",
+           "trust")) %>%
+  summarise_all(mean)
+  
+  # combine repsonses
+  groups <- rbind(group1_mean, group2_mean)
+  rownames(groups) <- c(group1[3], group2[3])
+  
+  # get min and max for plotting
+  groups_melted <- melt(groups)
+  minval <- min(groups_melted$value)
+  maxval <- max(groups_melted$value)
+  
+  plot_data <- rbind(rep(maxval, 10), rep(minval, 10), groups)
+  
+  colors <- c("#e57200", "#232d4b")
+  
+  radarchart(plot_data,
+             cglcol = "grey", # color of net
+             cglty = 1, # net line type
+             pcol = colors, # line color
+             cglwd = 1, # net width,
+             plwd = 3, # line width
+             plty = 1, # plot line type
+  )
+  legend(x= 1, y= 1, legend = rownames(plot_data)[-c(1,2)], bty = "n", pch = 20, col = colors );
+  title(main = title);
+}
+
+visualize_bigrams <- function(bigrams, title) {
+  set.seed(2020)
+  a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+  
+  bigrams %>%
+    graph_from_data_frame() %>%
+    ggraph(layout = "fr") +
+    geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = a) +
+    geom_node_point(color = "lightblue", size = 5) +
+    geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+    theme_void() + theme(legend.position = "none",
+                      plot.title = element_text(hjust = 0.5)) +
+    ggtitle(title)
+}
+```
+
+```{r, include = F}
+tidy_topic_probs = function(model){
+  df <- cbind(source = rownames(model$phi), model$phi)
+  rownames(df) <- 1:nrow(df)
+  df = as.data.frame(df)
+  edge_list = reshape2::melt(df, id.vars=c("source"), variable.name = "target", value.name = "weight")
+}
+biterms_n = read.csv(here::here("data","biterms_n.csv"))
+
+biterms_78 = read.csv(here::here("data","biterms_78.csv"))
+
+traindata_n = read.csv(here::here("data","traindata_n.csv"))
+
+traindata_78 = read.csv(here::here("data","traindata_78.csv"))
+
+row.names(traindata_n) <- traindata_n$X
+
+row.names(traindata_78) <- traindata_78$X
+
+set.seed(3113)
+
+K = 6
+modeln      <- BTM(traindata_n[-1], biterms = biterms_n[-1], k = K, iter = 2000, background = TRUE, trace = 100)
+
+model78     <- BTM(traindata_78[-1], biterms = biterms_78[-1], k = K, iter = 2000, background = TRUE, trace = 100)
+```
+```{r, include = FALSE, echo=F}
+V = c("V2","V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10")
+topics = c("Topic 1","Topic 2", "Topic 3", "Topic 4", "Topic 5", "Topic 6", "Topic 7", "Topic 8", "Topic 9")
+
+topics_n_btm = tidy_topic_probs(modeln)
+topics_n_btm$weight = as.numeric(topics_n_btm$weight)
+topics_n_btm$target = topics_n_btm$target %>%
+  plyr::mapvalues(from = V, to = topics)
+topics_n_btm = topics_n_btm[, c(2, 1, 3)]
+
+topics_78_btm = tidy_topic_probs(model78)
+topics_78_btm$weight = as.numeric(topics_78_btm$weight)
+topics_78_btm$target = topics_78_btm$target %>%
+  plyr::mapvalues(from = V, to = topics)
+topics_78_btm = topics_78_btm[, c(2, 1, 3)]
+
+colnames(topics_n_btm) = colnames(topics_78_btm) =  c("source", "target", "weight")
+```
+
+# The American Soldier in WWII: Extracting Insights From Historical Textual Data
+
+* DSPG Team
+    + Morgan Elain Stockham, Fellow, Claremont Graduate University
+    + Mary Solomon, Fellow, Bowling Green State University
+    + Saimun Habib, Intern, Harvard College
+    + Chase Dawson, Intern, University of Virginia
+    
+# Background
+
+* Our DSPG project complements the American Soldier project which is headed by Ed Gitre (Virginia Tech Dept. of History) and is funded by the National Endowment for the Humanities as a digital history project.
+* To make widely available, for the first time since WWII, a truly unique collection of historical records, 65,000 pages of uncensored commentaries written by U.S. soldiers stationed around the globe
+* This data set was transcribed by volunteer citizen-archivists through an online, crowdsourced platform known as Zooniverse.
+
+# DSPG Project Goals
+
+* We aim to analyze textual data to extract insights about soldiers' attitudes during WWII.
+* Our main topics of focus from the data:
+    + Race relations (S32: attitudes of and towards Negroes, Mar 1943) 
+    + Gender relations (S195)
+    + Race and spatial arrangements
+* We use the following methods:
+    + Sentiment Analysis
+        - To study soldiers' general attitudes towards race and gender relations.
+    + Topic Modeling
+        - To identify various topics dicussed in the text between groups. 
+    + Text Networks 
+        - Co-occurrence and bigram networks to extract context within responses.
+
+# Data
+
+* Survey 32:
+    + Outfits Question (Multiple Choice): Do you think white and black soldiers should be in separate outfits?
+    + Short Response (Text): Any comments on their answer to question 63 (shown above).
+    + Long Response (Text): Any comments they had on any aspect of the questionnaire.
+    
+<center>
+![](/findings/01-poster_files/survey.png){width=80% height=80%}
+</center>
+
+* Survey 144
+    + Post-war career plans of black soliders.
+    + No text data.
+* Survey 195
+    + Attitudes towards the Women's Army Corps (WAC): Is the army any place for a girl to be?"
+    + No text data.
+        
+## Summary Statistics
+
+* We want to give a sense of the soldiers who took Survey 32 as they constitute the population we did our text analysis on.
+
+* Overall the soldiers are on the younger side.
+
+<center>
+![](/findings/01-poster_files/Age.png)
+</center>
+
+* The Black soldiers surveyed were not well educated in contrast with the white soldiers where most had at least some highschool.
+
+<center>
+![](/findings/01-poster_files/edu.png)
+</center>
+
+* White soldiers were predominately against integrating outfits while Black soldiers were mostly split or didn't care. 
+
+<center>
+![](/findings/01-poster_files/outfits.png)
+</center>
+
+
+## Text Cleaning
+* White: 2,324 respondents
+    + Long Response Average: 56.71 words
+    + Short Response Average: 11.48 words
+* Black: 3,464 respondents
+    + Long Response Average: 73.04 words
+* Total: 8,102 text responses
+
+Text Sample:
+_"when the war going to quit? [paragraph] will filling in these questions do any good? [paragraph] now it ant[ain't] no good if [unclear][/unclear] dond doe as i hope but you small help the poor culler[colored] people cause we dont now[know] what we are doing [by the man who that was interviewed]"_
+
+* Cleaning the text:
+    + Manual cleaning of tags
+    + Spell Check 
+    + Stemming 
+    + Lemmatizing 
+  
+<!-- _how many words did we start with_ -->
+<!-- _how many words did we end with_ -->
+
+## Race Relations
+
+```{r, include=FALSE}
+tot_black_words <- sum(unique_black_words$n)
+tot_white_words <- sum(unique_white_words$n)
+
+unique_black_words <- unique_black_words %>% mutate(prop = n / tot_black_words)
+unique_white_words <- unique_white_words %>% mutate(prop = n / tot_white_words)
+
+unique_black_words$color <- rep(colors[1], nrow(unique_black_words))
+unique_white_words$color <- rep(colors[2], nrow(unique_white_words))
+
+unique_seg_words$color <- rep(colors[1], nrow(unique_seg_words))
+unique_int_words$color <- rep(colors[2], nrow(unique_int_words))
+
+unique_words <- rbind(unique_black_words, unique_white_words) %>% 
+  arrange(desc(prop)) %>%
+  mutate(n = n / 10)
+```
+
+### Sentiment Analysis
+
+* The [NRC dictionary](https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm) associates a word with the following sentiments: positive, negative, anger, anticipation, disgust, fear, joy, sadness, surprise, and trust. 
+* The sentiment of a body of text equals the number of words contributing to that sentiment. 
+* Words referring to race are biased within the sentiment libraries, so we removed them to mitigate racial bias in our analysis.
+
+```{r, echo=FALSE, fig.align='center', out.width="100%"}
+group1_mean <- unique_black_words_sentiments
+group2_mean <- unique_white_words_sentiments
+
+# combine repsonses
+groups <- rbind(group1_mean, group2_mean)
+rownames(groups) <- c("black", "white")
+
+# get min and max for plotting
+groups_melted <- melt(groups)
+minval <- min(groups_melted$value)
+maxval <- max(groups_melted$value)
+
+plot_data <- rbind(rep(maxval, 10), rep(minval, 10), groups)
+
+colors <- c("#e57200", "#232d4b")
+
+radarchart(plot_data,
+           cglcol = "grey", # color of net
+           cglty = 1, # net line type
+           pcol = colors, # line color
+           cglwd = 1, # net width,
+           plwd = 3, # line width
+           plty = 1, # plot line type
+)
+legend(x=1, y=1, legend = rownames(plot_data)[-c(1,2)], bty = "n", pch = 20, col = colors );
+title(main = "Sentiment Distribution of Words Used\nUniquely by Black and White Soldiers");
+```
+
+* The plot was created from the words used uniquely by each group, so the words used to evaluate sentiment for black soldiers were never used by white soldiers and vice versa. The unique words of black soldiers corresponded with more fear, disgust, anger, and sadness than those of white soldiers.
+* The wordclouds below visualize the top 20 frequently used unique words by <span class="emphasized" style="color: #e57200">black</span> and <span class="emphasized" style="color: #232d4b">white</span> soldiers, on the left and right respectively. The size of the word is proportional to the number of times it appears in the text.
+
+```{r, fig.show='hold', fig.height=8, out.width="50%", echo=FALSE}
+unique_black_words %>% with(wordcloud(word, n, random.order = FALSE, colors=unique_black_words$color, max.words = 20, ordered.colors = TRUE))
+
+unique_white_words %>% with(wordcloud(word, n, random.order = FALSE, colors = unique_white_words$color, max.words = 20, ordered.colors = TRUE))
+```
+
+* The unique words reveal what topics aren't addressed by the other group. Perhaps, the most important takeaway from these wordclouds is that the words slavery, lynch, or jail never appeared in the response of a white soldier.
+* White soldiers unique words were significantly more lighthearted as they discussed things such as music and pets.
+
+### Co-Occurence Networks
+
+* Used community detection algorithms on the co-occurence networks to identify groups of related words. 
+* The size of the nodes corresponds to the degree of the node ie. it is connected to more words. 
+
+#### Black Soldiers' Long Comment
+
+<center>
+![](/findings/01-poster_files/blk_long_response_gephi.png)
+</center>
+
+#### White Soldiers' Long Comment
+
+<center>
+![](/findings/01-poster_files/wht_long_response_gephi.png)
+</center>
+
+### Topic Modeling
+* A useful method to understand what the general themes are within a corpus by modeling the words which constitute a topic
+* Used Biterm Topic Modeling to model the topics within each corpus of answers
+* This works better on shorter texts
+* It's a Gibbs Sampler that directly models the word-word co-occurrences patterns as opposed to word-document co-occurrences
+
+#### Topic Model Network for Black Soldiers' Long Comment
+
+<span style="color: #5192c2">Topic 1: Touches on war and the chance to fight. Also suggests sort of give and take and expecting to get something better out of it in the end. Mentions "war", "army", "white", "negro", "get", "good", "treat".</span>
+
+<span style="color: #bdd2ec">Topic 2: Talks about positions and identities within the military and potentially also having black officers. Mentions "negro", "soldier", "officer", "white",  "race", treat", "better.</span>
+
+<span style="color: #ff984c">Topic 3: Touches upon optimistic words. It includes words about "fair", "chance","opportunity", "school". It seems to be about black soldiers wanting better opportunities and an equal chance. 
+ </span>
+
+<span style="color: #ffc892">Topic 4: Seems to be about the questionnaire itself and the "opportunity" to "give" "opinion".
+
+<span style="color: #5eb35b">Topic 5: Is about segregation in different spaces within the military and day to day life. Specifically mentions "eat", "service", "food", "force", "sit", "train", "bus"</span>
+</span>
+
+<span style="color: #ade5a1">Topic 6: Focuses in on the war and "fighting" for ideals like "freedom", "liberty", "democracy" but at the same time mentions "jim crow"..</span>
+```{r black btm, fig.height=6, echo = F}
+num_clusters = 6
+edgelist_n_btm= topics_n_btm %>%
+  filter(weight >= .01) %>%
+  arrange(target)
+
+sources <- edgelist_n_btm$source
+targets <- edgelist_n_btm$target
+node_names <- factor(unique(c(sort(unique(as.character(sources))), as.character(targets))))
+
+
+
+groups = edgelist_n_btm %>% group_by(target) %>% top_n(1, weight)
+groups = groups$source
+nodes <- data.frame(name = node_names, group = c(1:num_clusters, groups), size = 8)
+links <- data.frame(source = match(sources, node_names) - 1, 
+                    target = match(targets, node_names) - 1, 
+                    value = edgelist_n_btm$weight)
+net_n_btm = forceNetwork(Links = links, Nodes = nodes, Source = "source",
+             Target = "target", Value = "value", NodeID = "name",
+             Group = "group", opacity = 0.9, opacityNoHover = 0.1, zoom = T, charge = -10, fontFamily = "sans-serif", fontSize = 30)
+net_n_btm
+```
+
+#### Topic Model Network for White Soldiers' Long Comment
+<!-- _different colors for each racial group_ -->
+<!-- _use those colors to make color coded text_ -->
+<span style="color: #5192c2">Topic 1: In general talks about the "war"/"army" and includes words such as "give" and "take."  </span>
+
+<span style="color: #bdd2ec">Topic 2: Identifies the "enlistment"/"service" experience and how many of the soldiers are "single." Also makes mentions of many other positions in the military like "officer."</span>
+
+<span style="color: #ff984c">Topic 3: Soldiers talk about positions in the military and also includes terms like "valuable", "waste", "time", and "money" suggesting they are thinking of career prospects here.</span>
+
+<span style="color: #ffc892">Topic 4: Talks about the questionnaire itself and the "chance" to "express" "opinion".</span>
+
+<span style="color: #5eb35b">Topic 5: Is about about getting "time" away from "home". Also mentions eating and getting "furloughed." </span>
+
+<span style="color: #ade5a1">Topic 6: Is about race and integration. It mentions words like "concern", "mix", "negroes", "whites", "race", "separate", "rights".</span>
+```{r 78 btm, fig.height=6, echo = F}
+edgelist_78_btm= topics_78_btm %>%
+  filter(weight >= .01) %>%
+  arrange(target)
+
+sources <- edgelist_78_btm$source
+targets <- edgelist_78_btm$target
+node_names <- factor(unique(c(sort(unique(as.character(sources))), as.character(targets))))
+
+
+
+groups = edgelist_78_btm %>% group_by(target) %>% top_n(1, weight)
+groups = groups$source
+nodes <- data.frame(name = node_names, group = c(1:num_clusters, groups), size = 8)
+links <- data.frame(source = match(sources, node_names) - 1, 
+                    target = match(targets, node_names) - 1, 
+                    value = edgelist_78_btm$weight)
+net_78_btm = forceNetwork(Links = links, Nodes = nodes, Source = "source",
+             Target = "target", Value = "value", NodeID = "name",
+             Group = "group", opacity = 0.9, opacityNoHover = 0.1, zoom = T, charge = -10, fontFamily = "sans-serif", fontSize = 30)
+net_78_btm
+```
+
+## Gender Relations
+
+* Our particular focus is on women's gender roles during the time of 1943, especially at the intersection of race relations. Women were obviously unable to serve in the military in the same capacity as men during WW2; however, women did contribute to the war effort through the Women's Army Corps (WAC). 
+
+<center>
+![](/findings/01-poster_files/girl_place_army.png){width=80% height=80%}
+</center>
+
+
+* Survey 195 is more targeted to gender relations, but we don't have transcriptions of the free form text so we select responses that discuss gender from Survey 32 using a word dictionary. 
+* A dictionary of gender words are loaded to identify which responses relate to gender topics. This dictionary was created using terms included in the [Oxford University Press Dictionary of Gender Studies](https://www.oxfordreference.com/view/10.1093/acref/9780191834837.001.0001/acref-9780191834837?btog=chap&hide=true&pageSize=20&skipEditions=true&sort=titlesort&source=%2F10.1093%2Facref%2F9780191834837.001.0001%2Facref-9780191834837). 
+* Furthermore, phrases such as "colored women" and "negro women" are collapsed and pre-stemmed/pre-lemmed to "colorwoman" and "negrowoman" in both the dictionary and the text. 
+* The purpose of this is to treat these references to women as a single entity as opposed to the text being analyzed as colored and negro being frequent adjectives for women.
+* You can view the dictionary below:
+
+```{r dictionaryload, echo = FALSE, warning=FALSE, message=FALSE}
+#load dictionary csv
+gender_words <- fread("~/git/dspg2020amsoldier/data/dictionary/gender.csv", sep = ",")
+gender_match <- paste(paste("\\b", gender_words$gender,"\\b", sep = ""), collapse="|") #regex friendly 
+DT::datatable(gender_words, rownames = FALSE)
+```
+
+#### Black and White Soldiers' Long Comment Gender Network 
+
+<center>
+![](/findings/01-poster_files/amsoldier_multiplex_gender_v3.svg)
+</center>
+
+* In the above plot, we see that black soldiers often write that "woman holler rape". 
+* Black men often were often wrongly and publicly accused of sexual assault during this time period, and we can see that black soldiers are discussing that in their responses.
+* Black soldiers are talking about interracial marriage.
+* A common word sequence used by white soldiers was "white like negro". 
+* White soldiers are also discussing interracial marriage.
+
+## Spatial Arrangement
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+spatial = read.csv(here('data','dictionary','spatial_arrangement.csv'))
+DT::datatable(spatial, rownames = F)
+```
+
+
+#### White Soldiers' Long Comment Spatial Network 
+
+<center>
+![](/findings/01-poster_files/wht_long_spatial.png)
+</center>
+
+* Spatial segregation of Black Americans was enforced in the American South with numerous local and state laws known as the Jim Crow laws from late 19th century to early 20th century.
+* Are themes of spatial segregation prevalent in the soldiers' responses and experiences in the military during WWII?
+* We created a spatial dictionary with words such as camp, messhall, etc. to see what the soldiers were saying when they were talking about these spaces.
+* We see that there's a greater amount of commentary from black soldiers than white soldiers.
+* They were very aware of these spaces and associated words like "mix", "together", "same", "separate", and "individual."
+* Although some white soldiers were in favor of integrating outfits, there was still clear commentary from the soldiers should not be sharing the space in living arrangements or social space with black soldiers.
+
+
+# Conclusion
+* Novel dataset from a unique, historic collection by the U.S. Army during WW2
+* Analyze soldiers' handwritten responses by using natural language processing methods and social network analysis to dive into soldiers' attitudes about:
+    + Race relations
+        - Black soldiers discussed their position within the military and society in the context of their race more frequently than white soldiers. White soldiers more frequently discussed the war or their career plans.
+    + Gender relations
+        - The majority of male soldiers did not think that women belonged or could contribute to the military. 
+        - Tension due to interracial relationships. 
+    + Race and spatial arrangement
+        - While some white soldiers wanted to desegregate the military outfits, they did not view their black counterparts as equals and didn't want to live, eat or sleep alongside them.

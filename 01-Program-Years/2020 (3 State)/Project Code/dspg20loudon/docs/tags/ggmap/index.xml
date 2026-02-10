@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ggmap on DSPG 2020</title>
+    <link>/dspg20loudon/tags/ggmap/</link>
+    <description>Recent content in ggmap on DSPG 2020</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/dspg20loudon/tags/ggmap/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Results Section One</title>
+      <link>/dspg20loudon/findings/knitted_demographics_loudon/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20loudon/findings/knitted_demographics_loudon/</guid>
+      <description>Loudoun County is part of the northern Virginia region. Along with Loudoun County, the NoVA area is composed of:
+ City of Alexandria Arlington County City of Fairfax Fairfax county City of Falls Church Fauquier County Loudoun County City of Manassas City of Manassas Park Prince William County  Recognizing that food insecurity is not bound by county or city, we constructed social and economic vulnerability indices for NOVA at the census tract levels.</description>
+    </item>
+    
+    <item>
+      <title>Results Section Two</title>
+      <link>/dspg20loudon/findings/foodaccessmaps/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20loudon/findings/foodaccessmaps/</guid>
+      <description>Food insecurity may also be affected by food accessibility. Those with access to high quality food outlets were less likely to be food insecure (Mayer, Hillier, Bachhuber and Long, 2014). We measured food access in the Loudoun County and northern Virginia area using three indicators. These indicators correspond to traditional food retailers, farmers’ markets, and food pantries. Unlike traditional food retailers and farmers’ markets, food pantries usually provide food to vulnerable populations for free or at especially discounted prices.</description>
+    </item>
+    
+  </channel>
+</rss>

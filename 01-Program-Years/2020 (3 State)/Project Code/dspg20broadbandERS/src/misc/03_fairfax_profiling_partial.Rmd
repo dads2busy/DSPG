@@ -1,0 +1,129 @@
+---
+title: "Partial Fairfax Profiling"
+output: html_document
+---
+
+This is a partial profiling of the 2018 Fairfax housing data, including variables for:
+
+- Bedrooms
+
+- Bathrooms
+
+- Living area
+
+- GeoID
+
+- District
+
+- High School
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE, message=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FALSE)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(sf)  
+# install.packages('venn')
+library(venn)
+# install.packages('ggthemes')
+library(ggthemes)
+# install.packages('DataExplorer')
+library(DataExplorer)
+```
+
+
+
+```{r}
+# read in full fairfax housing data
+d_full <- read.csv('~/git/dspg20broadbandERS/data/fairfax-data/fairfax_housing_2018_geo.csv')
+```
+
+```{r}
+# select six variables in question
+d_six <- select(d_full, 13:18)
+```
+
+
+```{r functions}
+# functions to calculate completeness (from Devika)
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- (len - (blanks + true_na + written_na)) / len
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+
+We use a custom function to check for completion of the six variables in question. The results are below:
+
+```{r}
+# check completeness
+check_complete(d_six) %>% knitr::kable()
+```
+
+
+We confirm these results for the full data:
+
+```{r}
+#check completeness of full data (they match)
+check_complete(d_full) %>% knitr::kable()
+```
+
+
+We confirm these results for the six variables in question using the DataExplorer package:
+
+```{r}
+introduce(d_six)
+```
+
+We plot the missing values of the six variables in question to see proportions:
+
+```{r}
+plot_missing(d_six)
+```
+
+
+```{r}
+d_six <- update_columns(d_six, "GEOID", as.factor)
+```
+
+We plot the continuous variables:
+
+```{r}
+plot_histogram(d_six)
+```
+
+We plot the categorical variables:
+
+```{r}
+plot_bar(d_six)
+```
+

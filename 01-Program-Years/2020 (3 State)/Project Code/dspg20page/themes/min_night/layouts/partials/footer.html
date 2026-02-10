@@ -1,0 +1,79 @@
+        <footer id = "bigfooter">
+            <div style = "padding:15px;">
+                <p>{{ "Powered by [Hugo](https://gohugo.io). Themed by [min_night_dspg](https://github.com/nathancday/min_night). [Website by University of Virginia Biocomplexity Institute.](https://biocomplexity.virginia.edu/social-decision-analytics)" | markdownify }}
+                </p>
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/"
+                title="Creative Commons Attribution 4.0 International license">
+                <i class="fab fa-creative-commons" aria-hidden="true"></i> Attribution 4.0 International license
+                </a>
+            </div>
+        </footer>
+        <!-- Global Site Tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ .Site.GoogleAnalytics }}"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)};
+          gtag('js', new Date());
+          gtag('config', '{{ .Site.GoogleAnalytics }}');
+        </script>
+        
+        <script>
+           function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+           
+           function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
+            }
+            
+            var mytype = getUrlParam('type','Empty');
+            
+            function changeLinks(parameter) {
+                links = document.getElementsByTagName("a");
+            
+                for(var i = 0; i < links.length; i++) { 
+                   var link = links[i];
+                   var newurl = link.href + '?type=' + parameter;
+                   link.setAttribute('href', newurl);
+                 } 
+            }
+            //alert(mytype)
+       
+           //var referer = document.referrer;
+           //var n = referer.includes('economic');
+           
+           var x = document.getElementsByClassName('header_img');
+           
+           if (mytype != 'economic') {
+             x[0].innerHTML = '<div><a href="https://datascienceforthepublicgood.org/events/symposium2020/poster-sessions">' +
+                              '<img src="/dspg20page/img/DSPG_white-01.png", alt="DSPG 2020 Symposium Proceedings", style="height:42px; margin-top:5px;">' +
+                              '</a></div>';
+             
+             changeLinks('dspg');
+                              
+             //var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?type=dspg';
+             //alert(newurl);
+             //window.history.pushState({path:newurl},'',newurl);
+           } else {
+             x[0].innerHTML = '<div><a href="https://datascienceforthepublicgood.org/economic-mobility/community-insights/case-studies">' +
+                              '<img src="/dspg20page/img/AEMLogoGatesColors-11.png", alt="Gates Economic Mobility Case Studies", style="height:42px; margin-top:5px;">' +
+                              '</a></div>';
+             
+             changeLinks('economic');
+             //var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?type=economic';
+             //alert(newurl);
+             //window.history.pushState({path:newurl},'',newurl);
+           }
+        </script>
+       
+    </body>
+
+</html>

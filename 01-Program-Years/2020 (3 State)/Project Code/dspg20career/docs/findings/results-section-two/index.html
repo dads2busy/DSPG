@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sequence Exploration</title>
+        <link rel="canonical" href="/dspg20career/findings/results-section-two/">
+        <style>
+
+    html body {
+        font-family: 'Oxygen', sans-serif;
+        background-color: #FFFFFF;
+    }
+
+    :root {
+        --accent: #232D4B;
+        --border-width:  0 ;
+    }
+
+</style>
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oxygen">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=VT323">
+
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/ascetic.min.css"> 
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css" integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="/dspg20career/css/main.css">
+
+
+
+
+ 
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+    
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+
+<script>$(document).on('click', function() { $('.collapse').collapse('hide'); })</script>
+
+
+<script>
+$(document).ready(function(){
+    
+  var input = $('#night-mode-toggle');
+  var container = $('#bigbody');
+  var stat = $('#button-status');
+  
+  container.toggleClass(localStorage.toggled);
+  stat.bootstrapToggle(localStorage.button).change();
+  
+  input.on('click', function() {
+      if (localStorage.toggled != "-nightmode" ) {
+          container.toggleClass("-nightmode", true );
+          localStorage.toggled = "-nightmode";
+          localStorage.button = "on";
+       } else {
+          container.toggleClass("-nightmode", false );
+          localStorage.toggled = "";
+          localStorage.button = "off"
+       }
+  })
+});
+</script>
+ <meta name="generator" content="Hugo 0.70.0" />
+        <link href="" rel="alternate" type="application/rss+xml" title="UVA Biocomplexity Institute" />
+        <link href="" rel="feed" type="application/rss+xml" title="UVA Biocomplexity Institute" />
+        
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/img/favicon/safari-pinned-tab.svg" color="#000000">
+    <link rel="shortcut icon" href="/img/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
+    
+    
+    <meta property="og:title" content="Sequence Exploration">
+    <meta property="og:type" content="article">
+      
+      <meta name="twitter:card" content="summary">
+      <meta name="twitter:image" content="/dspg20career/favicon/uva-dspg-logo.jpg" >
+      
+    <meta property="description" content="Visualizing and exploring post-military veteran career sequences">
+    <meta property="og:description" content="Visualizing and exploring post-military veteran career sequences">
+    
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:site" content="">
+    
+    </head>
+
+    
+    
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+
+    <style>
+      .container {
+      	text-align: center;
+      	border: 0px solid green;
+      }
+      .container ul {
+      	border: 0px solid red;
+      	display: inline-block;
+      	margin: 10px 0;
+      	padding: 2px;
+      }
+      .container li {
+      	display: inline-block;
+      	font-weight: bold;
+      }
+      .container li a {
+      	display: inline-block;
+      	color: #FFF;
+      	padding: 5px;
+      	text-decoration: none;
+      }
+
+    </style>
+
+    <body id = "bigbody">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container" style="width:800px; margin: auto;">
+                <div class="collapse navbar-collapse container">
+                    
+                        <ul class="nav">
+                          <li class="header_img">
+                            <img class="img-responsive" src="/dspg20career/img/AEMLogoGatesColors-11.png" alt="Whoopsies, this is my bad side!" style = "margin: 0 auto; height: 42px"></li>
+                            
+                                <li><a href="/dspg20career/" style="background-color: transparent;">Overview</a></li>
+                            
+                                <li><a href="/dspg20career/data/" style="background-color: transparent;">Data</a></li>
+                            
+                                <li><a href="/dspg20career/methods/" style="background-color: transparent;">Methods</a></li>
+                            
+                                <li><a href="/dspg20career/findings/" style="background-color: transparent;">Findings</a></li>
+                            
+                                <li><a href="/dspg20career/team/" style="background-color: transparent;">Team</a></li>
+                            
+                        </ul>
+                    
+                    
+                        <ul class="nav">
+                            
+                                <li class="navbar-icon"><a href="https://github.com/DSPG-Young-Scholars-Program/dspg20career" style="background-color: transparent;"><i class="fab fa-github"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="mailto:josh.goldstein@virginia.edu" style="background-color: transparent;"><i class="far fa-envelope"></i></a></li>
+                            
+                            
+                        </ul>
+                    
+                </div>
+            </div>
+        </nav>
+
+<main>
+
+    <div class="item">
+
+    
+    
+    
+
+    
+      
+      
+    
+
+    <h4><a href="/dspg20career/findings/results-section-two/">Sequence Exploration</a></h4>
+    
+    <h5>Visualizing and exploring post-military veteran career sequences</h5>
+
+    
+    
+
+</div>
+
+
+    <br> <div class="text-justify">
+<script src="/dspg20career/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/dspg20career/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/dspg20career/rmarkdown-libs/jquery/jquery.min.js"></script>
+<link href="/dspg20career/rmarkdown-libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+<script src="/dspg20career/rmarkdown-libs/datatables-binding/datatables.js"></script>
+<link href="/dspg20career/rmarkdown-libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="/dspg20career/rmarkdown-libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="/dspg20career/rmarkdown-libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="/dspg20career/rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="/dspg20career/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
+
+
+<div id="exploring-veterans-whole-career-sequences" class="section level3">
+<h3>Exploring veteran’s whole career sequences</h3>
+<p>After cleaning the BGT data, we created our sequence objects using <code>TraMineR</code>. To begin, we created a sequence object using the whole career of veterans. This yielded 8,068 sequences of varying lengths. When creating the whole career sequence object, we defined eight unique states: Zone 1, Zone 2, Zone 3, Zone 4, Zone 5, Missing zone, Military, Military transition unemployment, Civilian unemployment, and Retired. For the preliminary analysis, all unemployment states (Military transition, Civilian, and Retired) are collapsed into one Unemployment state.</p>
+<div id="htmlwidget-1" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"filter":"none","caption":"<caption>Table 1. Overview of sequence states.<\/caption>","data":[["Zone 1","Zone 2","Zone 3","Zone 4","Zone 5","Missing zone","Military","Military transition unemployed","Civilian unemployed","Retired"],["O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","seqdef() left =","seqdef() gaps =","seqdef() right ="],["Some of these occupations may require a high school diploma or GED certificate. Little or no previous work-related skill, knowledge, or experience is needed for these occupations","These occupations usually require a high school diploma. Some previous work-related skill, knowledge, or experience is usually needed.","Most occupations in this zone require training in vocational schools, related on-the-job experience, or an associate's degree. Previous work-related skill, knowledge, or experience is required for these occupations.","Most of these occupations require a four-year bachelor's degree. A considerable amount of work-related skill, knowledge, or experience is needed for these occupations.","Most of these occupations require graduate school. For example, they may require a master's degree, and some require a Ph.D., M.D., or J.D. (law degree). Extensive skill, knowledge, and experience are needed for these occupations.","A resume item that was missing an O*NET SOC code.","A resume item with O*NET SOC code for Military occupations.","Gaps after the last Military job resume item and before civilian jobs begin.","Gaps in between civilian jobs.","Gaps after the last civilian job."]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>State name<\/th>\n      <th>Source<\/th>\n      <th>Definition<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"500px","dom":"t","order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>Among the sequences in the whole careers sequence object, there was a large distribution in sequence length. Differing lengths in sequences makes comparative analysis, including computing distance and clustering, difficult. In our case, clustering based on the preliminary sequence yielded “cohort” clusters, or clusters grouped essentially by sequence length. For our purposes, this does not yield a typology of careers so much as a descriptive grouping of veterans.</p>
+<center>
+<figure>
+<img src="/dspg20career/findings/results-section-two_files/length_nd.png" width="500"/>
+<figcaption>
+Figure 1. Distribution of career sequence lengths for veterans.
+</figcaption>
+</figure>
+</center>
+<p>Next, we visualized the whole career sequences by looking at the mean time spent in each state. For help interpreting sequence graphs, please visit the <a href="/methods/#interpreting-sequence-graphs">interpreting sequence graphs section in our Methods.</a></p>
+<center>
+<figure>
+<img src="/dspg20career/findings/results-section-two_files/mtall_nd.png" width="600"/>
+<figcaption>
+Figure 2. Mean time spent in each state by veterans over their whole careers. Note: for veterans whole careers the three unemployment states are aggregated.
+</figcaption>
+</figure>
+</center>
+<p>As shown in Figure 2, veterans on average spend the highest amount of time in Zone 4, for about six years. Military careers are the second highest, averaging out to about four years. Interestingly, veterans spend almost the same amount of time unemployed as Zone 4, for about two years. Time spent in Zone 1 is considerably lower than all other states at an average of almost zero.</p>
+<p>Overall, the results of the sequence length and mean time analysis track with our knowledge of BGT resume data. These results show that the data overrepresent young (short sequences), white collar (higher zone) veterans. Looking at the state distribution plot gives us our first insights into the career paths of veterans over time.</p>
+<center>
+<figure>
+<img src="/dspg20career/findings/results-section-two_files/dall_nd.png" width="600"/>
+<figcaption>
+Figure 3. Distribution of sequence states over the years of veteran’s careers. Note: for veterans whole careers the three unemployment states are aggregated.
+</figcaption>
+</figure>
+</center>
+<p>Figure 3 shows that there is some degree of career mobility for veterans overall over time. About 45% of the sample begins their career in a military state, with that number dropping steadily over time. Unemployment peaks for veterans around five years and around sixty years, when the sample is much smaller. Looking at the Zone states, Zone 2 and 3 show a similar pattern of peaking at in early career stages and steadily declining. Both Zones 3 and 4 see the opposite effect by steadily widening to greater frequency over time. These preliminary findings suggest veterans do experience some degree of career mobility over time, moving out of unemployment and moving to higher zones.</p>
+</div>
+<div id="exploring-first-ten-years-after-veterans-military-exit-sequences" class="section level3">
+<h3>Exploring first ten years after veteran’s military exit sequences</h3>
+<p>To begin answering our research questions about veterans careers, we needed to subset our sample to analyze careers only after veterans exit the military. Additionally, after preliminary analysis and clustering, we decided to subset again to only the first ten years of a veteran’s post military career to combat problems associated with differing sequence lengths. Setting these new parameters yielded a sequence object with 5,185 sequences.</p>
+<center>
+<figure>
+<img src="/dspg20career/findings/results-section-two_files/mtten_update_nd.png" width="500"/>
+<figcaption>
+Figure 4. Mean time spent in each state by veterans for the first ten years after their last military job.
+</figcaption>
+</figure>
+</center>
+<p>As shown in Figure 4, similar to the whole career sequence, Zone 4 is on average where veterans spend the most amount of time, almost three years. For the other Zones, their proportion to Zone 4 stays relatively similar to the inital exploration. The biggest difference in the new subset is the proportion of unemployment states to Zones. Military transition unemployment is equal to or higher than all Zones except for Zone 4 at a little over a year. Moreover, retirement is the second highest state on average, for about two years. This suggests that veterans frequently experience a state of unemployment after exiting the military.</p>
+<center>
+<figure>
+<img src="/dspg20career/findings/results-section-two_files/dten_grays_update_nd.png" width="600"/>
+<figcaption>
+Figure 5. Distribution of sequence states over the first ten years after veteran’s last military job.
+</figcaption>
+</figure>
+</center>
+<p>The state distribution analysis, as shown in Figure 5, further describes the picture of employment outcomes for veterans. Interestingly, up to two years after exiting the military, the most frequent state for veterans is miliatry transition unemployment. While this military transition unemployment declines over time, there is not great preliminary evidence for great career mobility in the first ten years of employment. Zones 4 and 5 do not widen over time, instead they stay relatively stagnant. The number of veterans in retirement increases steadily over the ten year period.</p>
+</div>
+<div id="conclusions-and-implications" class="section level3">
+<h3>Conclusions and Implications</h3>
+<p>The intital exploration of sequences helped us to define and prioritize our research questions and project scope. By subsetting to the first ten years of a veteran’s post military career, we were able to make more meaningful comparisons between sequences, which is necessary for cluster analysis. Preliminary findings suggest that veterans do not experience great career mobility in the first ten years of their career. In subsequent findings sections, we will build on this analysis using clustering and tournament models. With clustering, we will explore creating a typology of careers and the explanatory factors associated with cluster assignment. Through tournament modeling, we will explore the idea of career mobility using the theory of path dependence.</p>
+</div>
+</div>
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+</main>
+
+        <footer id = "bigfooter">
+            <div style = "padding:15px;">
+                <p>Powered by <a href="https://gohugo.io">Hugo</a>. Themed by <a href="https://github.com/nathancday/min_night">min_night_dspg</a>. <a href="https://biocomplexity.virginia.edu/social-decision-analytics">Website by University of Virginia Biocomplexity Institute.</a>
+                </p>
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/"
+                title="Creative Commons Attribution 4.0 International license">
+                <i class="fab fa-creative-commons" aria-hidden="true"></i> Attribution 4.0 International license
+                </a>
+            </div>
+        </footer>
+        
+        <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)};
+          gtag('js', new Date());
+          gtag('config', '');
+        </script>
+       
+       <script>
+           function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+           
+           function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
+            }
+            
+            var mytype = getUrlParam('type','Empty');
+            
+       
+           
+           
+           
+           var x = document.getElementsByClassName('header_img');
+           
+           if (mytype != 'economic') {
+             x[0].innerHTML = '<div><a href="https://datascienceforthepublicgood.org/events/symposium2020/poster-sessions">' +
+                              '<img src="/dspg20career/img/DSPG_white-01.png", alt="DSPG 2020 Symposium Proceedings", style="height:42px; margin-top:5px;">' +
+                              '</a></div>';
+                              
+             var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?type=dspg';
+             
+             window.history.pushState({path:newurl},'',newurl);
+           } else {
+             x[0].innerHTML = '<div><a href="https://datascienceforthepublicgood.org/economic-mobility/community-insights/case-studies">' +
+                              '<img src="/dspg20career/img/AEMLogoGatesColors-11.png", alt="Gates Economic Mobility Case Studies", style="height:42px; margin-top:5px;">' +
+                              '</a></div>';
+             
+             var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?type=economic';
+             
+             window.history.pushState({path:newurl},'',newurl);
+           }
+        </script>
+    </body>
+
+
+</html>
+

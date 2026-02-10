@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DSPG 2020</title>
+    <link>/dspg20page/</link>
+    <description>Recent content on DSPG 2020</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/dspg20page/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Results Section One</title>
+      <link>/dspg20page/findings/results-section-one/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20page/findings/results-section-one/</guid>
+      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Main Findings Dadashazar (2017) identified factors including previous incarceration, family relations, employment and education barriers, housing constraints and substance abuse to be associated with increased recidivism. Hanson (2017) concluded that prior criminal history and substance abuse were among the risk factors for multiple types of recidivism across multiple types of offenders.</description>
+    </item>
+    
+    <item>
+      <title>Results Section Two</title>
+      <link>/dspg20page/findings/results-section-two/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20page/findings/results-section-two/</guid>
+      <description>Main Findings Economic Vulnerability may also be affected by health and education accessibility. Those with access to health and education facilities were less likely to be poor and vulnerable (Gil et al., 2014). We measured health and educational access separately in each Virginia County using multiple indicators. The health indicators correspond to hospitals, clinics, counseling centers, and other health facilities that are immediately in aid of a vulnerable population.</description>
+    </item>
+    
+    <item>
+      <title>Results Section Three</title>
+      <link>/dspg20page/findings/results-section-three/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20page/findings/results-section-three/</guid>
+      <description>Main Findings Factor Analysis and Social and Economic Vulnerability Index Page county is a rural county in the Valley region in Virginia. While factor analysis and composite index construction have been done on different scales, we are limited by our data to the county-level. However, other social and economic modeling approaches were applied to county level data and were developed to address shortcomings of predecessor models (Cutter et al.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>/dspg20page/findings/isochrones/hospitals__virginia_shp/read/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20page/findings/isochrones/hospitals__virginia_shp/read/</guid>
+      <description>hospitals</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>/dspg20page/findings/isochrones/read/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20page/findings/isochrones/read/</guid>
+      <description>isochrones</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>/dspg20page/findings/isochrones/virginiashapefiles/read/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20page/findings/isochrones/virginiashapefiles/read/</guid>
+      <description>shape files</description>
+    </item>
+    
+    <item>
+      <title>Data and Methodology</title>
+      <link>/dspg20page/methods/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20page/methods/</guid>
+      <description>2020 Page County Summer Project ##Data Sources Gill et al (2016) note that increasing returns to assets held by the rural poor such as health and education fosters a pattern of growth and structural change in employment. Creating sustained growth in employment and labor income has been identified as a major driver of economic mobility (Inchauste et al., 2014). Increasing education, health, and employment have also been associated with decreasing incarceration and recidivism rates (Dadashazar, 2017).</description>
+    </item>
+    
+    <item>
+      <title>Overview</title>
+      <link>/dspg20page/overview/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20page/overview/</guid>
+      <description>2020 Page County Summer Project Page County suffers from some of the highest rates of recidivism in the state of Virginia and other intergenerational poverty issues. Page County would like to identify factors and determine ways to increase relative and absolute economic mobility for the vulnerable population in the county.
+Virginia
+  Project Goals Our project goal was to identify community capital in Page County, find ways to enhance that community capital, and identify the level of vulnerability compared to other counties in Virginia.</description>
+    </item>
+    
+    <item>
+      <title>Team</title>
+      <link>/dspg20page/team/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20page/team/</guid>
+      <description>Data Science for the Public Good Program  The Data Science for the Public Good (DSPG) Young Scholars program is a summer immersive program held at the Biocomplexity Institute’s Social and Decision Analytics division (SDAD). In its seventh year, the program engages students from across the country to work together on projects that address state, federal, and local government challenges around critical social issues relevant in the world today.</description>
+    </item>
+    
+  </channel>
+</rss>

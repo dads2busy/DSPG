@@ -1,0 +1,80 @@
+---
+title: "Results Section Three"
+description: "Visualization of Socio-Demographic Variables and Eviction Rates"
+tags: ["shiny", "temporal","geospatial"]
+weight: 3
+draft: false
+output: html_document
+---
+
+```{css, echo=FALSE}
+/* this chunnk of code centers all of the headings */
+h1, h2, h3 {
+  text-align: center;
+}
+```
+
+##Modeling Census Tract Level Evictions: Visualization of Socio-Demographic Variables and Eviction Rates in Richmond 2013-2018
+
+To provide further guidance for policymakers interested in understanding evictions in Richmond, we provide a collection of dashboards that can be used to visualize the socio-demographic variables that our statistical model identified as being associated with eviction rates. This collection provides some context for what we can observe about the city of Richmond and the variation across census tracts and time. We provide guidance on how to operate the dashboards below and obtain information suitable for program or policy-related work. 
+
+Most of our analyses concern historical data in the period 2010-2018 using a combination of the American Community Survey and other sources. In addition to these resources, which may help explain evictions that occur during non-recessionary periods, we felt it necessary to provide an additional resource to address the uncertainty created in the aftermath of COVID-19. For this purpose, and to invite questions around current policy, we provide a dashboard titled, “2020 Eviction Filings by Zip Code.” In this dashboard, stakeholders and policymakers may select a month from January to May of 2020, and by hovering over a zip code, assess that zip code’s number of eviction fillings. 
+
+In addition to analysis by geography, the next three dashboards add a multi-year time component so that we may analyze changes in eviction rate and its associated factors over time. As an introduction to this format for gathering information, we make available in the second dashboard below titled, “Visualization of the Socio-Demographic Factors Over Time,” an interface for understanding the changing correlates of eviction rate in the 2010s. In this dashboard, stakeholders and policymakers may select socio-demographic factors, including:
+
+* Poverty rate
+* Median household income
+* Percentage White
+* Percentage African American
+* Percentage Hispanic
+* Percentage Asian
+* Percentage Other Race
+* Unemployment rate 
+* Percentage whose highest educational attainment was a high school diploma
+* Percentage whose highest educational attainment was below a high school diploma 
+* Percentage whose highest educational attainment was a bachelor’s degree or higher
+
+In the visualization below, we have eviction filings between Jan and May 2020. This temporal maps give us an idea about how eviction filing changed due to the COVID-19 pandemic. We see that after March eviction filings dropped precipitously. 
+
+By default, 2018 remains the default choice selected, as it is the most recent year available for American Community Survey 5-year summary statistics. Users may also select a year by dragging the circle across or click the play button beneath 2018 to see the chosen demographic variable on the census tract map and its changes by year. 
+
+After considering the socio-demographic factors of eviction, we provide in the remaining two dashboards a focus on eviction rate and median home values. In the third dashboard titled, “Richmond Eviction Rate,” we have an interface for understanding the changing eviction rates, which measure the tract-level proportion of renter-occupied households that received an eviction judgment to vacate, on an annual basis from 2000-2016. 
+
+By selecting the three vertical bars icon in the upper left quadrant, users may select the default year 2016, drag the circle across, or click the play button to see changes on the census tract map by year. In the final dashboard titled, “Richmond Median Home values,” we have a dashboard for understanding the changing median home value from 2010-2018. 
+
+We hope the information content of these dashboards, taken in context with our conclusions on the following page, encourages new questions about eviction and housing policy, in addition to supporting the planning and execution of programming conducted by our stakeholders. 
+
+### Embedded Shiny Dashboards
+
+In the first two months of 2020, we saw an uptick in eviction fillings concentrated in south-western Richmond, notably city zip code 23225. On March 12, 2020, a judicial emergency was declared by governor's executive order, which mandated non-essential, non-emergency court proceedings be suspended. Subsequently, we observed the first slowdown in eviction fillings in March, and this city-wide slowdown was apparent throughout May, our most recent data. While fillings remained low throughout much of the city, filings increased the fastest in zip code 23224, which previously had high activity in Jan-Feb.
+
+```{r, echo=FALSE, fig.height=15, fig.fullwidth=TRUE}
+knitr::include_app('https://afrina.shinyapps.io/Shiny_eviction_2020/', height="610px")
+
+```
+
+
+Caution should be exercised with interpreting the socio-demographic factors viewable in the second dashboard (2013-2018). The data source for these factors is the American Community Survey, therefore values presented for each census tract are subject to uncertainty. For simplicity, we present these values without uncertainty estimates or sample sizes for each tract. In general, for more populous tracts, we expect larger sample sizes will give us less uncertainty, but never perfect knowledge, about the true value for each tract. Nevertheless, we judged that providing this view into the city would provide a basis for conversation and ideas about careful follow-up. 
+
+Note, when comparing the 2013 and 2018 poverty rate, as determined by the percentage of the survey in the tract with income below the poverty level in the past 12 months, we find two tracts stand out. Tract 403, which houses Monroe park and part of Virginia Commonwealth University, had a sample poverty rate of 90% in 2013 and 33% in 2018. Tract 301, just north of Jackson Ward and the Richmond-Petersburg Turnpike, had a sample poverty rate of 73% in 2013 and 85% in 2018. While these estimates are given without error bars, we believe these represent areas of investigation, as evictions may be become more prevalent either in areas of increasing poverty or decreasing poverty (for example, increasing gentrification).  
+
+```{r, echo=FALSE, fig.fullwidth=TRUE}
+knitr::include_app('https://tabassum.shinyapps.io/Model_Variables/', height="750px")
+  
+```
+
+While eviction rates experienced small changes over time (2000-2016), we leave it to the user to explore the census tracts according to their needs. It is worth mentioning census tract 111, which houses part of Virginia Union University, had the city’s highest eviction rate of 42.17% in 2016. Although the eviction rate in tract 111 has been on the higher side periodically since 2000, between 2014 and 2015 it catapulted nearly 20 points, and remained at the top in 2016. The sudden increase in the eviction rate may be traceable to events within the tract and represent an opportunity to discover wide-area, as opposed to single building, reasons for increases in eviction rate.
+
+```{r, echo=FALSE, fig.fullwidth=TRUE}
+knitr::include_app('https://afrina.shinyapps.io/Shiny_Eviction_Rate/', height="615px")
+  
+```
+
+Between 2010 and 2018, median home values rose throughout several parts of the city. While census tract geographies change over time, it is readily observed that parts of central Richmond increased in median home value. For example, tract 404 increased in value from \$238,900 to \$357,600. Although our analysis did not identify median home value as a significant variable, similar to sudden changes in poverty rate, a follow-up analysis may find different results. Therefore, we leave it to the user to conduct their own investigation. 
+
+```{r, echo=FALSE, fig.fullwidth=TRUE}
+knitr::include_app('https://wellay01.shinyapps.io/ShinyRichmond/', height="615px")
+  
+```
+
+<!-- [Continue to Conclusion](https://boya66.github.io/Richmond_website/findings/results-section-four/) -->

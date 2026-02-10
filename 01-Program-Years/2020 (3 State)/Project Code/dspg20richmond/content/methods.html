@@ -1,0 +1,36 @@
+---
+title: " "
+weight: 4
+draft: false
+output: html_document
+---
+
+<script src="/dspg20richmond/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<style type="text/css">
+/* this chunnk of code centers all of the headings */
+h1, h2, h3 {
+  text-align: center;
+}
+</style>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<p>Data was collected and joined on tract GEOID across the following sources:</p>
+<ul>
+<li>2013-2017 <a href="https://www.census.gov/acs/www/data/data-tables-and-tools/data-profiles/2017/">American Community Survey</a>: highest educational attainment, unemployment.</li>
+<li>Missouri Census Data Center’s 2018 <a href="http://mcdc.missouri.edu/applications/geocorr.html">Geocorr database</a> to understand tracts in terms of their corresponding census places, namely cities.</li>
+<li><a href="https://evictionlab.org/">Eviction Lab at Princeton University</a>: Census tract-level data on eviction rates, poverty rate, median income, and race.</li>
+<li><a href="https://lawatlas.org/topics">Policy Atlas</a>: State level laws on eviction, fair housing, and landlord-tenant laws.</li>
+<li>The sample consist of census tracts in cities with a population between 100,000-300,000.</li>
+<li>The final dataset contained 2,600 census tracts in 78 cities across the U.S.</li>
+</ul>
+</div>
+<div id="methods" class="section level3">
+<h3>Methods</h3>
+<ul>
+<li><p>A regression model was estimated from data at the census tract-level, which included socio-demographic variables, city-level fixed effects, and state-level housing variables. The variables in our models were chosen based on a thorough literature search. We did further analysis to determine factors that were not significant or were highly correlated with other variables. These variables, in addition to variables with high variance inflation factors or other variables with high collinearity by correlation matrix, were dropped.</p></li>
+<li><p>A visualization of the Eviction Intensity Index created using standardized residuals from the regression model. While the goal of most statistical analyses is to focus on what the model ‘explains,’ that is, its predictions, and to determine how changes in the explanatory factors might impact these predictions, here we are taking the opposite approach. After we have done the best job possible of constructing a statistical model to explain eviction rates, we focus on what remains unexplained. In this way, we attempt to explore and focus on the model’s large, positive “misses” as a way to identify census track locations that are, in essence, eviction hotspots, for whatever the reason. Furthermore, if eviction hotspots are clustered in a handful of cities as opposed to being more-or-less randomly distributed across the various cities included in the analysis, then we have further evidence of potential systemic, local, and structural issues that may be resulting in unexpectedly high eviction rates.</p></li>
+<li><p>A visualization of the key sociodemographic variables identified in the regression model to be correlated with eviction and their evolution between 2013-2018.</p></li>
+</ul>
+</div>

@@ -1,0 +1,165 @@
+---
+output: html_document
+---
+
+```{css, echo=FALSE}
+h1, h2, h3 {
+  text-align: center;
+}
+
+body {
+  text-align: justify
+}
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width = 15, fig.height = 10)
+
+library(dplyr)
+library(leaflet)
+library(leaflet.extras)
+library(leaflet.mapboxgl)
+library(tidycensus)
+library(tigris)
+library(tidyr)
+library(here)
+library(sf)
+library(glue)
+
+token <- Sys.getenv("MAPBOX_TOKEN")
+options(mapbox.accessToken = token)
+```
+
+### Data Sources
+
+As this was a new project, we devoted significant time to the data discovery process.
+
+The first source of data we considered was the Virginia Department of Corrections, which maintains data on inmates in Virginia jails and prisons. Unfortunately, we were unable to get access to this data due to the time associated with receiving approval to work with sensitive data on a vulnerable population. The focus of criminal justice institutions on reacting to the COVID-19 pandemic may have played a role in our inability to obtain these data within the summer time frame for this project as well.
+
+We also considered court records data from the state of Virginia. However, while these data are publicly-available, they are only accessible via a user-facing search tool, whereas a more comprehensive analysis would require access to the underlying database. We initiated a request for these data, and while this has seen recent progress, it also became apparent that this source would be outside the scope for the summer portion of this project.
+
+Given these challenges, we decided to shift our approach to instead focus more directly on the social determinants of incarceration to aid the proposed Family and Consumer Science Agent in Halifax County. We identified four primary social factors to explore: unemployment, substance abuse, affordable housing, and family structure/foster care.
+
+We encountered similar challenges as we considered various data sources on each of these topics, but ultimately arrived at a subset that could be incorporated into our exploration of these factors in Halifax. A summary of the final data sources used for each factor (as well as other relevant topics) are below.
+
+```{r}
+sources <- readr::read_csv(here::here("data", "working", "data_sources_final.csv")) %>%
+  select(-X4) %>%
+  filter(Topic != "Schooling") %>%
+  select(Source, Topic, Description)
+
+knitr::kable(sources, "html", caption = "Final Summary of Data Sources") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "bordered"), full_width = FALSE)
+```
+
+<br>
+
+### Challenges
+
+In addition to the data access issues mentioned above, we encountered other difficulties as we assembled a collection of sources for our specific social factors as well:
+
+<br>
+
+#### Lack of relevance to formerly incarcerated population
+
+Many of the most comprehensive data sources on these issues do not specifically address incarcerated or formerly incarcerated individuals, and it is questionable whether the patterns observed in these sources generalize to this population. For instance, Housing and Urban Development's Picture of Subsidized Households dataset provides information on characteristics of individuals in subsidized housing, but no data is recorded on the use of these services by formerly incarcerated individuals themselves.
+
+<br>
+
+#### Improper spatial resolution
+
+Many potential datasets measured variables that may have been valuable to include, but only measured them at the national or state level. Data at these resolutions often masks important local variation and may not be appropriate to apply to a rural county like Halifax.
+
+Furthermore, as mentioned above, the data that did exist at the sub-county level suffered from low sample sizes and associated high uncertainty, making it difficult to draw definitive conclusions for particular regions in Halifax.
+
+As an example, consider the following map, which was constructed by using ACS data for geographic mobility at the census tract level in Halifax. Each layer of the map represents a different sampled value based on the variability of the estimates reported by the ACS. It's easy to see that many tracts' reported mobility values vary widely depending on the random sample taken. This serves to highlight the potential issues relying on ACS estimates at the tract level for rural counties like Halifax.
+
+```{r results = "hide"}
+source(here("src", "Mapping", "map_template.R"))
+
+## Variable names for ACS
+## Variable names for ACS
+# vars_2018 <- load_variables(2018, dataset = "acs5", cache = TRUE)
+# profile_vars_2018 <- load_variables(2018, dataset = "acs5/profile", cache = TRUE)
+subject_vars_2018 <- invisible(load_variables(2018, dataset = "acs5/subject", cache = TRUE))
+
+## Polygons for counties and tracts
+va_counties <- counties(state = "VA", class = "sf", cb = TRUE, resolution = "20m") %>%
+  st_transform(crs = 4326)
+
+halifax_tracts <- tracts(state = "VA", county = "Halifax", class = "sf", cb = TRUE) %>%
+  st_transform(crs = 4326)
+
+## ACS table IDs
+# tables <- c("B07013", ## Geographic mobility
+#             "S2507", ## Financial characteristics - no mortgage
+#             "S2504", ## Physical characteristics
+#             "S2502", ## Demographic characteristics
+#             "DP04") ## General housing statistics
+
+# ----- Geographic mobility ---- #
+
+## County level geographic mobility variables
+# geog_mobility <- get_acs(geography = "county",
+#                          year = 2018,
+#                          table = "S0701",
+#                          state = "VA") %>%
+#   left_join(subject_vars_2018, by = c("variable" = "name")) %>%
+#   mutate(label = tolower(gsub(";", "", gsub(",", "", gsub(" ", "_", gsub("!!", "_", label)))))) %>%
+#   select(-variable) %>%
+#   pivot_wider(names_from = label,
+#               values_from = c(estimate, moe),
+#               names_glue = "{label}_{.value}")
+
+## Tract level geographic mobility variables
+geog_mobility_tracts <- get_acs(geography = "tract",
+                                year = 2018,
+                                table = "S0701",
+                                state = "VA",
+                                county = "Halifax") %>%
+  left_join(subject_vars_2018, by = c("variable" = "name")) %>%
+  mutate(label = tolower(gsub(";", "", gsub(",", "", gsub(" ", "_", gsub("!!", "_", label))))))%>%
+  select(-variable) %>%
+  pivot_wider(names_from = label,
+              values_from = c(estimate, moe),
+              names_glue = "{label}_{.value}")
+
+## Merge ACS on spatial data
+#geog_mobility_counties <- left_join(va_counties, geog_mobility, by = c("GEOID"))
+geog_mobility_tracts <- left_join(halifax_tracts, geog_mobility_tracts, by = c("GEOID"))
+
+## Sample from independent normals at tract level and plot across layers to show uncertainty in estimates
+pal <- colorBin("BuPu", c(geog_mobility_tracts$estimate_moved_within_same_county_population_1_year_and_over_estimate - geog_mobility_tracts$estimate_moved_within_same_county_population_1_year_and_over_moe, geog_mobility_tracts$estimate_moved_within_same_county_population_1_year_and_over_estimate + geog_mobility_tracts$estimate_moved_within_same_county_population_1_year_and_over_moe), bins = 10, na.color = "gray")
+```
+
+```{r, fig.height=5}
+set.seed(4351)
+
+map_samples(data = geog_mobility_tracts,
+            var = "estimate_moved_within_same_county_population_1_year_and_over_estimate",
+            se_var = "estimate_moved_within_same_county_population_1_year_and_over_moe",
+            x = 10,
+            moe = TRUE,
+            palette = pal,
+            legend_pos = "bottomleft",
+            legend_title = "Estimated number of people <br>that moved within county") %>%
+  setView(lng = -79.1, lat = 36.8, zoom = 9)
+```
+
+<br>
+
+#### Incarceration, or Crime?
+
+After exhausting other data sources, we explored large-scale trends in incarceration from the Vera Institute of Justice and crime records reported by the Virginia State Police. However, we hesitated to rely too heavily on the Virginia crime records for multiple reasons. First, crime is not necessarily an optimal way to explore incarceration because it provides no indication of whether an individual ends up being held in jail and/or sentenced to time in prison. Incorporating the comprehensive court records data may help to resolve some of these concerns as we would be able to develop a better sense of the actual court outcomes for individuals in Halifax County.
+
+Additionally, it is important to note that criminal justice data almost always reflects underlying biases in the systems themselves. For instance, Black communities tend to have higher rates of arrests, but this may result from disproportionate police presence in these areas.
+
+### Summary
+
+Overall, the course of this project revealed many of the difficulties inherent in exploring the topics of incarceration and recidivism. The latter in particular requires nuanced data that either are collected only very intermittently at the national level (for instance, the Bureau of Justice Statistics' recidivism analysis tool)[^BJS] or simply do not exist. Given the sensitive nature of the topic, substituting proxies for these missing data can easily risk simply capturing the biases that already exist in the criminal justice system.
+
+Ultimately, a more thorough investigation of this topic would require more targeted data collection on a variety of topics. Especially in a rural area like Halifax County, much of this data collection may need to be organized by local leaders within the county for an accurate picture of incarceration and recidivism to emerge. As we discuss various social determinants of incarceration throughout this website, we highlight the most glaring gaps in data collection that could help provide a more thorough view of these issues.
+
+[^BJS]: Snyder, Howard N., Durose, Matthew R., Cooper, Alexia, & Mulako-Wangota, Joseph. Bureau of Justice Statistics. Retrieved from http://www.bjs.gov/recidivism_2005_arrest/
+

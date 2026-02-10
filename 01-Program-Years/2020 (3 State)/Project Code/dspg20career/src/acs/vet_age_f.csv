@@ -1,0 +1,13 @@
+variable,estimate,pct,isnonvet
+female_total,56975,0.023386621,Veteran
+female_total,2379247,0.976613379,Non-Veteran
+female_1834,9553,0.012952939,Veteran
+female_1834,727963,0.987047061,Non-Veteran
+female_3554,27270,0.030584778,Veteran
+female_3554,864350,0.969415222,Non-Veteran
+female_5564,13222,0.034445478,Veteran
+female_5564,370631,0.965554522,Non-Veteran
+female_6574,4226,0.017138732,Veteran
+female_6574,242350,0.982861268,Non-Veteran
+female_75plus,2704,0.015306498,Veteran
+female_75plus,173953,0.984693502,Non-Veteran

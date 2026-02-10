@@ -1,0 +1,337 @@
+---
+title: "03-Cleaned Burning Glass Data Profiling"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    highlight: tango
+    theme: journal
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+for (pkg in c("tidyverse",  "data.table", "R.utils", "maditr", "stringr", "stringi", "dplyr", "ggplot2", "lubridate", "gt", "DataExplorer")) {
+  library(pkg, character.only = TRUE)
+}
+```
+
+# After cleaning the burning glass data, we write four dataset to data folder
+```{r}
+#double check your working directory
+
+#source("~/git/dspg20career/src/burningglass/03_clean_bgt.R", echo = T, prompt.echo = "", spaced = F)
+#bg_cleaned <- clean_bg(job = job, ed = ed, pers = pers, onet = onet)
+
+#double check your working directory
+#bg_cleaned <- clean_bg(job = job, ed = ed, pers = pers, onet = onet)
+# bg_all_demographic <- as.data.table(bg_cleaned$bg_all_demographic)
+# bg_vet_demographic <- as.data.table(bg_cleaned$bg_vet_demographic)
+# bg_all_job <- as.data.table(bg_cleaned$bg_all_job)
+# bg_vet_job <- as.data.table(bg_cleaned$bg_vet_job)
+# 
+# write.csv(bg_all_demographic, file= "data/01_bg_all_demographic.csv", row.names = F)
+# write.csv(bg_vet_demographic, file= "data/02_bg_vet_demographic.csv", row.names = F)
+# write.csv(bg_all_job, file= "data/03_bg_all_job.csv", row.names = F)
+# write.csv(bg_vet_job, file= "data/04_bg_vet_job.csv", row.names = F)
+```
+
+# Read in cleaned data directly from the data folder
+```{r}
+bg_all_demographic <- read.csv("data/01_bg_all_demographic.csv")
+bg_vet_demographic <- read.csv("data/02_bg_vet_demographic.csv")
+bg_all_job <- read.csv("data/03_bg_all_job.csv")
+bg_vet_job <-read.csv("data/04_bg_vet_job.csv")
+```
+
+
+# Data profiling function
+```{r}
+#functions
+data_profiling <- function(df){
+  nrow = nrow(df)
+summary_table <- tibble(var = names(df),
+       variable_type = map_chr(.x = df, .f = function(col) class(x = col)),                 
+       num_unique = map_int(.x = df, .f = function(col) length(x = unique(x = col))),
+       num_missing = map_int(.x = df, .f = function(col) sum(x = is.na(x = col)))) %>%
+  mutate(perc_missing = round(x = 100 * num_missing / nrow, digits = 2L))
+
+return(summary_table)
+}
+```
+
+
+# Viz for presentation
+```{r}
+
+bg_all_job$month <- as.factor(bg_all_job$month)
+
+bg_all_job_date <- bg_all_job%>%
+  select(id, start_month, end_month)%>%
+  gather("start_end", "month", -id)%>%
+  group_by(start_end, month)%>%
+  summarize(count = n())
+
+
+
+# vet_sex <- table(bg_all_job_date$month, bg_demographic$gender)%>%
+#   as.data.frame()%>%
+#   rename("veteran" = "Var1", "gender" = "Var2")%>%
+#   group_by(veteran)%>%
+#   summarize(gender=gender,percent = Freq / sum(Freq) * 100)
+
+
+# bg_all_job_date$education <- factor(vet_edu$education , levels = c("others","certificate","somehs", "highschool", "associate", "bachelor",  "master","doctor"))
+uva_color_palette <- 
+c("#232D4B", #space cadet
+  "#2C4F6B", #indigo dye
+  "#0E879C", #blue munsell
+  "#60999A", #cadet blue
+  "#D1E0BF", #tea green
+  "#D9E12B", #pear
+  "#E6CE3A", #citrine
+  "#E6A01D", #marigold
+  "#E57200" #princeton orange
+)
+
+ggplot(bg_all_job_date, aes(x = month, y = count, fill = start_end))+
+  geom_bar(stat = "identity",position = 'dodge')+
+  labs(title = "Start and End Month in BGT")+ scale_x_discrete(limits=c("Jan", "Feb", "Mar","April","May", "June", "July","Aug", "Sep", "Oct", "Nov", "Dec"))+ 
+  scale_fill_manual(values = c("#2C4F6B", "#E57200"))
+```
+
+
+```{r}
+bg_all_job_duration <- bg_all_job%>%
+  mutate(duration = as.numeric(enddate-startdate), tenure = if_else(duration >= 365, "tenure", "not tenure"))%>%
+  group_by(tenure, onet_job_zone)%>%
+  summarize(count = n())%>%
+  group_by(tenure)%>%
+  mutate(sum = sum(count))%>%
+  mutate(perc = count/sum * 100)%>%
+  filter(!is.na(onet_job_zone))
+
+
+
+ggplot(bg_all_job_duration, aes(x = onet_job_zone, y = perc, fill = tenure)) + 
+  geom_bar(stat="identity", position = "dodge") +
+  labs(title = "") + theme(legend.position = "right") + 
+  scale_fill_manual(values = c("#2C4F6B", "#E57200"))
+
+```
+
+# Data Profiling on Joined Burning Galss Data
+## 1. demographic, education of all individuals in bgt
+620007 people are found in the DC metropolitan area, and there are 7704 (1.24%) veterans in DC metropolitan area included in our analysis.
+```{r  fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
+nrow(bg_all_demographic)
+table(bg_all_demographic$veteran)
+bg_all_demographic%>%
+  data_profiling()%>%
+  gt()%>%
+  tab_header(
+    title ="data profiling on demographic and education variables among all individuals"
+  )
+
+plot_bar(bg_all_demographic)
+
+```
+
+## 2. demographic, education of veterans
+```{r}
+bg_vet_demographic%>%
+  data_profiling()%>%
+  gt()%>%
+  tab_header(
+    title ="data profiling on demographic and education variables among veterans"
+  )
+
+plot_bar(bg_vet_demographic)
+```
+
+## 3. job of all individuals in bgt
+Cleaned data contains individuals with unique job positions, meaning that each job change is included for each individual. According the the data profiling there are 21 unique values in the jobposition variable, meaning that the maximum number of jobs a person in bgt had was 21. However, there were 7 individuals had their maximum noofjobs smaller than their 
+```{r fig.width=13, fig.height=7}
+bg_all_job%>%
+  data_profiling()%>%
+  gt()%>%
+  tab_header(
+    title ="data profiling on cleaned job variables among all individuals"
+  )
+plot_bar(bg_all_job)
+plot_histogram(bg_all_job)
+```
+
+## 4. job of veterans
+```{r fig.width=13, fig.height=7}
+bg_vet_job%>%
+  data_profiling()%>%
+  gt()%>%
+  tab_header(
+    title ="data profiling on cleaned job variables among veterans"
+  )
+
+plot_bar(bg_vet_job)
+plot_histogram(bg_vet_job)
+```
+
+# Demographic
+## Veteran v.s. Non-veteran's Gender
+```{r fig.width=6, fig.height=4, message=FALSE, warning=FALSE, paged.print=FALSE}
+vet_sex <- table(bg_demographic$veteran, bg_demographic$gender)%>%
+  as.data.frame()%>%
+  rename("veteran" = "Var1", "gender" = "Var2")%>%
+  group_by(veteran)%>%
+  summarize(gender=gender,percent = Freq / sum(Freq) * 100)
+
+ggplot(vet_sex, aes(x = gender, y = percent, fill=veteran))+
+  geom_bar( stat = "identity", position = "dodge")+ 
+  scale_fill_brewer(palette = "Set2")
+```
+
+
+# Career
+## Veteran v.s. Non-veteran's Degree Level
+```{r fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
+bg_vet_edu<- bg_all_demographic%>%
+  select(id, veteran, degree_highest)
+
+vet_edu <- table(bg_vet_edu$veteran, bg_vet_edu$degree_highest)%>%
+  as.data.frame()%>%
+  rename("veteran" = "Var1", "education" = "Var2")%>%
+  group_by(veteran)%>%
+  summarize(education=education,percent = Freq / sum(Freq) * 100)%>%
+  filter(!is.na(education))
+
+unique(vet_edu$education)
+
+vet_edu$education <- factor(vet_edu$education , levels = c("others","certificate","somehs", "highschool", "associate", "bachelor",  "master","doctor"))
+
+ggplot(vet_edu, aes(x = education, y = percent, fill = veteran))+
+  geom_bar(stat = "identity",position = 'dodge')+ 
+  scale_fill_brewer(palette = "Set2")+
+  labs(title = "Veteran's Education Distribution in Burning Glass Data")+ 
+  scale_fill_manual(values = c("#2C4F6B", "#E57200"))
+```
+
+## Veteran v.s. Non-veteran's Certificates (exclude)
+```{r fig.width=11, fig.height=5, message=FALSE, warning=FALSE, paged.print=FALSE}
+# cert_vet <- bg_full%>%
+#   filter(!is.na(cert_name))%>%
+#   group_by(veteran, cert_name)%>%
+#   summarize(ttl_cert = n())%>%
+#   group_by(veteran)%>%
+#   top_n(10, ttl_cert)%>%
+#   group_by(veteran)%>%
+#   summarize(cert_name=cert_name, percent = ttl_cert / sum(ttl_cert) * 100)
+# 
+# ggplot(cert_vet, aes(x = cert_name, y = percent, fill = veteran))+
+#   geom_bar(stat = "identity",position = 'dodge')+ 
+#   scale_fill_brewer(palette = "Set2")+
+#   coord_flip()+
+#   labs(title = "Top Certificates for Veterans v.s. Non-Veterans", x = "certificate")
+```
+
+-jobposition: smaller more recent job updates
+-onet job zone: 1-5, larger requires more skills and preparation
+
+### More Analysis 
+#### Temporary jobs
+20.53%  (N=6640) of the jobs are not tenured.
+```{r}
+summary(bg_vet_job$job_duration_day)
+histogram(bg_vet_job$job_duration_day)
+nrow = nrow(bg_vet_job)
+
+bg_vet_job%>%
+  group_by(tenure)%>%
+  summarize(N=n(), perc = N/ nrow *100)
+
+n_tenure = 25708
+n_not_tenure = 6640
+
+bg_vet_job%>%
+  group_by(tenure, onet_job_zone)%>%
+  summarize(N=n())%>%
+  mutate(perc = if_else(tenure == "tenure", 100*N/n_tenure, 100*N/n_not_tenure))
+
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+#Changing jobs but in same occupation as a change or not?
+bg_vet_job_transition <- bg_vet_job%>%
+  select(id, onet, jobposition, onet_job_zone, onet_title, startdate, enddate)
+
+#identify how many people have had a job change but in the same occupation
+id <- unique(bg_vet_job_transition$id)
+num_dup <- c()
+for (i in 1: length(id)){
+  message("check duplicates for individual #", i)
+  pers <- id[i]
+  bg_i <- bg_vet_job_transition%>%
+    filter(id == pers)
+  onet_i <- as.vector(bg_i$onet)
+  if (sum(duplicated(onet_i)) == 0){
+    num_dup[i] <- 0
+  }else{
+     num_dup[i] <- sum(duplicated(onet_i)) + 1 #sum of onet codes that are
+  }
+}
+
+# cook book
+# a <- c("apple", "banana", "cranberry")
+# duplicated(a)
+# 
+# b <- c("apple", "apple", "apple")
+# duplicated(b)
+
+
+id_num_dup <- as.data.table(cbind(id, num_dup))
+
+hist(id_num_dup$num_dup)
+summary(id_num_dup$num_dup)
+table(id_num_dup$num_dup > 0)
+table(id_num_dup$num_dup > 2)
+
+# among those people who have duplicates
+# identify how many of them had their later job(s) lasted for longer than one year 
+id_dup <- id_num_dup%>%
+  filter(num_dup > 0)
+id_dup <- as.vector(id_dup$id)
+
+bg_dup_df<- c()
+for (i in 1:length(id_dup)){
+  message("check the time span of the duplicates for individual #", i)
+  pers <- id_dup[i]
+  bg_i <- bg_vet_job_transition%>%
+    filter(id == pers)
+  onet_i <- as.vector(bg_i$onet)
+  dup_vec <-  duplicated(onet_i)
+  bg_i <- as.data.frame(cbind(bg_i,dup_vec))
+  bg_i <- bg_i%>%
+    filter(dup_vec == T)%>%
+    mutate(diff = as.numeric(enddate - startdate))
+  bg_dup_df <- rbind(bg_dup_df, bg_i)
+}
+
+
+
+hist(bg_dup_df$diff)
+summary(bg_dup_df$diff)
+sd(bg_dup_df$diff)
+
+table(bg_dup_df$diff > 365)
+
+table(id_num_dup$num_dup > 2)
+
+```
+
+
+```{r}
+
+```
+

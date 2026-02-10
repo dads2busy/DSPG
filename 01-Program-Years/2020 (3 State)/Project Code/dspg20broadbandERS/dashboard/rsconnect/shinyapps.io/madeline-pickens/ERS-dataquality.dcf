@@ -1,0 +1,12 @@
+name: ERS-dataquality
+title: ERS-dataquality
+username:
+account: madeline-pickens
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2631652
+bundleId: 3483912
+url: https://madeline-pickens.shinyapps.io/ERS-dataquality/
+when: 1596744064.50517
+asMultiple: FALSE
+asStatic: FALSE

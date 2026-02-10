@@ -1,0 +1,9 @@
+variable,estimate,pct,isnonvet
+less_hs,11965,0.031188825,Veteran
+hs,60363,0.157346513,Veteran
+some_college,106782,0.278345598,Veteran
+bachelor_plus,204521,0.533119065,Veteran
+less_hs,374554,0.099592673,Non-Veteran
+hs,696683,0.185245711,Non-Veteran
+some_college,804630,0.213948462,Non-Veteran
+bachelor_plus,1884992,0.501213154,Non-Veteran

@@ -1,0 +1,428 @@
+---
+title: "15_alternative_clustering_methods"
+author: "Joanna Schroeder"
+date: "9/4/2020"
+output: 
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+for (pkg in c("tidyverse",  "data.table", "R.utils", "maditr", "stringr", "stringi", "dplyr", "ggplot2", "lubridate", "gt", "DataExplorer", "TraMineR", "TraMineRextras", "cluster", "tools", "WeightedCluster")) {
+  library(pkg, character.only = TRUE)
+}
+
+uva_color_palette <- 
+c("#232D4B", #space cadet
+  "#2C4F6B", #indigo dye
+  "#0E879C", #blue munsell
+  "#60999A", #cadet blue
+  "#D1E0BF", #tea green
+  "#D9E12B", #pear
+  "#E6CE3A", #citrine
+  "#E6A01D", #marigold
+  "#E57200" #princeton orange
+)
+```
+
+## Literature Review
+
+Le Goix, R., Giraud, T., Cura, R., Le Corre, T. & Migozzi, J. (2019), "Who sells to whom in the suburbs? Home price inflation and the dynamics of sellers and buyers in the metropolitan region of Paris, 1996-2012", PLoS ONE. Vol. 14(3). e0213169.
+
+* Ward's clustering, Chi2 distance
+* No justification for selecting Ward's or for dissimilarity
+
+Mas, J.-F., Nogueira de Vasconcelos, R. & Franca-Rocha, W. (2019), "Analysis of High Temporal Resolution Land Use/Land Cover Trajectories", Land. Vol. 8(2), pp. 30.
+
+* Implements four different distance metrics: LCS, LSP, OM transition rates, and OM features
+* Ward's method for each dissimilarity index
+* Emphasizes choice for metric depends on what types of patterns of change are important: LCP focuses on beginning, OM can cluster based on rare transitions,   
+
+Kim, K. (2018), "Recent Advances in Activity-Based Travel Demand Models for Greater Flexibility". Portland State University PDXScholar. PhD Thesis, Portland, 2018.
+
+* No clustering
+
+Riekhoff, A.-J. (2018), "Extended working lives and late-career destabilisation: A longitudinal study of Finnish register data", Advances in Life Course Research. Vol. 35, pp. 114-125.
+
+* OM and Hamming for dissimiliary
+* Ward's clustering
+
+Struffolino, E. & Mortelmans, D. (2018), "Lone Mothers in Belgium: Labor Force Attachment and Risk Factors", In Bernardi, L. & Mortelmans, D. (eds) Lone Parenthood in the Life Course. Series: Life Course Research and Social Policies. Volume 8. Cham: Springer.
+
+* Hamming (higher sensitivity to small time changes)
+* PAM clustering (maximizes in-group homogeneity and between-group heterogeneity)
+* "Individual sequences were then clustered in order to maximize within-group
+homogeneity and between-groups heterogeneity: to this purpose, we used the partitioning around medoids method. Medoids are representative sequences having the
+smallest dissimilarity to the other sequences of the cluster they belong to"
+
+Studer, M., & Ritschard, G. (2016). What matters in differences between life trajectories: A comparative review of sequence dissimilarity measures. Journal of the Royal Statistical Society. A, 179(2), 481-511.
+
+* Important aspects of sequences:
+    - Timing of states (age norms, state position in life trajectory)
+    - Spell duration
+    - Sequencing (the order in which sequences are experienced)
+  
+* Distances between probability distributions
+    - Distances between state distributions
+    - Distance based on conditional distributions of sequence states (stresses the similarity of sequences that are likely to lead to the same future)
+* Distances based on common attributes
+    - Simple hamming distance
+    - Length of longest common subsequence
+    - Number of matching subsequences
+* Optimal matching
+    - Optimal matching principles and special cases
+    - Substitution costs
+        - Theory based costs
+        - Costs based on state attributes
+        - Data-driven costs
+    - indel costs
+        - Single-indel costs
+        - State-dependent indel costs
+    - Variants of optimal matching
+        - Dynamic hamming distance
+        - Localized optimal matching 
+        - Optimal matching sensitive to spell length
+        - Optimal matching between sequences of spells
+        - Optimal matching between sequences of transitions
+* "Running cluster analyses with different dissimilarity measures should also allow us to de-termine whether the trajectories are primarily structured by timing, duration or sequencing differences. To achieve this, we compare cluster quality measures such as the average silhouette width of the different partitions that are obtained. In a discrepancy analysis, comparing outcomes that are obtained with different measures may also help to identify which covariates best explain sequencing differences, and which best explain timing and duration differences." (509)
+    - For sequencing:
+        - OMstran (low weight on state of origin), OMspell (low expansion cost e and low weight), 
+    - For timing:
+        - Hamming family
+        - "Using the CHI2- and EUCLID-distances with the number of periods K equal to the sequence length is also a solution. This K-parameter offers the advantage of allowing a smooth relaxation of exact timing alignment...CHI2 is especially interesting when we want to stress the importance of changes involving rare states." (508)
+    - For duration:
+        - CHI2- and EUCLID-distance with K set to 1
+        - If importance of spell lengths should be stressed, OMspell with high expansion cost
+        - LCS and classic OM
+  
+## Approach
+Multiple dissimilarity metrics and clustering methods should be used to explore and compare outcomes. 
+We have interested in multiple sequence dimensions (sequencing, timing, and duration), so we should implement dissimilarity metrics for coverage in each of these areas.
+
+
+* Our OM ("weighted")
+    + Uses substitution costs based normalized transition rates in our dataset, created from observed probabilities of transition from one state to another exluding transitions to the same state ("Job to job transition")
+* OM transition ("unweighted")
+    + Uses substitution costs based on raw transition rates in our dataset, created from observed probabilities of transition from one state to another ("Year to year transition")
+* Hamming
+    + Dissimilarity based on common attributes - simple hamming, or the number of positions at which two sequences of equal length differ.
+* LCS
+     + Dissimilarity based on common attributes - Longest common subsequence. 
+* LCP
+     + Dissimilarity based on common attributes - Longest common prefix. (We can also compute based on the longest common suffix)
+
+* Ward's
+      + Agglomerative hierarchical clustering, minimizes median distances between groups.
+* PAM
+      + Direct partitioning, faster, number of clusters set before. 
+* Divisive analysis (diana)
+      + Opposite of agglomerative, hierarchical clustering, better at identifying large than small clusters
+
+Use a sample of around 2,000 for testing for performance
+
+```{r create-sequence-objects, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Import veteran job data ------
+bg_vet_job <-read_csv("~/git/DSPG2020/career/data/04_bg_vet_job.csv")%>%
+  mutate(year_enter_job_market = year(date_enter_job_market))%>%
+  select(-noofjobs, -sector, -tenure) %>%
+  group_by(id) %>%
+  mutate(years_in_job_market = max(end_year) - (min(start_year)))
+
+# What date did each veterans end their last ONET 55 job? (Date of military exit) ----
+vet_endmilitary <- bg_vet_job%>%
+  mutate(date_end_onet55 = if_else(is_onet55==T, enddate, as.Date(NA)))%>%
+  filter(!is.na(date_end_onet55))%>%  #exluce people who don't have valid onet55 code
+  select(id, date_end_onet55) %>%
+  #keep the latest onet55 job
+  group_by(id)%>%   
+  arrange(desc(date_end_onet55))%>%
+  group_by(id)%>%
+  distinct(id, .keep_all = TRUE) 
+
+# Join data together ------
+bg_vet_job  <- inner_join(bg_vet_job, vet_endmilitary, by = "id")
+
+# Prepare the data for sequence format ------
+bg_vet_job_seq <- bg_vet_job %>%
+  select(id, end_year, onet_job_zone, startdate, enddate, job_duration_day, date_end_onet55, year_enter_job_market, years_in_job_market) %>%
+  mutate(year_end_onet55 = year(date_end_onet55)) %>%
+  select(-year_enter_job_market) %>%
+# Find jobs that came after the date ended onet55 job (Veteran career)
+  filter(startdate >= date_end_onet55)%>% 
+# Filter out 55 jobs that have the same start and end date  
+  filter(onet_job_zone != 55)  %>%  
+  mutate(start_year = year(startdate))
+
+# Perform check ------
+#check <- bg_vet_job_seq%>%
+#  mutate(year_until_first_job = start_year- year_end_onet55)%>%
+#  group_by(id)%>%
+#  summarize(years = min(year_until_first_job))
+
+#ggplot(check, aes(x = years)) + 
+#  geom_histogram(binwidth = 1.4) + 
+#  labs(title = "", x = "years until first job") 
+
+#summary(check$years)
+
+# Add variables, align sequences -----------
+bg_vet_job_seq <- bg_vet_job_seq %>%
+  mutate(years_after_onet55 = max(end_year) - year_end_onet55) %>%
+  mutate(start_year = start_year - year_end_onet55 + 1)%>%  #transform from calender year to year start sequence analysis
+  mutate(end_year = end_year - year_end_onet55 + 1) %>% #transform from calender year to year start sequence analysis
+  select(id, start_year, end_year, onet_job_zone, year_end_onet55, years_after_onet55)%>%
+  group_by(id)%>%
+  arrange(desc(onet_job_zone))%>%
+  group_by(id)%>%
+  distinct(id, start_year, end_year, .keep_all = TRUE)
+```
+```{r create-sequence-object}
+# Testing using ten year veteran civilian career subset
+career_sequence <- function(name = "sts_vet_ten", years) {
+sts_vet <- bg_vet_job_seq %>%
+  filter(years_after_onet55 >= years) %>%
+  select(-years_after_onet55)
+
+sts_vet <- as.matrix(sts_vet)
+sts_vet <- as.data.frame(sts_vet)
+  
+sts_vet <- seqformat(sts_vet, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "onet_job_zone", process = FALSE)
+
+vet.seq <- seqdef(sts_vet, left="Military transition unemployment", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5", "#CBBEB5"))
+
+# Filter out veterans who do not have a complete career in time period of interest
+sts_vet <- vet.seq[, 1:years]
+
+assign(name, sts_vet, envir = .GlobalEnv)
+}
+
+career_sequence("sts_vet_ten", 10)
+```
+
+```{r weighted-transition, output = FALSE}
+# Our OM (weighted transition)------
+transition_matrix <- seqtrate(sts_vet_ten, weighted=FALSE, count=TRUE)
+round(transition_matrix,2)
+diag(transition_matrix) = 0
+round(transition_matrix,2)
+rowsum <- apply(transition_matrix, 1, sum)
+for(i in 1:nrow(transition_matrix)) {
+  for (j in 1:ncol(transition_matrix)){
+    transition_matrix[i,j] = transition_matrix[i,j]/rowsum[i]
+  }
+}
+for(j in 1:ncol(transition_matrix)){
+      transition_matrix[8,j] = transition_matrix[8,j] = 0
+}
+transition_matrix <- round(transition_matrix,2)
+cost_matrix <- 2-transition_matrix
+round(cost_matrix,2)
+diag(cost_matrix) = 0
+cost_matrix <- round(cost_matrix,2)
+```
+
+```{r dissimilarity-metrics}
+# Sequencing -----------
+# OM Spell, low expansion cost and low weight
+weighted.spell.low <- seqdist(sts_vet_ten, method = "OMspell", indel = "auto", sm = cost_matrix, with.missing = TRUE, otto = 0, expcost = 0)
+
+# Timing ---------------
+# Hamming
+hamming <- seqdist(sts_vet_ten, method = "HAM")
+#CHI2 interval 10 
+chi2.10 <- seqdist(sts_vet_ten, method = "CHI2", step = 10)
+
+# Duration -------------
+
+# LCS 
+lcs <- seqdist(sts_vet_ten, method = "LCS")
+#CHI2 interval 1
+chi2.1 <- seqdist(sts_vet_ten, method = "CHI2", step = 1)
+#spell, high expansion cost 
+weighted.spell.high <- seqdist(sts_vet_ten, method = "OMspell", indel = "auto", sm = cost_matrix, with.missing = TRUE, otto = 0.1, expcost = 1)
+
+# Other ----------------
+
+# Weighted OM trans
+weighted <- seqdist(sts_vet_ten, method = "OMstran", indel = "auto", sm = cost_matrix, with.missing = TRUE, otto = 0.1)
+# OM unweighted transition 
+costs.tr <- seqcost(sts_vet_ten, method = "TRATE",with.missing = FALSE)
+#print(costs.tr)
+unweighted <- seqdist(sts_vet_ten, method = "OMstran", indel = costs.tr$indel, sm = costs.tr$sm,with.missing = F, otto = 0.1)
+# LCP
+lcp <- seqdist(sts_vet_ten, method = "LCP") 
+```
+
+```{r wards-clustering, fig.height=10}
+# OM Spell, low expansion cost and low weight (SEQUENCING)
+ward.weighted.spell.low <- agnes(weighted.spell.low, diss = TRUE, method = "ward")
+plot(ward.weighted.spell.low, which.plot = 2)
+ward.weighted.spell.low.8 <- cutree(ward.weighted.spell.low, k = 8)
+ward.weighted.spell.low.8.fac <- factor(ward.weighted.spell.low.8, labels = paste("Type", 1:8))
+
+#CHI2 interval 10 (TIMING)
+ward.chi2.10 <- agnes(chi2.10, diss = TRUE, method = "ward")
+plot(ward.chi2.10, which.plot = 2)
+ward.chi2.10.8 <- cutree(ward.chi2.10, k = 8)
+ward.chi2.10.8.fac <- factor(ward.chi2.10.8, labels = paste("Type", 1:8))
+
+#CHI2 interval 1 (DURATION)
+ward.chi2.1 <- agnes(chi2.1, diss = TRUE, method = "ward")
+plot(ward.chi2.1, which.plot = 2)
+ward.chi2.1.8 <- cutree(ward.chi2.1, k = 8)
+ward.chi2.1.8.fac <- factor(ward.chi2.1.8, labels = paste("Type", 1:8))
+
+#spell, high expansion cost (DURATION)
+ward.weighted.spell.high <- agnes(weighted.spell.high, diss = TRUE, method = "ward")
+plot(ward.weighted.spell.high, which.plot = 2)
+ward.weighted.spell.high.8 <- cutree(ward.weighted.spell.high, k = 8)
+ward.weighted.spell.high.8.fac <- factor(ward.weighted.spell.high.8, labels = paste("Type", 1:8))
+
+# Our OM 
+ward.weighted <- agnes(weighted, diss = TRUE, method = "ward")
+plot(ward.weighted, which.plot = 2)
+ward.weighted.8 <- cutree(ward.weighted, k = 8)
+ward.weighted.8.fac <- factor(ward.weighted.8, labels = paste("Type", 1:8))
+
+# Our OM, high origin weight
+#ward.weighted.otto <- agnes(weighted.otto, diss = TRUE, method = "ward")
+#plot(ward.weighted.otto, which.plot = 2)
+#ward.weighted.otto.8 <- cutree(ward.weighted.otto, k = 8)
+#ward.weighted.otto.8.fac <- factor(ward.weighted.otto.8, labels = paste("Type", 1:8))
+
+# OM transition
+ward.unweighted <- agnes(unweighted, diss = TRUE, method = "ward")
+plot(ward.unweighted, which.plot = 2)
+ward.unweighted.8 <- cutree(ward.unweighted, k = 8)
+ward.unweighted.8.fac <- factor(ward.unweighted.8, labels = paste("Type", 1:8))
+
+# Hamming
+ward.hamming <- agnes(hamming, diss = TRUE, method = "ward")
+plot(ward.hamming, which.plot = 2)
+ward.hamming.8 <- cutree(ward.hamming, k = 8)
+ward.hamming.8.fac <- factor(ward.hamming.8, labels = paste("Type", 1:8))
+
+# LCS
+ward.lcs <- agnes(lcs, diss = TRUE, method = "ward")
+plot(ward.lcs, which.plot = 2)
+ward.lcs.8 <- cutree(ward.lcs, k = 8)
+ward.lcs.8.fac <- factor(ward.lcs.8, labels = paste("Type", 1:8))
+
+# LSP
+ward.lcp <- agnes(lcp, diss = TRUE, method = "ward")
+plot(ward.lcp, which.plot = 2)
+ward.lcp.8 <- cutree(ward.lcp, k = 8)
+ward.lcp.8.fac <- factor(ward.lcp.8, labels = paste("Type", 1:8))
+```
+
+```{r index-plots, fig.height=5, fig.width = 15}
+# OM Spell, low expansion cost and low weight (SEQUENCING)
+one <- seqIplot(sts_vet_ten, group = ward.weighted.spell.low.8.fac, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+
+#CHI2 interval 10 (TIMING)
+two <- seqIplot(sts_vet_ten, group = ward.chi2.10.8.fac, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+
+#CHI2 interval 1 (DURATION)
+three <- seqIplot(sts_vet_ten, group = ward.chi2.1.8.fac, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+
+#spell, high expansion cost (DURATION)
+four <- seqIplot(sts_vet_ten, group = ward.weighted.spell.high.8.fac, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+
+#weighted
+ward.weighted.plot <- seqIplot(sts_vet_ten, group = ward.weighted.8.fac, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+#unweighted
+ward.unweighted.plot <- seqIplot(sts_vet_ten, group = ward.unweighted.8.fac, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+#hamming
+ward.hamming.plot <- seqIplot(sts_vet_ten, group = ward.hamming.8.fac, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+#lcs
+ward.lcs.plot <- seqIplot(sts_vet_ten, group = ward.lcs.8.fac, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+#lcp
+ward.lcp.plot <- seqIplot(sts_vet_ten, group = ward.lcp.8.fac, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+```
+
+```{r PAM-clustering, fig.height=2.5, fig.width = 15}
+library(WeightedCluster)
+# OM Spell, low expansion cost and low weight
+pam.weighted.spell.low <- wcKMedoids(weighted.spell.low, k = 8)
+pam.weighted.spell.low.8 <- pam.weighted.spell.low$clustering 
+
+#CHI2 interval 10
+pam.chi2.10 <- wcKMedoids(chi2.10, k = 8)
+pam.chi2.10.8 <- pam.chi2.10$clustering
+
+#CHI2 interval 1
+pam.chi2.1 <- wcKMedoids(chi2.1, k = 8)
+pam.chi2.1.8 <- pam.chi2.1$clustering
+
+#spell, high expansion cost 
+pam.weighted.spell.high <- wcKMedoids(weighted.spell.high, k = 8)
+pam.weighted.spell.high.8 <- pam.weighted.spell.high$clustering
+
+# weighted --------------
+pam.weighted <- wcKMedoids(weighted, k = 8)
+pam.weighted.8 <- pam.weighted$clustering
+# unweighted ------------
+pam.unweighted <- wcKMedoids(unweighted, k = 8)
+pam.unweighted.8 <- pam.unweighted$clustering
+# Hamming --------------
+pam.hamming <- wcKMedoids(hamming, k = 8)
+pam.hamming.8 <- pam.hamming$clustering
+# LCS ---------------
+pam.lcs <- wcKMedoids(lcs, k = 8)
+pam.lcs.8 <- pam.lcs$clustering
+# LCP --------------
+pam.lcp <- wcKMedoids(lcp, k = 8)
+pam.lcp.8 <- pam.lcp$clustering
+
+par(mfrow=c(1,1))
+par(mar=c(1,1,1,1))
+
+pam.weighted.spell.low.plot <- seqIplot(sts_vet_ten, group = pam.weighted.spell.low.8, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+
+pam.chi2.10.plot <- seqIplot(sts_vet_ten, group = pam.chi2.10.8, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+
+pam.chi2.1.plot <- seqIplot(sts_vet_ten, group = pam.chi2.1.8, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+
+pam.weighted.spell.high.plot <- seqIplot(sts_vet_ten, group = pam.weighted.spell.high.8, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+
+#weighted
+pam.weighted.plot <- seqIplot(sts_vet_ten, group = pam.weighted.8, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+#unweighted
+pam.unweighted.plot <- seqIplot(sts_vet_ten, group = pam.unweighted.8, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+#hamming
+pam.hamming.plot <- seqIplot(sts_vet_ten, group = pam.hamming.8, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+#lcs
+pam.lcs.plot <- seqIplot(sts_vet_ten, group = pam.lcs.8, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+#lcp
+pam.lcp.plot <- seqIplot(sts_vet_ten, group = pam.lcp.8, cols = 8, yaxis = FALSE, axes = FALSE, with.legend = FALSE)
+
+
+hamming.labels <- c("Zone 5", "Unemployment to Zone 4", "Missing zone", "Zone 4", "Civilian unemployment", "Zone 2", "Zone 3", "Transitional unemployment")
+pam.hamming.8.factor <- factor(pam.hamming.8, levels = c(1254, 167, 2150, 2706, 277, 2926, 3029, 38), labels = hamming.labels)
+
+```
+
+
+
+```{r}
+plot.new()
+hamming2d <- cmdscale(hamming, k = 2)
+plot(hamming2d, type = "n")
+points(hamming2d[pam.hamming.8.factor == "Zone 5", ], pch = 16, col = "red")
+points(hamming2d[pam.hamming.8.factor == "Unemployment to Zone 4", ], pch = 16, col = "blue")
+points(hamming2d[pam.hamming.8.factor == "Missing zone", ], pch = 16, col = "green")
+points(hamming2d[pam.hamming.8.factor == "Zone 4", ], pch = 16, col = "magenta")
+points(hamming2d[pam.hamming.8.factor == "Civilian unemployment", ], pch = 16, col = "orange")
+points(hamming2d[pam.hamming.8.factor == "Zone 2", ], pch = 16, col = "yellow")
+points(hamming2d[pam.hamming.8.factor == "Zone 3", ], pch = 16, col = "black")
+points(hamming2d[pam.hamming.8.factor == "Transitional unemployment", ], pch = 16, col = "pink")
+#legend("bottomright", fill = c("red", "blue", "green", "magenta", "orange", "yellow", "black", "pink"), legend = pam.hamming.8.factor)
+```
+

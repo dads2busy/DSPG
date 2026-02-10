@@ -1,0 +1,240 @@
+---
+title: "CoreLogic Fairfax Profile"
+output: html_document
+---
+
+```{r libraries, include=FALSE, message=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FALSE)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(sf)  
+# install.packages('venn')
+library(venn)
+# install.packages('ggthemes')
+library(ggthemes)
+# install.packages('DataExplorer')
+library(DataExplorer)
+library(maditr)
+```
+
+```{r functions}
+# functions to calculate completeness (from Devika)
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- round(((len - (blanks + true_na + written_na)) / len) * 100, 2)
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+```{r}
+get_db_conn <-
+  function(db_name = "sdad",
+           db_host = "postgis1",
+           db_port = "5432",
+           db_user = Sys.getenv("db_usr"), # requires you to setup environmental vars (above)
+           db_pass = Sys.getenv("db_pwd")) {
+    RPostgreSQL::dbConnect(
+      drv = RPostgreSQL::PostgreSQL(),
+      dbname = db_name,
+      host = db_host,
+      port = db_port,
+      user = db_user,
+      password = db_pass
+    )
+  }
+
+con <- get_db_conn()
+
+cols_usda_curr_tax <- "fips_code,unformatted_apn,apn_sequence_nbr,original_apn,census_tract,lot_number,township,municipality_code,situs_house_number_prefix,situs_house_number,situs_house_number_2, situs_house_number_suffix,situs_direction,situs_street_name,situs_mode,situs_quadrant,situs_unit_number,situs_city,situs_state,situs_zip_code,situs_carrier_code, property_centroid_longitude,property_centroid_latitude,block_level_latitude,block_level_longitude,owner_corporate_indicator,owner1_last_name,owner1_first_name_mi,owner2_last_name,owner2_first_name_mi, mail_house_number_prefix,mail_house_number,mail_house_number_2,mail_house_number_suffix,mail_direction,mail_street_name,mail_mode,mail_quadrant,mail_unit_number,mail_city,mail_state,mail_zip_code,mail_carrier_code,mailing_opt_out_code,total_value_calculated,land_value_calculated,improvement_value_calculated,total_value_calculated_ind,land_value_calculated_ind,improvement_value_calculated_ind,assd_total_value,assd_land_value,assd_improvement_value,mkt_total_value,mkt_land_value,mkt_improvement_value,appr_total_value,appr_land_value,appr_improvement_value,tax_amount,tax_year,assessed_year,tax_code_area,sale_date,sale_price,sale_code,rior_sale_date,prior_sale_price,prior_sale_code,acres,land_square_footage,universal_building_square_feet,building_square_feet_ind,building_square_feet,living_square_feet,ground_floor_square_feet,gross_square_feet,adjusted_gross_square_feet,year_built,effective_year_built,bedrooms,total_rooms,total_baths_calculated,total_baths,full_baths,half_baths,1qtr_baths,3qtr_baths FROM corelogic_usda.corelogic_usda_current_tax_2020_06_27"
+
+#cols_sdad_tax_hist <- "fips_code, apn__parcel_number_unformatted_, apn_sequence_number, original_apn, census_tract, legal_lot_number, township, municipality_code, property_indicator_code, assessed_total_value, market_total_value, tax_amount, tax_year, assessed_year, acres, land_square_footage, building_square_feet, living_square_feet, year_built, effective_year_built, bedrooms, total_baths, full_baths, half_baths, parcel_level_latitude, parcel_level_longitude, block_level_latitude, block_level_longitude, situs_house_number, situs_street_name, situs_mode, situs_city, situs_state, situs_zip_code FROM corelogic_sdad.tax_hist_2_51"
+
+state_fips <-
+  c(
+  "02",
+  "06",
+  "08",
+  "13",
+  "16",
+  "19",
+  "26",
+  "27",
+  "36",
+  "37",
+  "39",
+  "40",
+  "41",
+  "48",
+  "51",
+  "53"
+  )
+
+for (sfp in state_fips[1:3]) {
+  state_county_fips_sql <-
+  paste0(
+  "select distinct fips_code from corelogic_usda.corelogic_usda_current_tax_2020_06_27 where fips_code like '",
+  sfp,
+  "%'"
+  )
+  state_county_fips <-
+  DBI::dbGetQuery(con, statement = state_county_fips_sql)
+  
+  #fips <- "51059"
+  for (f in state_county_fips$fips_code) {
+  sql <- paste0("SELECT ",
+  cols_usda_curr_tax,
+  " WHERE fips_code='", f, "'")
+  
+  assign(paste0("_", f), DBI::dbGetQuery(con, statement = sql))
+  }
+}
+
+#ffx <- DBI::dbGetQuery(con, statement = sql)
+DBI::dbDisconnect(con)
+```
+
+
+
+```{r}
+ffx_subset <- select(ffx, 1:22)
+```
+
+```{r}
+#check completeness
+lfo <- list()
+for (f in ls(pattern = "^_")) {
+  assign(paste0(f, "_"), check_complete(get(f)))
+  t <- get(paste0(f, "_"))
+  t$st_cnty_fips <- substr(f, 2, 6)
+  lfo <- c(lfo, list(t))
+}
+
+lfo_dt <- data.table::rbindlist(lfo)
+
+#check_complete(`_51001`)
+```
+
+```{r}
+dt <- lfo_dt[,.(st_cnty_fips, column, blanks, true_na, written_na, percent_complete, unique_values)]
+con <- get_db_conn()
+DBI::dbWriteTable(con, name = c("corelogic_usda", "corelogic_usda_current_tax_2020_06_27_counts"), value = dt, row.names = F, append = T)
+DBI::dbDisconnect(con)
+```
+
+
+```{r}
+introduce(ffx_subset)
+```
+
+```{r}
+plot_missing(ffx_subset)
+```
+
+
+
+```{r}
+plot_bar(ffx_subset)
+```
+
+
+```{r}
+ffx_sub_numeric <- mutate_all(ffx_subset, function(x) as.numeric(as.character(x)))
+sapply(ffx_sub_numeric, class)
+```
+
+```{r}
+ffx_sub_numeric %>%
+  ggplot(aes(year_built)) +
+  geom_histogram()
+```
+
+**completeness of variables**
+
+```{r}
+ffx_1 <- ffx[1:10]
+
+ffx_1 <- dt_mutate(ffx_1, assessed_total_value = as.numeric(assessed_total_value))
+```
+
+
+```{r}
+#completeness of variables
+check_complete(ffx_1) %>% knitr::kable()
+```
+
+```{r}
+plot_intro(ffx_1)
+```
+
+```{r}
+plot_missing(ffx_1)
+```
+
+**Distribution of property_indicators/ property types**
+Most properties are single family residences (10) with the next most popular property type being condominiums (11) and vacant (80). There are no miscellaneous properties (00).
+
+```{r}
+prop_indicator_dist_plot <- ggplot(ffx_1, aes(x=property_indicator_code, fill=property_indicator_code)) +
+  geom_bar(position="stack") 
+prop_indicator_dist_plot
+```
+
+**Distribution of assd_total_value for the different property types**
+Single family homes have the greatest range in assessed total value, followed by condos and vacant properties (among the three most common property types).
+```{r}
+dist <- (ffx_1) %>%
+  filter(!is.na(assessed_total_value)) %>% 
+  filter(property_indicator_code == c("10", "11", "80")) %>%
+  group_by(property_indicator_code) %>%
+  ggplot(aes(x= assessed_total_value, y=property_indicator_code)) + geom_point() 
+
+dist 
+```
+
+Average assessed total value for the three most common property types.
+```{r}
+dist <- (ffx_1) %>%
+  filter(!is.na(assessed_total_value)) %>% 
+  filter(property_indicator_code == c("10", "11", "80")) %>%
+  group_by(property_indicator_code) %>%
+  summarise(mean = mean(assessed_total_value)) %>%
+  ggplot(aes(x= mean, y=property_indicator_code)) + geom_point() 
+
+dist 
+```
+
+Assd and Mkt values are the same throughout
+```{r include= FALSE}
+# ffx_1 %>%
+#   filter(!is.na(assessed_total_value))%>%
+#   filter(!is.na(market_total_value)) %>%
+#   mutate(diff = assessed_total_value - market_total_value) 
+# ffx_1 <- ffx_1[!grepl("0", ffx_1$diff)]
+```
+
+

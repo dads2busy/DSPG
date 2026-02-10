@@ -1,0 +1,858 @@
+---
+title: "14_nonveteran_sequences"
+author: "Joanna Schroeder"
+date: "9/1/2020"
+output: 
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+for (pkg in c("tidyverse",  "data.table", "R.utils", "maditr", "stringr", "stringi", "dplyr", "ggplot2", "lubridate", "gt", "DataExplorer", "TraMineR", "TraMineRextras", "cluster", "tools", "WeightedCluster", "grid", "gridExtra")) {
+  library(pkg, character.only = TRUE)
+}
+
+uva_color_palette <- 
+c("#232D4B", #space cadet
+  "#2C4F6B", #indigo dye
+  "#0E879C", #blue munsell
+  "#60999A", #cadet blue
+  "#D1E0BF", #tea green
+  "#D9E12B", #pear
+  "#E6CE3A", #citrine
+  "#E6A01D", #marigold
+  "#E57200" #princeton orange
+)
+```
+
+## Purpose
+
+We are interested in comparing the results of the veteran sequence analysis and clustering to nonvet
+erans. For this analysis we will replicate methods used to subset the veteran population, though a few differences are necessary to account for differences in the datasets.
+
+* The nonveteran data includes many more resumes than the veterans. WeightedCluster must be used for most subsets to aggregate to n < 46,431 (limit of seqdist).
+* We are comparing civilian career paths. Veterans have a career state of, "Military transition unemployment," to describe a period of missing resume data between the date of military exit and the first civilian job. For nonveterans, all unemployment falls in the state of, "Civilian unemployment." 
+
+Does it make
+
+```{r prepare-data, include = FALSE}
+## Import all resume data -----------------------
+bg_all_job <- fread("~/git/DSPG2020/career/data/03_bg_all_job.csv")
+#bg_vet_job <- read_csv("~/git/DSPG2020/career/data/04_bg_vet_job.csv")
+
+## Create a variable for year entering the job market ---------------
+bg_all_job <- bg_all_job %>%
+  mutate(year_enter_job_market = year(date_enter_job_market))%>%
+  select(-noofjobs, -sector, -tenure) 
+
+## Create the df for input into seqformat(), create vairbale for year of job start, create a variable for years in job market (used for subsetting), arrange by job zone and take distinct to manually remove overlapping jobs by taking the highest job zone for a year, remove veterans, create variables to align dates for sequence analysis  ----
+bg_all_job_seq <- bg_all_job %>%
+  select(id, end_year, onet_job_zone, startdate, enddate, job_duration_day) %>%
+  mutate(start_year = year(startdate))
+bg_all_job_seq <- bg_all_job_seq %>%
+  group_by(id) %>%
+  mutate(years_in_job_market = max(end_year) - min(start_year)) %>%
+  select(id, start_year, end_year, onet_job_zone, years_in_job_market)%>%
+  group_by(id)%>%
+  arrange(desc(onet_job_zone))%>%
+  group_by(id)%>%
+  distinct(id, start_year, end_year, .keep_all = TRUE)
+sts_all <- bg_all_job_seq %>%
+#  filter(years_in_job_market >= 10) %>%
+  select(-years_in_job_market) %>%
+  group_by(id) %>% mutate(veteran = ifelse(any(onet_job_zone == 55), 1, 0)) %>% ungroup() %>%
+  filter(veteran == 0) %>% group_by(id) %>%
+  mutate(start_year_a = start_year - min(start_year) + 1) %>%
+  mutate(end_year_a = end_year - min(start_year) + 1)
+
+## Used for creating fixed-time subsets, which are written in the data folder ------
+# sts_all %>% group_by(id) %>%
+#  spread(start_year, onet_job_zone)
+
+#sts_all <- as.matrix(sts_all)
+#sts_all <- as.data.frame(sts_all)
+  
+#length(unique(sts_all$id))
+
+# manual conversion to sequence format
+#dcast(sts_all, id ~ start_year_a, value.var = "onet_job_zone")
+
+#process <- sts_all %>% group_by(id) %>% mutate(enter = min(start_year)) %>% select(id, enter) %>% distinct()
+
+#sts_all <- seqformat(sts_all, from = "SPELL", to = "STS",
+#            id = "id",  begin = "start_year_a", end = "end_year_a", 
+#            status = "onet_job_zone", process = FALSE)
+
+#all.seq <- seqdef(sts_all, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+# Filter out veterans who do not have a complete career in time period of interest
+#sts_all <- all.seq[, 1:10]
+
+#write.csv(sts_all, "~/git/DSPG2020/career/data/sts_all_ten.csv")
+
+## Function to create sequence object with cohort year filters ------------------
+career_sequence_exit_year_non <- function(name = "sts_vet_ten", enter_year, exit_year) {
+sts_vet <- sts_all %>%
+  filter(start_year >= exit_year & start_year <= enter_year) #%>%
+  #select(-years_after_onet55)
+
+sts_vet <- as.matrix(sts_vet)
+sts_vet <- as.data.frame(sts_vet)
+  
+sts_vet <- seqformat(sts_vet, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "onet_job_zone", process = FALSE)
+
+sts_vet <- seqdef(sts_vet, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+names(sts_vet) <- paste0(1:ncol(sts_vet))
+
+assign(name, sts_vet, envir = .GlobalEnv)
+}
+
+## Creating sequence objects for 1988 and 1964 cohorts (a computational time decision) ------
+career_sequence_exit_year_non("sts_non_1988", 1997, 1988)
+career_sequence_exit_year_non("sts_non_1964", 1987, 1964)
+
+## Read in fixed-time sequences, need to redefine as sequence objects -------------
+sts_nonvet_ten <- read.csv("~/git/DSPG2020/career/data/sts_all_ten.csv", row.names = 1)
+sts_nonvet_twenty <- read.csv("~/git/DSPG2020/career/data/sts_all_twenty.csv", row.names = 1)
+sts_nonvet_thirty <- read.csv("~/git/DSPG2020/career/data/sts_all_thirty.csv", row.names = 1)
+
+sts_nonvet_ten <- seqdef(sts_nonvet_ten, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+sts_nonvet_ten <- sts_nonvet_ten[, 1:10]
+
+sts_nonvet_twenty <- seqdef(sts_nonvet_twenty, left="DEL", gaps="DEL", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+sts_nonvet_thirty <- seqdef(sts_nonvet_thirty, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+sts_nonvet_thirty <- sts_nonvet_thirty[, 1:30]
+
+## Aggregate cases for later clustering --------------
+agg_1988 <- wcAggregateCases(sts_non_1988)
+agg_1964 <- wcAggregateCases(sts_non_1964)
+
+agg_ten <- wcAggregateCases(sts_nonvet_ten)
+agg_twenty <- wcAggregateCases(sts_nonvet_twenty)
+agg_thirty <- wcAggregateCases(sts_nonvet_thirty)
+
+## Veteran data
+# Import veteran job data ------
+bg_vet_job <-read_csv("~/git/DSPG2020/career/data/04_bg_vet_job.csv")%>%
+  mutate(year_enter_job_market = year(date_enter_job_market))%>%
+  select(-noofjobs, -sector, -tenure) %>%
+  group_by(id) %>%
+  mutate(years_in_job_market = max(end_year) - (min(start_year)))
+
+# What date did each veterans end their last ONET 55 job? (Date of military exit) ----
+vet_endmilitary <- bg_vet_job%>%
+  mutate(date_end_onet55 = if_else(is_onet55==T, enddate, as.Date(NA)))%>%
+  filter(!is.na(date_end_onet55))%>%  #exluce people who don't have valid onet55 code
+  select(id, date_end_onet55) %>%
+  #keep the latest onet55 job
+  group_by(id)%>%   
+  arrange(desc(date_end_onet55))%>%
+  group_by(id)%>%
+  distinct(id, .keep_all = TRUE) 
+
+# Join data together ------
+bg_vet_job  <- inner_join(bg_vet_job, vet_endmilitary, by = "id")
+
+# Prepare the data for sequence format ------
+bg_vet_job_seq <- bg_vet_job %>%
+  select(id, end_year, onet_job_zone, startdate, enddate, job_duration_day, date_end_onet55, year_enter_job_market, years_in_job_market) %>%
+  mutate(year_end_onet55 = year(date_end_onet55)) %>%
+  select(-year_enter_job_market) %>%
+# Find jobs that came after the date ended onet55 job (Veteran career)
+  filter(startdate >= date_end_onet55)%>% 
+# Filter out 55 jobs that have the same start and end date  
+  filter(onet_job_zone != 55)  %>%  
+  mutate(start_year = year(startdate))
+
+# Add variables, align sequences -----------
+bg_vet_job_seq <- bg_vet_job_seq %>%
+  mutate(years_after_onet55 = max(end_year) - year_end_onet55) %>%
+  mutate(start_year = start_year - year_end_onet55 + 1)%>%  #transform from calender year to year start sequence analysis
+  mutate(end_year = end_year - year_end_onet55 + 1) %>% #transform from calender year to year start sequence analysis
+  select(id, start_year, end_year, onet_job_zone, year_end_onet55, years_after_onet55)%>%
+  group_by(id)%>%
+  arrange(desc(onet_job_zone))%>%
+  group_by(id)%>%
+  distinct(id, start_year, end_year, .keep_all = TRUE)
+
+career_sequence_exit_year_vet <- function(name = "sts_vet_ten", enter_year, exit_year) {
+sts_vet <- bg_vet_job_seq %>%
+  filter(year_end_onet55 >= exit_year & year_end_onet55 <= enter_year) #%>%
+  #select(-years_after_onet55)
+
+sts_vet <- as.matrix(sts_vet)
+sts_vet <- as.data.frame(sts_vet)
+  
+sts_vet <- seqformat(sts_vet, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "onet_job_zone", process = FALSE)
+
+# DEL left gaps for comparison
+sts_vet <- seqdef(sts_vet, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+names(sts_vet) <- paste0(1:ncol(sts_vet))
+
+assign(name, sts_vet, envir = .GlobalEnv)
+}
+
+
+career_sequence_exit_year_vet("sts_vet_1988", 1997, 1988)
+career_sequence_exit_year_vet("sts_vet_1964", 1987, 1964)
+
+# Object for cluster analysis
+career_sequence <- function(name = "sts_vet_ten", years) {
+sts_vet <- bg_vet_job_seq %>%
+  filter(years_after_onet55 >= years) %>%
+  select(-years_after_onet55)
+
+sts_vet <- as.matrix(sts_vet)
+sts_vet <- as.data.frame(sts_vet)
+  
+sts_vet <- seqformat(sts_vet, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "onet_job_zone", process = FALSE)
+
+# DEL left gaps for comparison
+vet.seq <- seqdef(sts_vet, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+# Filter out veterans who do not have a complete career in time period of interest
+sts_vet <- vet.seq[, 1:years]
+
+assign(name, sts_vet, envir = .GlobalEnv)
+}
+
+career_sequence("sts_vet_ten", 10)
+career_sequence("sts_vet_twenty", 20)
+career_sequence("sts_vet_thirty", 30)
+
+```
+
+
+```{r exploratory}
+cohorts_rect <- data.frame("max_exit" = c(2017, 2007, 1997, 1987),
+                           "min_exit" = c(2007, 1997, 1987, 1965),
+                           "fill" = c("a", "b", "c", "d")) 
+
+bg_all_job_seq %>%
+  group_by(id) %>% mutate(year_enter_job_market = min(start_year)) %>% select(id, year_enter_job_market) %>%
+  distinct() %>%
+  group_by(year_enter_job_market) %>% summarise(n = n()) %>%
+  ggplot(aes(x = year_enter_job_market, y = n)) +
+  geom_area() +
+  geom_rect(data=cohorts_rect, inherit.aes=FALSE, 
+            aes(xmin=max_exit, 
+                xmax=min_exit, ymin=0,
+                ymax=30000, fill = fill),
+            color="transparent", alpha=0.3) +
+  xlim(1960, 2017) +
+  labs(main = "Distribution of years entering the civilian workforce for nonveterans",
+       y = "n = 628,219")
+  theme_bw()
+  
+bg_vet_job_seq %>%
+  group_by(id) %>% mutate(year_enter_job_market = (year_end_onet55 + min(start_year) - 1)) %>% select(id, year_enter_job_market) %>%
+  distinct() %>%
+  group_by(year_enter_job_market) %>% summarise(n = n()) %>%
+ggplot(aes(x = year_enter_job_market, y = n)) +
+  geom_area() +
+  geom_rect(data=cohorts_rect, inherit.aes=FALSE, 
+            aes(xmin=max_exit, 
+                xmax=min_exit, ymin=0,
+                ymax=300, fill = fill),
+            color="transparent", alpha=0.3) +
+  xlim(1960, 2017) +
+  labs(main = "Distribution of years entering the civilian workforce for veterans",
+       y = "n = 5,185")
+  theme_bw()
+```
+The 1988 cohorts include individuals in the blue rectangle. 
+The 1964 cohorts include individuals in the purple rectangle.
+
+## Comparison of 1988 cohort
+```{r 1988-cohorts, fig.height=8}
+## Exploratory plots ------
+exploratory_ggplots <- function(name, sts_vet_ten) {
+statd <- seqstatd(sts_vet_ten)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:ncol(sts_vet_ten))
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+v_states <- statd$ValidStates
+v_states <- as.data.frame(v_states)
+v_states <- v_states %>% rownames_to_column(var = "variable")
+
+meant <- seqmeant(sts_vet_ten)
+meant <- as.data.frame(meant)
+meant <- meant %>% rownames_to_column(var = "state")
+
+library(scales)
+d <- ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  geom_line(data = v_states, aes(x = as.numeric(variable), y = v_states/nrow(sts_vet_ten)),
+            size = 2) +
+  scale_y_continuous(name = paste0("Share of careers in a job state, (n = ", nrow(sts_vet_ten), ")"),
+                     sec.axis = sec_axis(trans = ~.*(nrow(sts_vet_ten)), name = "Number of careers in year of career")) +
+  xlim(1,ncol(sts_vet_ten)) +
+  scale_fill_manual(values = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2], uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"), labels = c("Missing zone", "Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Civilian unemployed")) +
+  xlab("Year of career") +
+  labs(title = paste0(name, ": Veterans post-military career path"),
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+mt <- ggplot(data = meant, aes(x = state, y = Mean, fill = state)) +
+  geom_col() +
+  scale_fill_manual(values = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2], uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"), labels = c("Missing zone", "Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Civilian unemployed")) +
+  scale_x_discrete(name = "Job state", labels = c("Missing zone", "Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Civilian unemployed")) +
+  labs(title = paste0(name, ": Mean time spent in each state for veteran's whole career sequence"),
+       fill = "Job state",
+       caption = "Data: BGT Resumes") +
+  ylim(0,12) +
+  ylab("Mean time (years)") +
+  theme_classic() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 40, hjust = 1))
+
+assign(paste0(name, "_dplot"), d, envir = .GlobalEnv)
+assign(paste0(name, "_mtplot"), mt, envir = .GlobalEnv)
+}
+
+exploratory_ggplots("non_1988", sts_non_1988)
+exploratory_ggplots("vet_1988", sts_vet_1988)
+
+nonvetids <- sts_non_1988 %>% rownames_to_column("id") %>% select(id)
+vetids <- sts_vet_1964 %>% rownames_to_column("id") %>% select(id)
+nonvetids <- as.data.frame(nonvetids)
+vetids <- as.data.frame(vetids)
+ids <- rbind(nonvetids, vetids)
+
+# Filtering out NAs, which are about 50%
+bg_all_demographic %>% filter(id %in% ids$id) %>%
+  filter(!is.na(degree_highest)) %>%
+  group_by(veteran) %>% mutate(total = n()) %>% group_by(veteran, degree_highest) %>%
+  summarise(n = n(), percent = round((n/total) * 100, 2)) %>% distinct() %>%
+  arrange(veteran, -percent)
+# Veterans have higher masters and bachelors degrees, phd is about the same, high school and associates are lower
+
+
+grid.arrange(non_1988_dplot, vet_1988_dplot, ncol = 2)
+grid.arrange(non_1988_mtplot, vet_1988_mtplot, ncol = 2)
+```
+
+## 1964 cohort comparison
+```{r 1964-cohorts, fig.height=8}
+exploratory_ggplots("non_1964", sts_non_1964)
+exploratory_ggplots("vet_1964", sts_vet_1964)
+
+nonvetids <- sts_non_1964 %>% rownames_to_column("id") %>% select(id)
+vetids <- sts_vet_1964 %>% rownames_to_column("id") %>% select(id)
+nonvetids <- as.data.frame(nonvetids)
+vetids <- as.data.frame(vetids)
+ids <- rbind(nonvetids, vetids)
+
+# Filtering out NAs, which are about 50%
+bg_all_demographic %>% filter(id %in% ids$id) %>%
+  filter(!is.na(degree_highest)) %>%
+  group_by(veteran) %>% mutate(total = n()) %>% group_by(veteran, degree_highest) %>%
+  summarise(n = n(), percent = round((n/total) * 100, 2)) %>% distinct() %>%
+  arrange(veteran, -percent)
+
+# Veterans have a higher % with masters degrees, bachelors, lower with phd, high school, associates
+
+grid.arrange(non_1964_dplot, vet_1964_dplot, ncol = 2)
+grid.arrange(non_1964_mtplot, vet_1964_mtplot, ncol = 2)
+```
+
+## Fixed time cohorts
+```{r fixed-time}
+## Function for creating a transition matrix
+career_sequence_transition <- function(transition_name = "transition_ten", cost_name = "cost_ten", sequence_object) {
+## Computing transition rates
+#counts
+transition_matrix <- seqtrate(sequence_object, weighted=FALSE, count=TRUE)
+round(transition_matrix,2)
+#standardize counts
+
+#make the diagnal 0
+diag(transition_matrix) = 0
+round(transition_matrix,2)
+
+#calculate rowsum
+rowsum <- apply(transition_matrix, 1, sum)
+
+#calculate percent 
+for(i in 1:nrow(transition_matrix)) {
+  for (j in 1:ncol(transition_matrix)){
+    transition_matrix[i,j] = transition_matrix[i,j]/rowsum[i]
+  }
+}
+
+#code NAs as 0
+for(j in 1:ncol(transition_matrix)){
+      transition_matrix[7,j] = transition_matrix[7,j] = 0
+}
+transition_matrix <- round(transition_matrix,2)
+
+
+#convert transition matrix to cost matrix
+cost_matrix <- 2-transition_matrix
+round(cost_matrix,2)
+
+#make the diagnal 0
+diag(cost_matrix) = 0
+cost_matrix <- round(cost_matrix,2)
+
+assign(transition_name, transition_matrix, envir = .GlobalEnv)
+assign(cost_name, cost_matrix, envir = .GlobalEnv)
+}
+
+gg_transition_matrix <- function(tr, title) {
+round(tr, 2)
+transition.matrix.df <- as.data.frame(tr)
+transition.matrix.df$startState <- row.names(transition.matrix.df)
+transition.matrix.df <- melt(transition.matrix.df)
+colnames(transition.matrix.df)[colnames(transition.matrix.df) == "variable"] <- "endState"
+                                        
+ggplot(data = transition.matrix.df, aes(x = endState, y = factor(startState,        levels = rev(levels(factor(startState)))), fill = value)) + 
+  geom_tile() +    
+  geom_text(aes(label=round(value,3))) +  
+  scale_x_discrete(position = "top") +  
+  scale_fill_gradient(low = "white", high = "#E57200") +
+  theme(legend.position="bottom", panel.background = element_blank(),         plot.title = element_text(face = "bold")) +  
+  labs(fill = "Transition Probability",        
+       title = title,     
+       y = "Current Job",       
+       x = "Next Job")
+}
+
+career_sequence_transition("transition_ten_non", "cost_ten_non", sts_nonvet_ten)
+career_sequence_transition("transition_twenty_non", "cost_twenty_non", sts_nonvet_twenty)
+career_sequence_transition("transition_thirty_non", "cost_thirty_non", sts_nonvet_thirty)
+
+## Function for creating sequence graphs
+career_sequence_graphs <- function(sequence_object) {
+seqdplot(sequence_object)
+seqmtplot(sequence_object)
+}
+
+career_sequence_graphs(sts_nonvet_ten)
+career_sequence_graphs(sts_vet_ten)
+
+career_sequence_graphs(sts_nonvet_twenty)
+career_sequence_graphs(sts_vet_twenty)
+
+career_sequence_graphs(sts_nonvet_thirty)
+career_sequence_graphs(sts_vet_thirty)
+```
+
+## Comparing clustering
+
+```{r clustering, fig.height=5, fig.width=15}
+# Compute transition rates -------
+career_sequence_transition("transition_ten_vet", "cost_ten_vet", sts_vet_ten)
+career_sequence_transition("transition_twenty_vet", "cost_twenty_vet", sts_vet_twenty)
+career_sequence_transition("transition_thirty_vet", "cost_thirty_vet", sts_vet_thirty)
+
+career_sequence_transition("transition_ten_non", "cost_ten_non", sts_nonvet_ten)
+career_sequence_transition("transition_twenty_non", "cost_twenty_non", sts_nonvet_twenty)
+career_sequence_transition("transition_thirty_non", "cost_thirty_non", sts_nonvet_thirty)
+
+# Compute clusters ------------------
+## We pick PAM 8 as a baseline, this could be changed ------------------
+# vet ten
+diss <- seqdist(sts_vet_ten, method = "OM", indel = "auto", sm = cost_ten_vet, with.missing = TRUE, full.matrix=FALSE)
+clusterpam <- wcKMedoids(diss, k = 8)
+
+clusterpam_8_v10 <- clusterpam$clustering
+clusterpam_8_v10fac <- factor(clusterpam_8_v10, labels = paste("Type", 1:8))
+
+clusterpam_8_v10fac <- factor(clusterpam_8_v10fac, levels = c("Type 2", "Type 8", "Type 3", "Type 7", "Type 4", "Type 5", "Type 1", "Type 6"))
+
+# vet twenty
+#diss <- seqdist(sts_vet_twenty, method = "OM", indel = "auto", sm = cost_twenty_vet, with.missing = TRUE, full.matrix=FALSE)
+#clusterpam <- wcKMedoids(diss, k = 8)
+
+#clusterpam_8_v20 <- clusterpam$clustering
+#clusterpam_8_v20fac <- factor(clusterpam_8_v20, labels = paste("Type", 1:8))
+
+#clusterpam_8_v20fac <- factor(clusterpam_8_v20fac, levels = c("Type 2", "Type 8", "Type 3", "Type 7", "Type 4", "Type 5", "Type 1", "Type 6"))
+
+# vet thirty
+diss <- seqdist(sts_vet_thirty, method = "OM", indel = "auto", sm = cost_thirty_vet, with.missing = TRUE, full.matrix=FALSE)
+clusterpam <- wcKMedoids(diss, k = 8)
+
+clusterpam_8_v30 <- clusterpam$clustering
+clusterpam_8_v30fac <- factor(clusterpam_8_v30, labels = paste("Type", 1:8))
+
+clusterpam_8_v30fac <- factor(clusterpam_8_v30fac, levels = c("Type 2", "Type 8", "Type 3", "Type 7", "Type 4", "Type 5", "Type 1", "Type 6"))
+
+# nonvet ten
+unique_sts_non_ten <- sts_nonvet_ten[agg_ten$aggIndex,]
+
+nonvet.seq <- seqdef(unique_sts_non_ten, weights = agg_ten$aggWeights)
+diss <- seqdist(nonvet.seq, method = "OM", indel = "auto", sm = cost_ten_non, with.missing = TRUE, full.matrix=FALSE)
+clusterpam <- wcKMedoids(diss, k = 8)
+
+clusterpam_8_n10 <- clusterpam$clustering
+clusterpam_8_n10fac <- factor(clusterpam_8_n10[agg_ten$disaggIndex], labels = paste("Type", 1:8))
+
+# nonvet twenty
+#unique_sts_non_twenty <- sts_nonvet_twenty[agg_twenty$aggIndex,]
+
+#nonvet.seq <- seqdef(unique_sts_non_twenty, weights = agg_twenty$aggWeights)
+#diss <- seqdist(nonvet.seq, method = "OM", indel = "auto", sm = cost_twenty_non, with.missing = TRUE, full.matrix=FALSE)
+#clusterpam <- wcKMedoids(diss, k = 8)
+
+#clusterpam_8_n20 <- clusterpam$clustering
+#clusterpam_8_n20fac <- factor(clusterpam_8_n20[agg_twenty$disaggIndex], labels = paste("Type", 1:8))
+
+# nonvet thirty
+unique_sts_non_thirty <- sts_nonvet_thirty[agg_thirty$aggIndex,]
+
+nonvet.seq <- seqdef(unique_sts_non_thirty, weights = agg_thirty$aggWeights)
+diss <- seqdist(nonvet.seq, method = "OM", indel = "auto", sm = cost_thirty_non, with.missing = TRUE, full.matrix=FALSE)
+clusterpam <- wcKMedoids(diss, k = 8)
+
+clusterpam_8_n30 <- clusterpam$clustering
+clusterpam_8_n30fac <- factor(clusterpam_8_n30[agg_thirty$disaggIndex], labels = paste("Type", 1:8))
+
+
+seqdplot(sts_vet_ten[,1:10], group = clusterpam_8_v10fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, main = "v10")
+seqlegend(sts_vet_ten)
+seqdplot(sts_nonvet_ten[,1:10], group = clusterpam_8_n10fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, main = "n10")
+
+seqdplot(sts_vet_thirty[,1:30], group = clusterpam_8_v30fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, main = "v30")
+seqlegend(sts_vet_ten)
+seqdplot(sts_nonvet_thirty[,1:30], group = clusterpam_8_n30fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, main = "n30")
+
+```
+
+
+
+## Appendix
+```{r, include = FALSE, eval = FALSE}
+# DO NOT RUN
+# How many identical sequences are there?
+library(WeightedCluster)
+
+career_sequence_exit_year <- function(name = "sts_vet_ten", enter_year, exit_year) {
+sts_vet <- sts_all %>%
+  filter(start_year >= exit_year & start_year <= enter_year) #%>%
+  #select(-years_after_onet55)
+
+sts_vet <- as.matrix(sts_vet)
+sts_vet <- as.data.frame(sts_vet)
+  
+sts_vet <- seqformat(sts_vet, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "onet_job_zone", process = FALSE)
+
+sts_vet <- seqdef(sts_vet, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+names(sts_vet) <- paste0(1:ncol(sts_vet))
+
+assign(name, sts_vet, envir = .GlobalEnv)
+}
+
+career_sequence_exit_year("sts_non_2008", 2017, 2008)
+career_sequence_exit_year("sts_non_1998", 2007, 1998)
+career_sequence_exit_year("sts_non_1988", 1997, 1988)
+career_sequence_exit_year("sts_non_1964", 1987, 1964)
+
+agg_2008 <- wcAggregateCases(sts_non_2008)
+print(agg_2008)
+agg_1998 <- wcAggregateCases(sts_non_1998)
+print(agg_1998)
+agg_1988 <- wcAggregateCases(sts_non_1988)
+print(agg_1988)
+#Number of disaggregated cases:  181889 
+#Number of aggregated cases:  17765 
+#Average aggregated cases:  10.23862 
+#Average (weighted) aggregation:  10.23862 
+agg_1964 <- wcAggregateCases(sts_non_1964)
+print(agg_1964)
+#Number of disaggregated cases:  62534 
+#Number of aggregated cases:  8866 
+#Average aggregated cases:  7.053237 
+#Average (weighted) aggregation:  7.053237 
+
+agg_ten <- wcAggregateCases(sts_nonvet_ten)
+print(agg_ten)
+#Number of disaggregated cases:  387383 
+#Number of aggregated cases:  41151 
+#Average aggregated cases:  9.413696 
+#Average (weighted) aggregation:  9.413696 
+agg_twenty <- wcAggregateCases(sts_nonvet_twenty)
+print(agg_twenty)
+#Number of disaggregated cases:  159609 
+#Number of aggregated cases:  63552 
+#Average aggregated cases:  2.511471 
+#Average (weighted) aggregation:  2.511471 
+agg_thirty <- wcAggregateCases(sts_nonvet_thirty)
+print(agg_thirty)
+#Number of disaggregated cases:  46718 
+#Number of aggregated cases:  29633 
+#Average aggregated cases:  1.576553 
+#Average (weighted) aggregation:  1.576553 
+```
+
+
+
+```{r fig.height=8, fig.width=10, eval = FALSE}
+## Function for creating a transition matrix
+career_sequence_transition <- function(transition_name = "transition_ten", cost_name = "cost_ten", sequence_object) {
+## Computing transition rates
+#counts
+transition_matrix <- seqtrate(sequence_object, weighted=FALSE, count=TRUE)
+round(transition_matrix,2)
+#standardize counts
+
+#make the diagnal 0
+diag(transition_matrix) = 0
+round(transition_matrix,2)
+
+#calculate rowsum
+rowsum <- apply(transition_matrix, 1, sum)
+
+#calculate percent 
+for(i in 1:nrow(transition_matrix)) {
+  for (j in 1:ncol(transition_matrix)){
+    transition_matrix[i,j] = transition_matrix[i,j]/rowsum[i]
+  }
+}
+
+#code NAs as 0
+for(j in 1:ncol(transition_matrix)){
+      transition_matrix[7,j] = transition_matrix[7,j] = 0
+}
+transition_matrix <- round(transition_matrix,2)
+
+
+#convert transition matrix to cost matrix
+cost_matrix <- 2-transition_matrix
+round(cost_matrix,2)
+
+#make the diagnal 0
+diag(cost_matrix) = 0
+cost_matrix <- round(cost_matrix,2)
+
+assign(transition_name, transition_matrix, envir = .GlobalEnv)
+assign(cost_name, cost_matrix, envir = .GlobalEnv)
+}
+
+gg_transition_matrix <- function(tr, title) {
+round(tr, 2)
+transition.matrix.df <- as.data.frame(tr)
+transition.matrix.df$startState <- row.names(transition.matrix.df)
+transition.matrix.df <- melt(transition.matrix.df)
+colnames(transition.matrix.df)[colnames(transition.matrix.df) == "variable"] <- "endState"
+                                        
+ggplot(data = transition.matrix.df, aes(x = endState, y = factor(startState,        levels = rev(levels(factor(startState)))), fill = value)) + 
+  geom_tile() +    
+  geom_text(aes(label=round(value,3))) +  
+  scale_x_discrete(position = "top") +  
+  scale_fill_gradient(low = "white", high = "#E57200") +
+  theme(legend.position="bottom", panel.background = element_blank(),         plot.title = element_text(face = "bold")) +  
+  labs(fill = "Transition Probability",        
+       title = title,     
+       y = "Current Job",       
+       x = "Next Job")
+}
+
+career_sequence_transition("transition_ten_non", "cost_ten_non", sts_nonvet_ten)
+career_sequence_transition("transition_twenty_non", "cost_twenty_non", sts_nonvet_twenty)
+career_sequence_transition("transition_thirty_non", "cost_thirty_non", sts_nonvet_thirty)
+
+## Function for creating sequence graphs
+career_sequence_graphs <- function(sequence_object) {
+seqdplot(sequence_object)
+seqmtplot(sequence_object)
+}
+
+career_sequence_graphs(sts_nonvet_ten)
+tr <- seqtrate(sts_nonvet_ten)
+gg_transition_matrix(tr, "Ten Years Nonveteran Year to Year Transition Matrix")
+gg_transition_matrix(transition_ten_non, "Ten Years Nonveteran Job to Job Transition Matrix")
+
+career_sequence_graphs(sts_nonvet_twenty)
+tr <- seqtrate(sts_nonvet_twenty)
+gg_transition_matrix(tr, "Twenty Years Nonveteran Year to Year Transition Matrix")
+gg_transition_matrix(transition_twenty_non, "Twenty Years Nonveteran Job to Job Transition Matrix")
+
+career_sequence_graphs(sts_nonvet_thirty)
+tr <- seqtrate(sts_nonvet_thirty)
+gg_transition_matrix(tr, "Thirty Years Nonveteran Year to Year Transition Matrix")
+gg_transition_matrix(transition_thirty_non, "Thirty Years Nonveteran Job to Job Transition Matrix")
+```
+
+# Clustering
+
+```{r, eval = FALSE}
+sts_all_thirty <- read.csv("~/git/DSPG2020/career/data/sts_all_thirty.csv", row.names = 1)
+
+all.seq_thirty <- seqdef(sts_all_thirty, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+# Filter out veterans who do not have a complete career in time period of interest
+sts_all_thirty <- all.seq_thirty[, 1:30]
+
+library(WeightedCluster)
+
+agg_sts_all_thirty <- wcAggregateCases(sts_nonvet_thirty)
+print(agg_sts_all_thirty)
+
+unique_sts_all_thirty <- sts_nonvet_thirty[agg_sts_all_thirty$aggIndex,]
+
+nonvet.seq <- seqdef(unique_sts_all_thirty, weights = agg_sts_all_thirty$aggWeights)
+diss <- seqdist(nonvet.seq, method = "OM", indel = "auto", sm = cost_thirty_non, with.missing = TRUE, full.matrix=FALSE)
+clusterward <- agnes(diss, diss = TRUE, method = "ward")
+clusterward <- hclust(as.dist(diss), method = "ward.D2", members = agg_sts_all_thirty$aggWeights)
+
+saveRDS(clusterward, file = "~/git/DSPG2020/career/data/clusterward_30yrs_noretirement.rds")
+
+```
+
+## 1988 cohort Comparison
+
+
+```{r fig.height = 10, eval = FALSE}
+career_sequence_exit_year <- function(name = "sts_vet_ten", enter_year, exit_year) {
+sts_vet <- sts_all %>%
+  filter(start_year >= exit_year & start_year <= enter_year) #%>%
+  #select(-years_after_onet55)
+
+sts_vet <- as.matrix(sts_vet)
+sts_vet <- as.data.frame(sts_vet)
+  
+sts_vet <- seqformat(sts_vet, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "onet_job_zone", process = FALSE)
+
+sts_vet <- seqdef(sts_vet, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+names(sts_vet) <- paste0(1:ncol(sts_vet))
+
+assign(name, sts_vet, envir = .GlobalEnv)
+}
+
+#career_sequence_exit_year("sts_non_1964", 1987, 1964)
+
+statd <- seqstatd(sts_non_1988)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:31)
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+v_states <- statd$ValidStates
+v_states <- as.data.frame(v_states)
+v_states <- v_states %>% rownames_to_column(var = "variable")
+
+meant <- seqmeant(sts_non_1988)
+meant <- as.data.frame(meant)
+meant <- meant %>% rownames_to_column(var = "state")
+
+# Plot state frequency over time ---------------
+
+library(scales)
+ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  geom_line(data = v_states, aes(x = as.numeric(variable), y = v_states/nrow(sts_non_1988)),
+            size = 2) +
+  scale_y_continuous(name = paste0("Share of careers in a job state, (n = ", nrow(sts_non_1988), ")"),
+                     sec.axis = sec_axis(trans = ~.*(nrow(sts_non_1964)), name = "Number of careers in year of career")) +
+  xlim(0,31) +
+  scale_fill_manual(values = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2], uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"), labels = c("Missing zone", "Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Civilian unemployed")) +
+  xlab("Year of career") +
+  labs(title = "Veteran career paths after military exit",
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+# Plot mean time in each state --------------
+
+ggplot(data = meant, aes(x = state, y = Mean, fill = state)) +
+  geom_col() +
+  scale_fill_manual(values = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2], uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5", "#CBBEB5"), labels = c("Missing zone", "Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Civilian unemployed")) +
+  scale_x_discrete(name = "Job state", labels = c("Missing zone", "Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Civilian unemployed")) +
+  labs(title = "Mean time spent in each state for veteran's post-military career",
+       fill = "Job state",
+       caption = "Data: BGT Resumes") +
+  ylab("Mean time (years)") +
+  theme_classic() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 40, hjust = 1))
+
+library(WeightedCluster)
+
+#agg <- wcAggregateCases(sts_non_1964)
+#print(agg)
+unique <- sts_non_1964[agg_1964$aggIndex, ]
+#seq <- seqdef(unique, left="DEL", gaps="DEL", right="DEL", weights = agg$aggWeights)
+diss <- seqdist(unique, method = "OM", indel = "auto", sm = cost_matrix, with.missing = TRUE, norm = TRUE)
+
+#seqstatl(seq)
+
+#non.seq.OM <- seqdist(sts_non_1964, method = "OM", indel = "auto", sm = cost_matrix, with.missing = TRUE, norm = TRUE)
+clusterpam <- wcKMedoids(diss, k = 7)
+clusterpam7 <- clusterpam$clustering
+
+clusterpam7_fac <- factor(clusterpam7[agg$disaggIndex], labels = paste("Type", 1:7))
+
+#uniqueCluster7 <- clusterpam[clustering]
+sts_non_1964$cluster7 <- clusterpam[agg$disaggIndex]
+
+#longitudinal plot
+seqdplot(sts_non_1964, group = clusterpam7_fac)
+#another cluster plot
+seqmtplot(sts_non_1964, group = clusterpam7_fac)
+#index plot
+seqIplot(sts_non_1964, group = clusterpam7_fac)
+```
+```{r eval = FALSE}
+## Computing transition rates
+#counts
+transition_matrix <- seqtrate(sts_non_1964, weighted=FALSE, count=TRUE)
+round(transition_matrix,2)
+#standardize counts
+
+#make the diagnal 0
+diag(transition_matrix) = 0
+round(transition_matrix,2)
+
+#calculate rowsum
+rowsum <- apply(transition_matrix, 1, sum)
+
+#calculate percent 
+for(i in 1:nrow(transition_matrix)) {
+  for (j in 1:ncol(transition_matrix)){
+    transition_matrix[i,j] = transition_matrix[i,j]/rowsum[i]
+  }
+}
+
+#code NAs as 0
+for(j in 1:ncol(transition_matrix)){
+      transition_matrix[7,j] = transition_matrix[7,j] = 0
+}
+transition_matrix <- round(transition_matrix,2)
+
+
+#convert transition matrix to cost matrix
+cost_matrix <- 2-transition_matrix
+round(cost_matrix,2)
+
+#make the diagnal 0
+diag(cost_matrix) = 0
+cost_matrix <- round(cost_matrix,2)
+```
+

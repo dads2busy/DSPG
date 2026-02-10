@@ -1,0 +1,95 @@
+---
+title: "New_Kent_Profile"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+CoreLogic variables not included here- APN, census tract, fips code. Instead there is a GPIN, map, tax map, subdivision and zip code. I also assumed consideration is similar to assd value.
+```{r}
+library(readxl)
+library(tidygeocoder)
+library(dplyr)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(sf)  
+library(venn)
+library(ggthemes)
+library(DataExplorer)
+library(maditr)
+library(gridExtra)
+
+new_kent <- read_excel("~/Data.xlsx")
+
+nk_sub <- new_kent %>%
+  select(Lot, City, GPIN, Unit, Subdivision, Consideration)
+```
+
+```{r functions, include=FALSE}
+
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- (len - (blanks + true_na + written_na)) / len
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+
+**completeness of variables**
+1) Unit is only 22% complete, consideration (which is similar to value) is 86% complete 
+2) remaining variable are between 99% and 100% complete. Lot is 100% complete.
+
+```{r}
+#completeness of variables
+check_complete(nk_sub) %>% knitr::kable()
+```
+
+Basic data intro
+```{r}
+plot_intro(nk_sub)
+```
+
+```{r}
+lot <- nk_sub[, c("Consideration", "Subdivision")]
+plot_scatterplot(lot, by="Consideration") 
+```
+
+consideration historgram
+```{r}
+grid.arrange(ggplot(nk_sub, aes(x = `Consideration`)) + geom_histogram() + scale_x_log10())
+```
+
+unit distribution
+```{r}
+grid.arrange(ggplot(nk_sub, aes(x = `Unit`)) + geom_bar())
+```
+
+

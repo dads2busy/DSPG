@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>policy on DSPG 2020</title>
+    <link>/dspg20richmond/tags/policy/</link>
+    <description>Recent content in policy on DSPG 2020</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/dspg20richmond/tags/policy/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Results Section One</title>
+      <link>/dspg20richmond/findings/results-section-one/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20richmond/findings/results-section-one/</guid>
+      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Modeling Census Tract Level Evictions: Correlates Of Eviction Rates The sociodemographic variables shown, including race and income, mirror the spatial relationships seen in eviction rates. In this section, we use a regression model to study whether and how eviction rates are affected by these variables. We find that the following variables are significantly associated with eviction rates.</description>
+    </item>
+    
+  </channel>
+</rss>

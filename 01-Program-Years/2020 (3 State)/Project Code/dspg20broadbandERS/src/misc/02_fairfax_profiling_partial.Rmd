@@ -1,0 +1,116 @@
+---
+title: "Fairfax profiling"
+author: "Morgan Klutzke"
+date: "6/18/2020"
+output: html_document
+---
+
+Profiling fairfax data, specifically the variables WATER, SEWER, GAS, VALUE_LAND, VALUE_BUILDING, & VALUE_TOTAL.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE, message=FALSE, echo=FALSE}
+library(DataExplorer)
+library(ggplot2)
+library(scales)
+library(dplyr)
+library(purrr)
+```
+
+```{r import data}
+library(readr)
+fairfax_housing_2018_geo <- read_csv("~/git/dspg20broadbandERS/data/fairfax-data/fairfax_housing_2018_geo.csv")
+```
+
+Checking for completeness, using functions from Devika.
+
+```{r functions}
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- (len - (blanks + true_na + written_na)) / len
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+```{r}
+check_complete(select(fairfax_housing_2018_geo, 7:12)) %>% knitr::kable()
+```
+
+Trying out DataExplorer package.
+
+```{r}
+introduce(fairfax_housing_2018_geo)
+plot_missing(fairfax_housing_2018_geo)
+```
+
+Plotting frequencies for categorical variables WATER, SEWER, and GAS.
+
+```{r}
+f <- ggplot(data = fairfax_housing_2018_geo)
+f + geom_bar(mapping = aes(x = WATER, fill = WATER))
+f + geom_bar(mapping = aes(x = SEWER, fill = SEWER))
+f + geom_bar(mapping = aes(x = GAS, fill = GAS))
+```
+
+Looking at value distributions. Lowest and highest 1% are removed.
+
+```{r}
+value_total <- na.omit(fairfax_housing_2018_geo[, "VALUE_TOTAL"])
+total <- sort(data.matrix(value_total))
+lower <- length(total) %/% 100
+upper <- length(total) - lower
+total_mid <- total[lower:upper]
+hist(total_mid)
+```
+
+```{r}
+value_building <- na.omit(fairfax_housing_2018_geo[, "VALUE_BUILDING"])
+building <- sort(data.matrix(value_building))
+lower <- length(building) %/% 100
+upper <- length(building) - lower
+building_mid <- building[lower:upper]
+hist(building_mid)
+```
+
+```{r}
+value_land <- na.omit(fairfax_housing_2018_geo[, "VALUE_LAND"])
+land <- sort(data.matrix(value_land))
+lower <- length(land) %/% 100
+upper <- length(land) - lower
+land_mid <- land[lower:upper]
+hist(land_mid, xlim = c(29000, 743000))
+```
+
+Quick check to see if VALUE_LAND and VALUE_BUILDING sum to VALUE_TOTAL.
+
+```{r}
+sum(land) + sum(building)
+sum(total)
+```
+

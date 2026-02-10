@@ -1,0 +1,125 @@
+---
+title: "CL_NK_addr_missing"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r}
+library(readxl)
+library(tidygeocoder)
+library(dplyr)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(sf)  
+# install.packages('venn')
+library(venn)
+# install.packages('ggthemes')
+library(ggthemes)
+# install.packages('DataExplorer')
+library(DataExplorer)
+```
+
+```{r}
+con <- get_db_conn()
+
+ 
+
+nk_allyears <- DBI::dbGetQuery(con, statement = paste(
+  "SELECT fips_code, apn__parcel_number_unformatted_, apn_sequence_number, original_apn, census_tract, legal_lot_number, township, municipality_code,
+  property_indicator_code, assessed_total_value, market_total_value, tax_amount, tax_year, assessed_year, 
+  acres, land_square_footage, building_square_feet, living_square_feet, year_built, effective_year_built, 
+  bedrooms, total_baths, full_baths, half_baths, parcel_level_latitude, parcel_level_longitude, block_level_latitude, block_level_longitude,
+  situs_house_number, situs_street_name, situs_mode, situs_city, situs_state, situs_zip_code",
+  "FROM corelogic_sdad.tax_hist_2_51",
+  "WHERE fips_code='51127'"))
+
+ 
+
+DBI::dbDisconnect(con)
+
+ 
+
+nk_2018 <- nk_allyears[nk_allyears$tax_year == '2018',]
+```
+
+```{r}
+ 
+nk_2018$addr <- paste0(nk_2018$situs_house_number, ", ",
+                   
+                   nk_2018$situs_street_name, ", ",
+                   
+                   nk_2018$situs_mode, ", ",
+                   
+                   nk_2018$situs_city, ", ", 
+                   
+                   nk_2018$situs_state, ", ",
+                   
+                   nk_2018$situs_zip_code)
+
+
+nk_2018$addr
+```
+
+```{r}
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- (len - (blanks + true_na + written_na)) / len
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+```{r}
+nk_2018_parcels <- nk_2018 %>%
+  select(parcel_level_latitude, parcel_level_longitude)
+
+check_complete(nk_2018_parcels) %>% knitr::kable()
+
+addr_na <- nk_2018_addr %>%
+  filter(addr == "NA, NA, NA, NA, NA, NA")
+nrow(addr_na)
+
+```
+
+```{r}
+nk_latlon_na <- filter(nk_2018, is.na(parcel_level_latitude) | is.na(parcel_level_longitude))
+
+nk_2018 %>% distinct()
+
+nk_cl_geo_census <- tidygeocoder::geocode(nk_latlon_na, addr, method = "census")
+
+table(is.na(nk_cl_geo_census$lat))
+table(is.na(nk_cl_geo_census$long))
+
+
+```
+ 

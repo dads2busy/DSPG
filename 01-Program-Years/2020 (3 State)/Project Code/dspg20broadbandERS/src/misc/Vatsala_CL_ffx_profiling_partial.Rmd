@@ -1,0 +1,129 @@
+---
+title: "CoreLogic ffx"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE, message=FALSE, echo=FALSE, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FALSE)
+# install.packages("dplyr")
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(sf)  
+library(venn)
+library(ggthemes)
+library(DataExplorer)
+library(maditr)
+```
+
+```{r include=FALSE}
+# read in the CoreLogic data
+```
+
+```{r include=FALSE}
+ffx_1 <- ffx[1:8]
+
+ffx_1 <- dt_mutate(ffx_1, assd_total_value = as.numeric(assd_total_value))
+
+```
+
+
+```{r functions, include=FALSE}
+
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- (len - (blanks + true_na + written_na)) / len
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+
+**completeness of variables**
+1) fips_code, unformatted_apn, formatted_apn are complete.
+2) census_tract, lot_number, property_indicator, ass_total_value are between 95.5% and 99.3% complete.
+3) township is fully incomplete; 0% complete.
+
+```{r}
+#completeness of variables
+check_complete(ffx_1) %>% knitr::kable()
+```
+
+```{r}
+plot_intro(ffx_1)
+```
+
+```{r}
+plot_missing(ffx_1)
+```
+
+**Distribution of property_indicators/ property types**
+Most properties are single family residences (10) with the next most popular property type being condominiums (11) and vacant (80). There are no miscellaneous properties (00).
+
+```{r}
+prop_indicator_dist_plot <- ggplot(ffx_1, aes(x=property_indicator, fill=property_indicator)) +
+  geom_bar(position="stack") 
+prop_indicator_dist_plot
+```
+
+**Distribution of assd_total_value for the different property types**
+Single family homes have the greatest range in assessed total value, followed by condos and vacant properties (among the three most common property types).
+```{r}
+dist <- (ffx_1) %>%
+  filter(!is.na(assd_total_value)) %>% 
+  filter(property_indicator == c("10", "11", "80")) %>%
+  group_by(property_indicator) %>%
+  ggplot(aes(x= assd_total_value, y=property_indicator)) + geom_point() 
+
+dist 
+```
+
+Average assessed total value for the three most common property types.
+```{r}
+dist <- (ffx_1) %>%
+  filter(!is.na(assd_total_value)) %>% 
+  filter(property_indicator == c("10", "11", "80")) %>%
+  group_by(property_indicator) %>%
+  summarise(mean = mean(assd_total_value)) %>%
+  ggplot(aes(x= mean, y=property_indicator)) + geom_point() 
+
+dist 
+```
+
+Assd and Mkt values are the same throughout
+```{r include= FALSE}
+ffx_1 %>%
+  filter(!is.na(assd_total_value))%>%
+  filter(!is.na(mkt_total_value)) %>%
+  mutate(diff = assd_total_value - mkt_total_value) 
+ffx_1 <- ffx_1[!grepl("0", ffx_1$diff)]
+```
+
+

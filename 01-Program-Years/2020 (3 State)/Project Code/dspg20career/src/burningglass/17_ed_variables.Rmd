@@ -1,0 +1,780 @@
+---
+title: "17_ed_variables"
+author: "Joanna Schroeder"
+date: "9/18/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, include=FALSE, paged.print=FALSE}
+# load packages 
+for (pkg in c("tidyverse", "data.table", "stringr", "stringi", "mosaic", "dplyr", "readr","gt", "lubridate", "TraMineR")) {
+  library(pkg, character.only = TRUE)
+}
+
+get_db_conn <-
+  function(db_name = "sdad",
+           db_host = "postgis1",
+           db_port = "5432",
+           db_user = Sys.getenv("db_usr"),
+           db_pass = Sys.getenv("db_pwd")) {
+    RPostgreSQL::dbConnect(
+      drv = RPostgreSQL::PostgreSQL(),
+      dbname = db_name,
+      host = db_host,
+      port = db_port,
+      user = db_user,
+      password = db_pass
+    )
+  }
+
+con <- get_db_conn()
+
+
+pers <- DBI::dbGetQuery(con, "
+                        SELECT * FROM bgt_res.pers")
+ed <- DBI::dbGetQuery(con, "
+                        SELECT * FROM bgt_res.ed")
+
+DBI::dbDisconnect(con)
+
+onet <- fread("~/git/DSPG2020/career/src/burningglass/onet_avg_zone.csv")
+
+uva_color_palette <- 
+c("#232D4B", #space cadet
+  "#2C4F6B", #indigo dye
+  "#0E879C", #blue munsell
+  "#60999A", #cadet blue
+  "#D1E0BF", #tea green
+  "#D9E12B", #pear
+  "#E6CE3A", #citrine
+  "#E6A01D", #marigold
+  "#E57200" #princeton orange
+)
+
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# function for data profiling
+data_profiling <- function(df){
+summary_table <- tibble(var = names(df),
+       variable_type = map_chr(.x = df, .f = function(col) class(x = col)),                 
+       num_unique = map_int(.x = df, .f = function(col) length(x = unique(x = col))),
+       num_missing = map_int(.x = df, .f = function(col) sum(x = is.na(x = col)))) %>%
+  mutate(perc_missing = round(100 * (x = num_missing / nrow(df)), digits = 2L))
+return(summary_table)
+}
+```
+
+## Purpose
+
+We are interested in returning to BGT tables to add covariates to our analysis. We begin by revisiting education variables, which are in the pers and ed tables.
+
+## High-level profiling
+
+Here we profile the entire BGT dataset (not subsetting by any geography)
+
+```{r}
+data_profiling(pers)
+data_profiling(ed)
+```
+
+In the pers table we are interested in the noofschooldegrees variable. Surprisingly, this is one of the most complete variables, with only 0.07% missing.
+
+The variables in the ed table mostly have a high percentage missing. The variable with the lowest missing percentage (besides id and degree position) is the institution variable. The institution, institutioncity, and institutionstate are all character variables.
+
+In our original analysis, the variable used to calculate degree_highest was the degreetype variable, which has 41.37% missing. This is also a character variable.
+
+The completiondateraw variable is potentially very helpful to our analysis, though it has a 56.65% missing. 
+
+The variables that interest me most are the ipeds_unit_id variable, which is a unique identifier for schools (57.76% missing). The majorcipcode is also interesting (68.49%). These variables are likely imputed based off the institution and major variables, so we don't know the exact methods used to determine them. Still, they are potentially useful for our analysis. These codes are produced by the NCES.
+
+```{r}
+ed %>% group_by(ipeds_unit_id) %>% summarise(n = n()) %>% arrange(-n)
+
+ed %>% filter(instituition %like% "William and Mary") %>% summarise(n = n())
+ed %>% filter(ipeds_unit_id == 231624) %>% summarise(n = n())
+
+ed %>% filter(instituition %like% "University of Virginia") %>% summarise(n = n())
+ed %>% filter(ipeds_unit_id == 234076) %>% summarise(n = n())
+```
+
+We would have to find an ipeds crosswalk to make the best use of this variable. The most frequent institutions are University of Phoenix-Utah, University of California-Riverside, California State University Maritime Academy, (202541 is not found), HVAC Technical Institute, University of Wisconsin-Madison, (477011, 199157, 186371 not found). 
+
+Doing a "like" string match finds about 600 more William and Mary graduates than using IPEDS.
+
+University of Virginia has only one match for its IPEDS code! 
+
+```{r}
+ed %>% group_by(majorcipcode) %>% summarise(n = n()) %>% arrange(-n)
+```
+
+The top major is business admininstration and management, general. The second most common major is computer science. The third is psychology.
+
+## Visualizing sequences with imputed education
+
+```{r create-sequence-objects, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+## VETERANS ------------------------------------
+
+# Import veteran job data
+bg_vet_job <-read_csv("~/git/DSPG2020/career/data/04_bg_vet_job.csv")%>%
+  mutate(year_enter_job_market = year(date_enter_job_market))%>%
+  select(-noofjobs, -sector, -tenure) %>%
+  group_by(id) %>%
+  mutate(years_in_job_market = max(end_year) - (min(start_year)))
+
+# Join onet average job zone table by soc code
+bg_vet_job <- bg_vet_job %>% left_join(onet, by = c("onet" = "onetsoc_code"))
+
+# Import veteran demographic data
+bg_vet_demographic <-read_csv("~/git/DSPG2020/career/data/02_bg_vet_demographic.csv")
+
+# What date did each veterans end their last ONET 55 job? (Date of military exit)
+vet_endmilitary <- bg_vet_job%>%
+  mutate(date_end_onet55 = if_else(is_onet55==T, enddate, as.Date(NA)))%>%
+  filter(!is.na(date_end_onet55))%>%  #exluce people who don't have valid onet55 code
+  select(id, date_end_onet55) %>%
+  #keep the latest onet55 job
+  group_by(id)%>%   
+  arrange(desc(date_end_onet55))%>%
+  group_by(id)%>%
+  distinct(id, .keep_all = TRUE) 
+
+# What date did veterans graduate?
+ids <- bg_vet_job$id
+veterans <- ed %>% filter(id %in% ids)
+Encoding(veterans[["completiondateraw"]]) <- "UTF-8"
+
+education_dates <- veterans %>% select(id, completiondateraw, degreelevel) %>% drop_na() %>% separate_rows(degreelevel, sep = "#") %>% mutate(degreeid = rownames(.))
+
+education_dates <- education_dates %>% separate_rows(completiondateraw, sep = "#") %>% mutate(date = parse_date_time(completiondateraw, c("Y", "mY", "my", "y", "d y", "d Y", "mdY", "mdy", "b y", "Y m"))) %>% mutate(clean = ifelse(is.na(date), "no", "yes")) %>% mutate(left = sum(is.na(date)))
+
+## Change to format of jobs data, impute education duration
+education_dates <- education_dates %>%
+  mutate(onet_job_zone = 6, end_year = year(date), startdate = case_when(
+    degreelevel == 12 ~ date - years(12), # highschool
+    degreelevel == 13 ~ date - years(1),  # GED/diploma
+    degreelevel == 14 ~ date - years(2),  # associates
+    degreelevel == 16 ~ date - years(4),  # bachelors
+    degreelevel == 17 ~ date - years(1),  # post-bac
+    degreelevel == 18 ~ date - years(2),  # masters
+    degreelevel == 21 ~ date - years(4)   #phd
+  )) %>% mutate(start_year = year(startdate)) %>%
+  select(id, onet_job_zone, end_year, startdate) %>%
+  filter(year(startdate) <= 2017)
+
+# Join data together
+bg_vet_job <- rbind(bg_vet_job, education_dates)
+bg_vet_job <- inner_join(bg_vet_job, vet_endmilitary, by = "id")
+
+# Add a variable for new zone: If job is military or education, we keep that zone, otherwise add the new_zone from onet_avg_zone table
+bg_vet_job <- bg_vet_job %>% 
+  mutate(new_zone = ifelse(onet_job_zone == 55 | onet_job_zone == 6, onet_job_zone, new_zone))
+
+# Prepare the data for sequence format
+bg_vet_job_seq <- bg_vet_job %>%
+  select(id, end_year, onet_job_zone, startdate, enddate, job_duration_day, date_end_onet55, year_enter_job_market, years_in_job_market, new_zone) %>%
+  mutate(year_end_onet55 = year(date_end_onet55)) %>%
+  select(-year_enter_job_market) %>%
+  mutate(military_years = ifelse(onet_job_zone == 55, end_year - year(startdate), 0)) %>% group_by(id) %>% mutate(military_sum = sum(military_years)) %>% ungroup() %>%
+# Find jobs that came after the date ended onet55 job (Veteran career)
+  filter(startdate >= date_end_onet55) %>% 
+# Filter out 55 jobs that have the same start and end date  
+  filter(onet_job_zone != 55)  %>%  
+  mutate(start_year = year(startdate))
+
+# Add variables, align sequences
+bg_vet_job_seq <- bg_vet_job_seq %>%
+  mutate(years_after_onet55 = max(end_year) - year_end_onet55) %>%
+  mutate(start_year = start_year - year_end_onet55 + 1)%>%  #transform from calender year to year start sequence analysis
+  mutate(end_year = end_year - year_end_onet55 + 1) %>% #transform from calender year to year start sequence analysis
+  select(id, start_year, end_year, onet_job_zone, year_end_onet55, years_after_onet55, new_zone, military_sum)%>%
+  group_by(id)%>%
+  arrange(desc(onet_job_zone))%>%
+  group_by(id)%>%
+  distinct(id, start_year, end_year, .keep_all = TRUE)
+
+# df for years in military cohorts
+years_in_military <- bg_vet_job_seq %>%
+  mutate(military_group = case_when(
+    military_sum >= 1 & military_sum < 2 ~ "1 - 2",
+    military_sum >= 3 & military_sum < 4 ~ "3 - 4",
+    military_sum >= 5 & military_sum < 10 ~ "5 - 10",
+    military_sum >= 11 & military_sum < 20 ~ "11 - 20",
+    military_sum >= 21 & military_sum < 30 ~ "21 - 30",
+    military_sum >= 31 ~ "31+",
+  )) %>% select(id, military_group) %>% distinct()
+
+sts_vet_ten <- bg_vet_job_seq
+
+## NON-VETERANS ------------------------------
+
+# Import all job data
+bg_all_job <- fread("~/git/DSPG2020/career/data/03_bg_all_job.csv")
+
+# Take a sample to reduce runtime
+ids <- bg_all_job %>% select(id) %>% distinct()
+set.seed(10082020)
+ids <- sample(ids$id, 5500, replace = FALSE)
+bg_all_job <-bg_all_job %>% filter(id %in% ids) %>%
+  mutate(year_enter_job_market = year(date_enter_job_market))%>%
+  select(-noofjobs, -sector, -tenure) %>%
+  group_by(id) %>%
+  mutate(years_in_job_market = max(end_year) - (min(start_year))) 
+
+# Join onet_avg_zone table by onet_soc_code
+bg_all_job <- bg_all_job %>% left_join(onet, by = c("onet" = "onetsoc_code"))
+
+# Creating a table of entry dates to join on later (so that education state is excluded from entry date)
+entered <- bg_all_job %>% mutate(date_entered_job_market = min(start_year)) %>%
+  select(id, date_entered_job_market)
+
+# Import all demographic data
+bg_all_demographic <-fread("~/git/DSPG2020/career/data/01_bg_all_demographic.csv")
+
+# What date did all graduate? Using ids from sample
+all <- ed %>% filter(id %in% ids)
+Encoding(all[["completiondateraw"]]) <- "UTF-8"
+
+education_dates <- all %>% select(id, completiondateraw, degreelevel) %>% drop_na() %>% separate_rows(degreelevel, sep = "#") %>% mutate(degreeid = rownames(.))
+
+education_dates <- education_dates %>% separate_rows(completiondateraw, sep = "#") %>% mutate(date = parse_date_time(completiondateraw, c("Y", "mY", "my", "y", "d y", "d Y", "mdY", "mdy", "b y", "Y m"))) %>% mutate(clean = ifelse(is.na(date), "no", "yes")) %>% mutate(left = sum(is.na(date)))
+
+## Change to format of jobs data, imputing duration of education
+education_dates <- education_dates %>%
+  mutate(onet_job_zone = 6, end_year = year(date), startdate = case_when(
+ # 1 or 2 years   degreelevel == 12 ~ date - years(12), # highschool
+    degreelevel == 13 ~ date - years(1),  # GED/diploma
+    degreelevel == 14 ~ date - years(2),  # associates
+    degreelevel == 16 ~ date - years(4),  # bachelors
+    degreelevel == 17 ~ date - years(1),  # post-bac
+    degreelevel == 18 ~ date - years(2),  # masters
+    degreelevel == 21 ~ date - years(4)   #phd
+  )) %>% mutate(start_year = year(startdate)) %>% mutate(enddate = date) %>%
+  select(id, onet_job_zone, end_year, startdate, enddate) %>%
+  filter(year(startdate) <= 2017) %>%
+  filter(year(enddate) >= 1950)
+  
+# Join data together
+bg_all_job$startdate <- as_datetime(bg_all_job$startdate)
+bg_all_job$enddate <- as_datetime(bg_all_job$enddate)
+bg_all_job <- rbind(bg_all_job, education_dates)
+bg_all_job <- inner_join(bg_all_job, entered, by = "id")
+
+# Add a variable for new zone: If job is military or education, we keep that zone, otherwise add the new_zone from onet_avg_zone table
+bg_all_job <- bg_all_job %>% 
+  mutate(new_zone = ifelse(onet_job_zone == 55 | onet_job_zone == 6, onet_job_zone, new_zone))
+
+# Prepare the data for sequence format
+bg_all_job_seq <- bg_all_job %>% ## CHANGING TO NEW_ZONE
+  select(id, end_year, onet_job_zone, startdate, enddate, date_entered_job_market, new_zone) %>%
+  mutate(start_year = year(startdate))
+bg_all_job_seq <- bg_all_job_seq %>%
+  group_by(id) %>%
+  mutate(years_in_job_market = max(end_year) - min(start_year)) %>%
+  select(id, start_year, end_year, onet_job_zone, years_in_job_market, date_entered_job_market, new_zone)%>% ## CHANGING TO NEW_ZONE
+  group_by(id)%>%
+  arrange(desc(onet_job_zone))%>%
+  group_by(id)%>%
+  distinct(id, start_year, end_year, .keep_all = TRUE)
+
+# Removing veterans from all sample
+bg_all_job_seq <- bg_all_job_seq %>%
+  filter(years_in_job_market >= 10) %>%
+#  select(-years_in_job_market) %>% # NEW ZONE
+  group_by(id) %>% mutate(veteran = ifelse(any(onet_job_zone == 55), 1, 0)) %>% ungroup() %>%
+  filter(veteran == 0) %>% ungroup() %>% group_by(id) %>%
+  mutate(start_year_a = start_year - min(start_year) + 1) %>%
+  mutate(end_year_a = end_year - min(start_year) + 1) %>%
+  filter(start_year >= date_entered_job_market)
+```
+
+```{r visualize-veteran-whole-career, fig.height=8}
+# Create sequence object for entire non-veteran careers ------
+sts_vet_whole <- bg_vet_job_seq
+
+sts_vet_whole <- as.matrix(sts_vet_whole)
+sts_vet_whole <- as.data.frame(sts_vet_whole)
+
+sts_vet_whole$end_year <- as.integer(sts_vet_whole$end_year)
+sts_vet_whole$start_year <- as.integer(sts_vet_whole$start_year)
+  
+sts_vet_whole <- seqformat(sts_vet_whole, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "onet_job_zone", process = FALSE, overwrite = FALSE)
+
+vet.seq <- seqdef(sts_vet_whole, left="Military transition unemployment", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5", uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#19aabd", "#CBBEB5", "#CBBEB5"))
+
+names(vet.seq) <- paste0(1:ncol(vet.seq))
+
+# Tranform data for ggplot ------------
+
+statd <- seqstatd(vet.seq)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:ncol(vet.seq))
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+v_states <- statd$ValidStates
+v_states <- as.data.frame(v_states)
+v_states <- v_states %>% rownames_to_column(var = "variable")
+
+meant <- seqmeant(vet.seq)
+meant <- as.data.frame(meant)
+meant <- meant %>% rownames_to_column(var = "state")
+
+lengths <- seqlength(vet.seq)
+lengths <- as.data.frame(lengths)
+lengths <- lengths %>% rownames_to_column(var = "id")
+length_sum <- quantile(lengths$Length)
+length_sum <- as.data.frame(length_sum)
+length_sum <- length_sum %>% rownames_to_column(var = "measure")
+summary(lengths)
+
+# Plot state frequency over time ---------------
+
+library(scales)
+ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  geom_line(data = v_states, aes(x = as.numeric(variable), y = v_states/nrow(vet.seq)),
+            size = 2) +
+  scale_y_continuous(name = paste0("Share of careers in a job state, (n = ", nrow(vet.seq), ")"),
+                     sec.axis = sec_axis(trans = ~.*(nrow(vet.seq)), name = "Number of careers in year of career")) +
+  xlim(0,ncol(vet.seq)) +
+  scale_fill_manual(values = c("#CBBEB5", uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#19aabd", "dark gray", "#CBBEB5"), labels = c("Missing zone", "Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Education", "Civilian unemployed", "Military transition unemployed")) +
+  xlab("Year of career") +
+  labs(title = "Veteran career paths after military exit",
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+years_in_military$military_group <- as.factor(years_in_military$military_group)
+seqdplot(vet.seq, group = years_in_military$military_group)
+```
+
+
+```{r visualize-veteran-first-ten-years, fig.height=8}
+# Create sequence object for entire veteran careers ------
+sts_vet_ten <- bg_vet_job_seq
+
+sts_vet_ten <- as.matrix(sts_vet_ten)
+sts_vet_ten <- as.data.frame(sts_vet_ten)
+
+#sts_vet_whole$end_year_a <- as.integer(sts_vet_whole$end_year_a)
+#sts_vet_whole$start_year_a <- as.integer(sts_vet_whole$start_year_a)
+
+## CHANGE TO NEW_ZONE
+sts_vet_ten <- seqformat(sts_vet_ten, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "onet_job_zone", process = FALSE, overwrite = FALSE)
+
+vet.seq <- seqdef(sts_vet_ten, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5", uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#19aabd"))#, "#CBBEB5"))
+
+names(vet.seq) <- paste0(1:ncol(vet.seq))
+sts_vet <- vet.seq[, 1:10]
+
+# Tranform data for ggplot ------------
+
+statd <- seqstatd(sts_vet)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:10)
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+v_states <- statd$ValidStates
+v_states <- as.data.frame(v_states)
+v_states <- v_states %>% rownames_to_column(var = "variable")
+
+meant <- seqmeant(vet.seq)
+meant <- as.data.frame(meant)
+meant <- meant %>% rownames_to_column(var = "state")
+
+lengths <- seqlength(vet.seq)
+lengths <- as.data.frame(lengths)
+lengths <- lengths %>% rownames_to_column(var = "id")
+length_sum <- quantile(lengths$Length)
+length_sum <- as.data.frame(length_sum)
+length_sum <- length_sum %>% rownames_to_column(var = "measure")
+summary(lengths)
+
+# Plot state frequency over time ---------------
+
+library(scales)
+ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  xlim(1,10) +
+  scale_fill_manual(values = c("#CBBEB5", uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], uva_color_palette[5], "#CBBEB5"), labels = c("Missing zone", "Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Education", "Civilian unemployed")) +
+  xlab("Year of Career") +
+  ylab("Share of States") +
+  scale_x_continuous(breaks = c(2, 4, 6, 8, 10)) +
+  labs(title = " Veterans: First ten years after entering job market \n (including education, excluding retirement and military transition unemployment)",
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom", text = element_text(size = 30)) +
+  guides(fill = guide_legend(ncol = 3))
+
+years_in_military$military_group <- as.factor(years_in_military$military_group)
+seqdplot(vet.seq[, 1:10], group = years_in_military$military_group)
+```
+
+```{r visualize-nonveteran-first-ten-years, fig.height=8}
+# Create sequence object for entire veteran careers ------
+sts_all_ten <- bg_all_job_seq
+
+sts_all_ten <- as.matrix(sts_all_ten)
+sts_all_ten <- as.data.frame(sts_all_ten)
+
+sts_all_ten$end_year_a <- as.integer(sts_all_ten$end_year_a)
+sts_all_ten$start_year_a <- as.integer(sts_all_ten$start_year_a)
+
+## CHANGE TO NEW_ZONE
+sts_all_ten <- seqformat(sts_all_ten, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year_a", end = "end_year_a", 
+            status = "onet_job_zone", process = FALSE, overwrite = FALSE)
+
+all.seq <- seqdef(sts_all_ten, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5", uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#19aabd", "#CBBEB5"))
+
+names(all.seq) <- paste0(1:ncol(all.seq))
+sts_all <- all.seq[, 1:10]
+
+# Tranform data for ggplot ------------
+
+statd <- seqstatd(sts_all)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:10)
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+v_states <- statd$ValidStates
+v_states <- as.data.frame(v_states)
+v_states <- v_states %>% rownames_to_column(var = "variable")
+
+meant <- seqmeant(vet.seq)
+meant <- as.data.frame(meant)
+meant <- meant %>% rownames_to_column(var = "state")
+
+lengths <- seqlength(vet.seq)
+lengths <- as.data.frame(lengths)
+lengths <- lengths %>% rownames_to_column(var = "id")
+length_sum <- quantile(lengths$Length)
+length_sum <- as.data.frame(length_sum)
+length_sum <- length_sum %>% rownames_to_column(var = "measure")
+summary(lengths)
+
+# Plot state frequency over time ---------------
+
+library(scales)
+ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  xlim(1,10) +
+  scale_fill_manual(values = c("#CBBEB5", uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], uva_color_palette[5], "#CBBEB5", "dark gray"), labels = c("Missing zone", "Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Education", "Civilian unemployed",  "Military transition unemployed")) +
+  xlab("Year of career") +
+  labs(title = "Nonveterans: First ten years after entering job market \n (including education, excluding retirement)",
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom") +
+  guides(fill = guide_legend(ncol = 3))
+```
+
+## ASSIGNING MISSING JOB ZONE THE AVERAGE JOB ZONE OF SIMILAR CAREERS
+
+```{r visualize-veteran-whole-career-no-missing, fig.height=8}
+# Create sequence object for entire non-veteran careers ------
+sts_vet_whole <- bg_vet_job_seq
+
+sts_vet_whole <- as.matrix(sts_vet_whole)
+sts_vet_whole <- as.data.frame(sts_vet_whole)
+  
+sts_vet_whole <- seqformat(sts_vet_whole, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "new_zone", process = FALSE, overwrite = FALSE)
+
+vet.seq <- seqdef(sts_vet_whole, left="Military transition unemployment", gaps="Civilian unemployment", right="DEL", cpal = c(uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#19aabd", "#CBBEB5", "#CBBEB5"))
+
+names(vet.seq) <- paste0(1:ncol(vet.seq))
+
+# Tranform data for ggplot ------------
+
+statd <- seqstatd(vet.seq)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:ncol(vet.seq))
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+v_states <- statd$ValidStates
+v_states <- as.data.frame(v_states)
+v_states <- v_states %>% rownames_to_column(var = "variable")
+
+meant <- seqmeant(vet.seq)
+meant <- as.data.frame(meant)
+meant <- meant %>% rownames_to_column(var = "state")
+
+lengths <- seqlength(vet.seq)
+lengths <- as.data.frame(lengths)
+lengths <- lengths %>% rownames_to_column(var = "id")
+length_sum <- quantile(lengths$Length)
+length_sum <- as.data.frame(length_sum)
+length_sum <- length_sum %>% rownames_to_column(var = "measure")
+summary(lengths)
+
+# Plot state frequency over time ---------------
+
+library(scales)
+ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  geom_line(data = v_states, aes(x = as.numeric(variable), y = v_states/nrow(vet.seq)),
+            size = 2) +
+  scale_y_continuous(name = paste0("Share of careers in a job state, (n = ", nrow(vet.seq), ")"),
+                     sec.axis = sec_axis(trans = ~.*(nrow(vet.seq)), name = "Number of careers in year of career")) +
+  xlim(0,ncol(vet.seq)) +
+  scale_fill_manual(values = c(uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#19aabd", "dark gray", "#CBBEB5"), labels = c("Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Education", "Civilian unemployed", "Military transition unemployed")) +
+  xlab("Year of career") +
+  labs(title = "Veteran career paths after military exit",
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+years_in_military$military_group <- as.factor(years_in_military$military_group)
+seqdplot(vet.seq[, 1:10], group = years_in_military$military_group)
+```
+
+
+```{r visualize-veteran-first-ten-years-no-missing, fig.height=8}
+# Create sequence object for first ten years of veteran careers ------
+sts_vet_ten <- bg_vet_job_seq
+
+sts_vet_ten <- as.matrix(sts_vet_ten)
+sts_vet_ten <- as.data.frame(sts_vet_ten)
+
+#sts_vet_whole$end_year_a <- as.integer(sts_vet_whole$end_year_a)
+#sts_vet_whole$start_year_a <- as.integer(sts_vet_whole$start_year_a)
+
+## CHANGE TO NEW_ZONE
+sts_vet_ten <- seqformat(sts_vet_ten, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "new_zone", process = FALSE, overwrite = FALSE)
+
+vet.seq <- seqdef(sts_vet_ten, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c(uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#19aabd", "#CBBEB5"))
+
+names(vet.seq) <- paste0(1:ncol(vet.seq))
+sts_vet <- vet.seq[, 1:10]
+
+# Tranform data for ggplot ------------
+
+statd <- seqstatd(sts_vet)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:10)
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+v_states <- statd$ValidStates
+v_states <- as.data.frame(v_states)
+v_states <- v_states %>% rownames_to_column(var = "variable")
+
+meant <- seqmeant(vet.seq)
+meant <- as.data.frame(meant)
+meant <- meant %>% rownames_to_column(var = "state")
+
+lengths <- seqlength(vet.seq)
+lengths <- as.data.frame(lengths)
+lengths <- lengths %>% rownames_to_column(var = "id")
+length_sum <- quantile(lengths$Length)
+length_sum <- as.data.frame(length_sum)
+length_sum <- length_sum %>% rownames_to_column(var = "measure")
+summary(lengths)
+
+# Plot state frequency over time ---------------
+
+library(scales)
+ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  xlim(1,10) +
+  scale_fill_manual(values = c(uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], uva_color_palette[5], "#CBBEB5"), labels = c("Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Education", "Civilian unemployed")) +
+  xlab("Year of career") +
+  labs(title = " Veterans: First ten years after entering job market \n (including education, excluding retirement and military transition unemployment)",
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom") +
+  guides(fill = guide_legend(ncol = 3))
+
+years_in_military$military_group <- as.factor(years_in_military$military_group)
+seqdplot(vet.seq[, 1:10], group = years_in_military$military_group)
+```
+
+```{r visualize-nonveteran-first-ten-years-no-missing, fig.height=8}
+# Create sequence object for first ten years of nonveterans careers ------
+sts_all_ten <- bg_all_job_seq
+
+sts_all_ten <- as.matrix(sts_all_ten)
+sts_all_ten <- as.data.frame(sts_all_ten)
+
+sts_all_ten$end_year_a <- as.integer(sts_all_ten$end_year_a)
+sts_all_ten$start_year_a <- as.integer(sts_all_ten$start_year_a)
+
+## CHANGE TO NEW_ZONE
+sts_all_ten <- seqformat(sts_all_ten, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year_a", end = "end_year_a", 
+            status = "new_zone", process = FALSE, overwrite = FALSE)
+
+all.seq <- seqdef(sts_all_ten, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c(uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#19aabd", "#CBBEB5"))
+
+names(all.seq) <- paste0(1:ncol(all.seq))
+sts_all <- all.seq[, 1:10]
+
+# Tranform data for ggplot ------------
+
+statd <- seqstatd(sts_all)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:10)
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+v_states <- statd$ValidStates
+v_states <- as.data.frame(v_states)
+v_states <- v_states %>% rownames_to_column(var = "variable")
+
+meant <- seqmeant(vet.seq)
+meant <- as.data.frame(meant)
+meant <- meant %>% rownames_to_column(var = "state")
+
+lengths <- seqlength(vet.seq)
+lengths <- as.data.frame(lengths)
+lengths <- lengths %>% rownames_to_column(var = "id")
+length_sum <- quantile(lengths$Length)
+length_sum <- as.data.frame(length_sum)
+length_sum <- length_sum %>% rownames_to_column(var = "measure")
+summary(lengths)
+
+# Plot state frequency over time ---------------
+
+library(scales)
+ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  xlim(1,10) +
+  scale_fill_manual(values = c(uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], uva_color_palette[5], "#CBBEB5"), labels = c("Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Education", "Civilian unemployed")) +
+  xlab("Year of career") +
+  labs(title = "Nonveterans: First ten years after entering job market \n (including education, excluding retirement)",
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom") +
+  guides(fill = guide_legend(ncol = 3))
+
+
+```
+
+```{r, fig.height=8}
+# object for ten years
+career_sequence <- function(name = "sts_vet_ten", years) {
+sts_vet <- bg_vet_job_seq %>%
+  filter(years_after_onet55 >= years) %>%
+  select(-years_after_onet55)
+
+sts_vet <- as.matrix(sts_vet)
+sts_vet <- as.data.frame(sts_vet)
+  
+sts_vet <- seqformat(sts_vet, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "new_zone", process = FALSE, overwrite = FALSE)
+
+vet.seq <- seqdef(sts_vet, left="Military transition unemployment", gaps="Civilian unemployment", right="DEL")
+
+# Filter out veterans who do not have a complete career in time period of interest
+sts_vet <- vet.seq[, 1:years]
+
+assign(name, sts_vet, envir = .GlobalEnv)
+
+statd <- seqstatd(sts_vet)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:years)
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+title = paste0("Veterans: first ", years, " years after entering job market \n (including education, excluding retirement)")
+
+plot <- ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  xlim(1,years) +
+    scale_y_continuous(name = paste0("Share of careers in a job state, (n = ", nrow(sts_vet), ")")) +
+  scale_fill_manual(values = c(uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], uva_color_palette[5], "dark gray", "#CBBEB5"), labels = c("Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Education", "Civilian unemployed", "Military transition unemployed")) +
+  xlab("Year of career") +
+  labs(title = title,
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom") +
+  guides(fill = guide_legend(ncol = 3))
+
+return(plot)
+}
+
+career_sequence("sts_vet_ten", 10)
+career_sequence("sts_vet_twenty", 20)
+career_sequence("sts_vet_thirty", 30)
+```
+
+
+```{r descriptive-military-cohort, fig.height=8}
+# Function to create a career sequence object from bg_vet_job_seq data, choosing military cohorts by constraining years of military exit -------
+career_sequence_exit_year <- function(name = "sts_vet_ten", enter_year, exit_year) {
+sts_vet <- bg_vet_job_seq %>%
+  filter(year_end_onet55 >= exit_year & year_end_onet55 <= enter_year) #%>%
+  #select(-years_after_onet55)
+
+sts_vet <- as.matrix(sts_vet)
+sts_vet <- as.data.frame(sts_vet)
+  
+sts_vet <- seqformat(sts_vet, from = "SPELL", to = "STS",
+            id = "id",  begin = "start_year", end = "end_year", 
+            status = "new_zone", process = FALSE, overwrite=FALSE)
+
+sts_vet <- seqdef(sts_vet, left="Military transition unemployment", gaps="Civilian unemployment")
+
+names(sts_vet) <- paste0(1:ncol(sts_vet))
+
+assign(name, sts_vet, envir = .GlobalEnv)
+
+statd <- seqstatd(sts_vet)
+states <- statd$Frequencies
+states <- as.data.frame(states)
+names(states) <- paste0(1:ncol(sts_vet))
+states <- states %>% rownames_to_column(var = "state")
+states <- melt(states, id = "state")
+
+v_states <- statd$ValidStates
+v_states <- as.data.frame(v_states)
+v_states <- v_states %>% rownames_to_column(var = "variable")
+
+plot <- ggplot() + 
+  geom_area(data = states, aes(x = as.numeric(variable), y = value, fill = state, position = "fill")) +
+  geom_line(data = v_states, aes(x = as.numeric(variable), y = v_states/nrow(sts_vet)),
+            size = 2) +
+  scale_y_continuous(name = paste0("Share of careers in a job state, (n = ", nrow(sts_vet), ")"),
+                     sec.axis = sec_axis(trans = ~.*(nrow(sts_vet)), name = "Number of careers in year of career")) +
+  xlim(1,ncol(sts_vet)) +
+  scale_fill_manual(values = c(uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], uva_color_palette[5], "dark gray", "#CBBEB5"), labels = c("Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Education", "Civilian unemployed", "Military transition unemployed")) +
+  xlab("Year of career") +
+  labs(title = paste0(name, ": Veterans post-military career path"),
+       fill = "Job state") +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+return(plot)
+}
+
+career_sequence_exit_year("sts_vet_2008", 2017, 2008)
+career_sequence_exit_year("sts_vet_1998", 2007, 1998)
+career_sequence_exit_year("sts_vet_1988", 1997, 1988)
+career_sequence_exit_year("sts_vet_1964", 1987, 1964)
+```
+
+

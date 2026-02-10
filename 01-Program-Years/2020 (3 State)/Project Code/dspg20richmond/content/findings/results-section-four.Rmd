@@ -1,0 +1,43 @@
+---
+title: "Conclusion"
+weight: 4
+draft: false
+output: html_document
+---
+
+We determined that state level landlord and tenant friendly policies are significantly associated with tract-level eviction rates. These finding suggested that state level policy levers such as:
+
+* Laws that reduce protected class exemptions in housing-related transactions,
+* Laws that protect tenants from retaliation by landlords
+* Laws that reduce the number of exemptions landlords have from state landlord-tenant law
+
+can affect evictions rates.
+
+Positive values of the eviction intensity indicator show there are still census tracts where eviction rates are not fully explained by sociodemographic and state level policy variables. We believe these communities need to be studied further to identify the remaining factors driving their high eviction rates. As policy makers and extension analysts work to uncover these unknown factors, they may become better positioned to design and deliver successful programs.
+
+<br>
+<br>
+
+<center>
+#### References
+</center>
+
+<br>
+Eviction Lab Data Downloads. (2018). Retrieved July 30, 2020, from https://eviction-lab-data-downloads.s3.amazonaws.com/DATA_DICTIONARY.txt
+
+Missouri Census Data Center. (2018). Retrieved July 30, 2020, from http://mcdc.missouri.edu/applications/geocorr2018.html
+
+Eviction Lab Data: Matthew Desmond, Ashley Gromis, Lavar Edmonds, James Hendrickson, Katie Krywokulski, Lillian Leung, and Adam Porton. Eviction Lab National Database: Version 1.0. Princeton: Princeton University, 2018, www.evictionlab.org.
+
+Washington, Lark. “Rehouse Richmond: Plan to Address the Eviction Crisis.” (2020).
+
+Desmond, Matthew. 2012 “Eviction and the reproduction of urban poverty.” American Journal of Sociology 118(1): 88-133.
+
+Desmond M, Gershenson C. 2017 “Who gets evicted? Assessing individual, neighborhood, and network factors.” Social Science Research 62:362–377.
+
+Foley, Donald L 1980 “The sociology of housing” Annual Review of Sociology 6 (1):457--478.
+
+Teresa, B. 2018 “The Geography of Eviction in Richmond: Beyond Poverty” from RVA Eviction Lab. at https://rampages.us/rvaevictionlab/research/the-geography-of-eviction-in-richmond-beyond-poverty/
+
+Lempert, Richard, and Kiyoshi Ikeda. 1970 “Evictions from public housing: effects of independent reviews” American Sociological Review 35(5): 852-860.
+

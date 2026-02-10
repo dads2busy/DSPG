@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>LDA on UVA Biocomplexity Institute</title>
+    <link>/DSPG2020_ARI2/tags/lda/</link>
+    <description>Recent content in LDA on UVA Biocomplexity Institute</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/DSPG2020_ARI2/tags/lda/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Latent Dirichlet Allocation Modeling of Performance Scales</title>
+      <link>/DSPG2020_ARI2/findings/performance_lda/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/DSPG2020_ARI2/findings/performance_lda/</guid>
+      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Approach Once we gathered a sufficient number of scales from a variety of sources, we analyzed these scales using topic modeling to identify underlying themes from across the corpus. Latent Dirichlet Allocation (LDA) is a probabilistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words.</description>
+    </item>
+    
+  </channel>
+</rss>

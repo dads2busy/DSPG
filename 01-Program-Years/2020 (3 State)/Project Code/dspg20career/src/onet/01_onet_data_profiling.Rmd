@@ -1,0 +1,94 @@
+---
+title: "ONET Profiling"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# load packages 
+for (pkg in c("tidyverse", "igraph", "visNetwork", "data.table", "R.utils", "RPostgreSQL", "cowplot", "maditr", "stringr", "stringi", "mosaic", "dplyr", "ggplot2", "lubridate")) {
+  library(pkg, character.only = TRUE)
+}
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+get_db_conn <-
+  function(db_name = "sdad",
+           db_host = "postgis1",
+           db_port = "5432",
+           db_user = Sys.getenv("db_usr"),
+           db_pass = Sys.getenv("db_pwd")) {
+    RPostgreSQL::dbConnect(
+      drv = RPostgreSQL::PostgreSQL(),
+      dbname = db_name,
+      host = db_host,
+      port = db_port,
+      user = db_user,
+      password = db_pass
+    )
+  }
+
+con <- get_db_conn()
+
+onet <- DBI::dbGetQuery(con, "SELECT * FROM onet.job_zones")
+DBI::dbDisconnect(con)
+```
+
+```{r}
+# function for data profiling
+data_profiling <- function(df){
+  variable_type <- apply(df, 2, function(x) class(x))
+  num_unique <- apply(df, 2,  function (x) length(unique(x)))
+  num_missing <- apply(df, 2, function(x) sum(is.na(x)))
+  perc_missing <- apply(df, 2, function(x) round((sum(is.na(x)))/length(x)* 100, digits = 2))  
+  summary_table <- cbind(variable_type, num_unique, num_missing, perc_missing)
+  return(summary_table)
+}
+```
+
+List variable names
+```{r}
+names(onet)
+```
+
+Length of the dataset
+```{r}
+nrow(onet)
+```
+
+
+Data profiling
+```{r}
+data_profiling(onet)
+```
+
+
+The number of unique titles is equal to the length of the dataset; so is the length of unique ONET soc_codes.
+
+```{r}
+ggplot(onet, aes(job_zone)) +
+  geom_bar() +
+  labs(title = "Distribution of Job Zones", x = "Job Zones") 
+```
+
+
+
+
+```{r}
+date_grouped <- onet %>%
+  group_by(date_updated) %>%
+  summarize(n=n())
+
+ggplot(date_grouped, aes(date_updated, n)) +
+  geom_line() +
+  labs(title = "Number of Updates Over Time", x = "Date Updated") 
+```
+
+```{r}
+
+```
+

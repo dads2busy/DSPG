@@ -1,0 +1,23 @@
+---
+title: "ARI Individual Performance 2020 Summer Project"
+output: html_document
+---
+
+```{css, echo=FALSE}
+/* this chunnk of code centers all of the headings */
+h1, h2, h3 {
+  text-align: center;
+}
+```
+
+### Project Overview 
+
+According to the [Data Manpower Data Center (DMDC)](https://www.dmdc.osd.mil/appj/dwp/dwp_reports.jsp) the United States Army employs approximately 475 thousand active duty, and approximately 190 thousand reserve, service members.  As part of its standard personnel management practices it collects a number of measures and/or surveys from and about these service members.  Given the scope, depth, duration of this data source, the U.S. Army now seeks to determine if this information can be leveraged to predict behavioral performance outcomes for service members and if it might otherwise be useful to augment its workforce management practices.
+
+### Project Goals
+
+In order to provide the U.S. Army with the insight it seeks, we will need to conduct a review of current performance measurement scales in order to see if there is overlap with these items and the assessment items used by the Army.  Although our time during the program is limited, two of our major goals are developing a data set that can be used later by investigators, and also performing some initial analysis on the data set to determine which approaches might be most fruitful.
+
+### Our Approach 
+
+Over the course of the 2020 Data Science for the Public Good Program, our team worked to find assessment scales, extract individual items, and apply text analysis methods to examine themes and topics in these assessment scales. In our project, we leveraged academic and other document databases, performed data set formation and curation, and implemented text analyses.

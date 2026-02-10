@@ -1,0 +1,69 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r cars}
+setwd("git/dspg20BI/")
+# dna_2013 <- read.csv("data/working/DNA_2013.csv") 
+labeled_headlines <- read.csv("data/working/Labeled_Data_With_Companies.csv")
+# dna_2013_focus  <- dna_2013 %>% transmute(an, company_codes, source_name,publisher_name, Year)
+# colnames(dna_2013)
+# rm(dna_2013)
+```
+
+```{r}
+prepforpairs <- labeled_headlines %>% 
+  mutate(combos = stringr::str_split(company_codes, ",")) %>% 
+  tidyr::unnest(cols = c(combos)) %>% 
+  filter(nchar(combos) > 1) %>% 
+  # select(1, combos) %>% 
+  group_by(an) %>% 
+  summarise(combos = list(unique(combos))) 
+
+```
+
+```{r}
+for (i in 1:nrow(prepforpairs)) {
+  if (length(prepforpairs$combos[[i]]) > 1) 
+    # test$test[[i]] <- combn(test$combos[[i]], m = 2, FUN = sort, simplify = FALSE) %>% unique()
+     prepforpairs$test[[i]] <- combn(prepforpairs$combos[[i]], m = 2, FUN = sort, simplify = FALSE) %>% unique() %>% as.data.frame() %>% data.table::transpose()
+  
+  else 
+    prepforpairs$test[[i]] <- NA
+  
+}
+
+finalpairs <- prepforpairs %>% tidyr::unnest(c("test")) %>% filter(!is.na(V1) &!is.na(V2)) %>% select(an, V1, V2)
+
+finalpairs %>% write.csv("data/working/labeled_headlien_edgelist.csv")
+
+comp_dict <- read.csv("data/original/Company Codes Dictionary.csv")
+comp_dict <- comp_dict %>% mutate(code_low = str_to_lower(code))
+
+finalpairs %>% left_join(comp_dict %>% transmute(code_low, V1_Name = description), by = c("V1" = "code_low")) %>%
+  left_join(comp_dict %>% transmute(code_low, V2_Name = description), by = c("V2" = "code_low"))  %>% count(V1, V2, V1_Name, V2_Name) %>% arrange(desc(n))
+
+final_nodelist  <- comp_dict %>% filter(code_low %in% finalpairs$V1 | code_low %in% finalpairs$V2) 
+
+prepfornodes <- labeled_headlines %>% 
+  mutate(combos = stringr::str_split(company_codes, ",")) %>% 
+  tidyr::unnest(cols = c(combos)) %>% 
+  filter(nchar(combos) > 1) %>% 
+  select(innovation, combos) %>%
+  distinct() %>% 
+  group_by(combos) %>% 
+  summarise(innov = list(unique(innovation))) %>%
+  mutate(innov_test = ifelse(lengths(innov) > 1, "yes", unlist(innov))) %>% tidyr::unnest(c("innov_test"))
+
+final_nodelist <- final_nodelist %>% left_join(prepfornodes %>% select(combos, innov_test), by = c("code_low" = "combos")) 
+
+final_nodelist %>% write.csv("data/working/labeled_headlines_nodelist.csv")
+
+```
+
