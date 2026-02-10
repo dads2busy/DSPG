@@ -1,1 +1,0 @@
-go to: http://shiny.rstudio.com/gallery/kmeans-example.html
