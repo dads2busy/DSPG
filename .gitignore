@@ -2,31 +2,71 @@
 .DS_Store
 
 # Office / archives
-*.doc
-*.docx
-*.ppt
-*.pptx
-*.zip
-*.tar
-*.gz
-*.7z
+# *.doc
+# *.docx
+# *.ppt
+# *.pptx
+# *.zip
+# *.tar
+# *.gz
+# *.7z
 
 # Images / media (keep only if small and needed)
-*.png
-*.jpg
-*.jpeg
-*.gif
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
 *.mp4
 *.mov
 *.avi
 *.mkv
 *.mp3
 *.wav
-*.pdf
-*.xlsx
-*.xls
+# *.pdf
+# *.xlsx
+# *.xls
 
-# Anything under promotional item ideas, zoom backgrounds, etc.
-04-Branding/Promotional-Materials/
-04-Branding/Zoom-Backgrounds/
-05-Alumni-and-Outreach/old - archived docs/
+04-Branding/Promotional-Materials/DSPG Brochure 2022_v1.pdf
+04-Branding/Promotional-Materials/DSPG BROCHURES 2022_v3.pdf
+04-Branding/Promotional-Materials/DSPGBROCHURES_v3.pdf
+01-Program-Years/2023/Speakers/2023-06-22 Speaker Haleigh Tomlin - UVA DSPG Alumni_2736x1824.mp4
+01-Program-Years/2023/Speakers/2023-07-25 Ethics Panel_Recording.mp4
+01-Program-Years/2023/Speakers/2023-07-19 Speaker Theresa Anderson _Recording_3686x2304.mp4
+01-Program-Years/2023/Symposium/video1140527618.mp4
+01-Program-Years/2023/Symposium/video2140527618.mp4
+01-Program-Years/2023/Training + Seminar Material/2022-10-28 Shipp_Ethical Principles for the All Data Revolution​.pptx
+01-Program-Years/2019/DSPG 2019 Project Folders/NCSES - RnD/Sample Data/sample-data_multiple_fed-reporter.csv
+01-Program-Years/2019/DSPG 2019 Project Folders/NCSES - RnD/Poster/rnd_poster_draft.pptx
+01-Program-Years/2020/DSPG 2020 3-State - Documents/UVA-NCSES-BI/zoom_0.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/General/DSPG 2020 Midterms/Recordings/DSPG 2020 Midterm Presentations Day #1_1.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/General/DSPG 2020 Midterms/Recordings/DSPG 2020 Midterm Presentations Day #1_2.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/General/DSPG 2020 Midterms/Recordings/DSPG 2020 Midterm Presentations Day #2.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/UVA-General/Project presentations/27MAY2020_UVADSPG_Project_Presentations_Recording.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/UVA-Gates-Patrick/Meeting notes/2020-08-10 Patrick County Debrief/zoom_0.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/All-Symposium/DSPG Symposium 2020 Materials/VSU/Posters/VSU_Folar_2020_Poster/zoom_0.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/UVA-Gates-Halifax/Meetings (Notes & Recordings)/2020-07-13 11.12.17 DSPG Halifax CTY Meeting w_ Hunter 98481569820/zoom_0.mp4.gz
+03-Training/Git_For_Data_Commons_basics_11092023.mp4
+03-Training/2017/Brownbags/Brownbags-2017/ABM_Tutorial 2017.pptx
+03-Training/Resume Writing Workshop_2022-0714/video1612648472.mp4
+04-Branding/Promotional-Materials/DSPG Brochure 2022_v1.pdf
+04-Branding/Promotional-Materials/DSPG BROCHURES 2022_v3.pdf
+04-Branding/Promotional-Materials/DSPGBROCHURES_v3.pdf
+01-Program-Years/2023/Speakers/2023-06-22 Speaker Haleigh Tomlin - UVA DSPG Alumni_2736x1824.mp4
+01-Program-Years/2023/Speakers/2023-07-25 Ethics Panel_Recording.mp4
+01-Program-Years/2023/Speakers/2023-07-19 Speaker Theresa Anderson _Recording_3686x2304.mp4
+01-Program-Years/2023/Symposium/video1140527618.mp4
+01-Program-Years/2023/Symposium/video2140527618.mp4
+01-Program-Years/2023/Training + Seminar Material/2022-10-28 Shipp_Ethical Principles for the All Data Revolution​.pptx
+01-Program-Years/2019/DSPG 2019 Project Folders/NCSES - RnD/Sample Data/sample-data_multiple_fed-reporter.csv
+01-Program-Years/2019/DSPG 2019 Project Folders/NCSES - RnD/Poster/rnd_poster_draft.pptx
+01-Program-Years/2020/DSPG 2020 3-State - Documents/UVA-NCSES-BI/zoom_0.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/General/DSPG 2020 Midterms/Recordings/DSPG 2020 Midterm Presentations Day #1_1.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/General/DSPG 2020 Midterms/Recordings/DSPG 2020 Midterm Presentations Day #1_2.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/General/DSPG 2020 Midterms/Recordings/DSPG 2020 Midterm Presentations Day #2.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/UVA-General/Project presentations/27MAY2020_UVADSPG_Project_Presentations_Recording.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/UVA-Gates-Patrick/Meeting notes/2020-08-10 Patrick County Debrief/zoom_0.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/All-Symposium/DSPG Symposium 2020 Materials/VSU/Posters/VSU_Folar_2020_Poster/zoom_0.mp4.gz
+01-Program-Years/2020/DSPG 2020 3-State - Documents/UVA-Gates-Halifax/Meetings (Notes & Recordings)/2020-07-13 11.12.17 DSPG Halifax CTY Meeting w_ Hunter 98481569820/zoom_0.mp4.gz
+03-Training/Git_For_Data_Commons_basics_11092023.mp4
+03-Training/2017/Brownbags/Brownbags-2017/ABM_Tutorial 2017.pptx
+03-Training/Resume Writing Workshop_2022-0714/video1612648472.mp4
