@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Residential Property Values Analysis</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Impacts of Broadband Development on Rural Property Values</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+<li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="methods.html">Ookla Speedtest Analysis</a>
+</li>
+<li>
+  <a href="findings-overview.html">Residential Property Values Analysis</a>
+</li>
+<li>
+  <a href="team.html">Team</a>
+</li>
+<li>
+  <a href="https://github.com/dcc7ffm/dspg-ers">
+    <span class="fa fa-github"></span>
+     
+    
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Residential Property Values Analysis</h1>
+
+</div>
+
+
+<p><font size="3"></p>
+<div id="literature-review" class="section level1">
+<h1>Literature Review</h1>
+<p>We conducted a literature review of journals that analyzed the effects of high-speed internet access and property prices. </p>
+<div id="home-is-where-the-internet-is-high-speed-internets-impact-on-rural-housing-values" class="section level3">
+<h3>Home Is Where the Internet Is? High-speed Internet’s Impact on Rural Housing Values </h3>
+<div id="kelsey-l.-conley-and-brian-e.-whitacre" class="section level5">
+<h5>Kelsey L. Conley and Brian E. Whitacre </h5>
+<p>This report uses data from the National Broadband Map, the Federal Communications Commission, and over 2,700 housing transactions from June 2011 to June 2017 to examine the impact of broadband availability on housing values in two rural Oklahoma counties via a hedonic price model. The results find no support for the existence of a broadband premium, and stress that differences across counties are crucial in assessing rural housing prices. The full report can be found at <a href="https://doi.org/10.1177/0160017620918652">this link</a>. </p>
+</div>
+</div>
+<div id="high-speed-internet-access-and-housing-values" class="section level3">
+<h3>High-speed Internet access and housing values</h3>
+<div id="gabor-molnar-scott-j.-savage-and-douglas-c.-sicker" class="section level5">
+<h5>Gabor Molnar, Scott J. Savage, and Douglas C. Sicker</h5>
+<p>This report uses a hedonic regression model that relates house values to high-speed Internet access while controlling for the potential endogeneity of Internet access. Results show that single-family homes with access to a 25 Mbps broadband connection have a price that is about $5,977, or 3%, more than similar homes in neighborhoods with 1 Mbps. The rural premium is lower at $5,099. The full report can be found at <a href="https://doi.org/10.1080/00036846.2019.1631443">this link</a>.</p>
+</div>
+</div>
+</div>
+<div id="project-area-selection" class="section level1">
+<h1>Project Area Selection</h1>
+<p>For this analysis, we used a subset of the CoreLogic data, which included data for the eight states with the highest number of properties in the data: Arkansas, California, Colorado, Florida, Georgia, North Carolina, Ohio, and Texas. To select the project area for our analysis, we calculated the counts of properties inside the project area and outside the project area by a radius of 20 miles, both before and after the broadband deployment project was implemented. This was completed by correlating the latitude/longitude of each property to the project shapefiles and finding the properties that intersected using the sf package in R. The counts are presented in the table below for a subset of the 132 BIP projects that were present in one of the eight states in the CoreLogic data.</p>
+<pre class="r"><code>state8_counts &lt;- read.csv(&quot;www/state8_counts&quot;)
+knitr::kable(state8_counts)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">X</th>
+<th align="left">BIP_ID</th>
+<th align="right">tot_in_20m</th>
+<th align="right">tot_out_20m</th>
+<th align="right">bef_in_20m</th>
+<th align="right">bef_out_20m</th>
+<th align="right">aft_in_20m</th>
+<th align="right">aft_out_20m</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">AR1102-AG39</td>
+<td align="right">196</td>
+<td align="right">25762</td>
+<td align="right">0</td>
+<td align="right">45</td>
+<td align="right">196</td>
+<td align="right">25717</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">CA1107-B40</td>
+<td align="right">3450</td>
+<td align="right">231602</td>
+<td align="right">0</td>
+<td align="right">1984</td>
+<td align="right">3450</td>
+<td align="right">229618</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">CA1110-A40</td>
+<td align="right">0</td>
+<td align="right">208662</td>
+<td align="right">0</td>
+<td align="right">59</td>
+<td align="right">0</td>
+<td align="right">208662</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">CA1112-A40</td>
+<td align="right">0</td>
+<td align="right">84220</td>
+<td align="right">0</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">84220</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">CA1113-A40</td>
+<td align="right">112620</td>
+<td align="right">2390368</td>
+<td align="right">8</td>
+<td align="right">1099</td>
+<td align="right">112620</td>
+<td align="right">2390368</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">CA1114-A40</td>
+<td align="right">49153</td>
+<td align="right">6635504</td>
+<td align="right">4</td>
+<td align="right">2583</td>
+<td align="right">49153</td>
+<td align="right">6635504</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">CA1115-A40</td>
+<td align="right">17844</td>
+<td align="right">62734</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">17844</td>
+<td align="right">62734</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">CO1106-A40</td>
+<td align="right">1747</td>
+<td align="right">63464</td>
+<td align="right">0</td>
+<td align="right">42</td>
+<td align="right">1747</td>
+<td align="right">63422</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">CO1107-A40</td>
+<td align="right">2846</td>
+<td align="right">930471</td>
+<td align="right">3</td>
+<td align="right">46</td>
+<td align="right">2846</td>
+<td align="right">930471</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">CO1108-B39</td>
+<td align="right">35731</td>
+<td align="right">206466</td>
+<td align="right">3</td>
+<td align="right">7</td>
+<td align="right">35731</td>
+<td align="right">206466</td>
+</tr>
+<tr class="odd">
+<td align="right">11</td>
+<td align="left">CO1109-A40</td>
+<td align="right">89</td>
+<td align="right">73694</td>
+<td align="right">0</td>
+<td align="right">12</td>
+<td align="right">89</td>
+<td align="right">73694</td>
+</tr>
+<tr class="even">
+<td align="right">12</td>
+<td align="left">CO1110-A40</td>
+<td align="right">49</td>
+<td align="right">4954</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">49</td>
+<td align="right">4954</td>
+</tr>
+<tr class="odd">
+<td align="right">13</td>
+<td align="left">CO1114-A40</td>
+<td align="right">77</td>
+<td align="right">52637</td>
+<td align="right">0</td>
+<td align="right">12</td>
+<td align="right">77</td>
+<td align="right">52637</td>
+</tr>
+<tr class="even">
+<td align="right">14</td>
+<td align="left">FL1105-A40</td>
+<td align="right">18569</td>
+<td align="right">2888348</td>
+<td align="right">57</td>
+<td align="right">21243</td>
+<td align="right">18512</td>
+<td align="right">2867105</td>
+</tr>
+<tr class="odd">
+<td align="right">15</td>
+<td align="left">GA1105-A40</td>
+<td align="right">7199</td>
+<td align="right">453800</td>
+<td align="right">13</td>
+<td align="right">614</td>
+<td align="right">7186</td>
+<td align="right">453186</td>
+</tr>
+<tr class="even">
+<td align="right">16</td>
+<td align="left">GA1107-A40</td>
+<td align="right">8</td>
+<td align="right">97332</td>
+<td align="right">0</td>
+<td align="right">7</td>
+<td align="right">8</td>
+<td align="right">97332</td>
+</tr>
+<tr class="odd">
+<td align="right">17</td>
+<td align="left">GA1109-C40</td>
+<td align="right">2201</td>
+<td align="right">12151</td>
+<td align="right">4</td>
+<td align="right">7</td>
+<td align="right">2201</td>
+<td align="right">12151</td>
+</tr>
+<tr class="even">
+<td align="right">18</td>
+<td align="left">NC1103-A40</td>
+<td align="right">0</td>
+<td align="right">466492</td>
+<td align="right">0</td>
+<td align="right">398</td>
+<td align="right">0</td>
+<td align="right">466094</td>
+</tr>
+<tr class="odd">
+<td align="right">19</td>
+<td align="left">NC1105-A40</td>
+<td align="right">0</td>
+<td align="right">110710</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">110710</td>
+</tr>
+<tr class="even">
+<td align="right">20</td>
+<td align="left">NC1106-A40</td>
+<td align="right">16579</td>
+<td align="right">385708</td>
+<td align="right">0</td>
+<td align="right">20</td>
+<td align="right">16579</td>
+<td align="right">385708</td>
+</tr>
+<tr class="odd">
+<td align="right">21</td>
+<td align="left">NC1107-B40</td>
+<td align="right">16892</td>
+<td align="right">486199</td>
+<td align="right">0</td>
+<td align="right">1075</td>
+<td align="right">16892</td>
+<td align="right">486199</td>
+</tr>
+<tr class="even">
+<td align="right">22</td>
+<td align="left">NC1108-A40</td>
+<td align="right">8872</td>
+<td align="right">522083</td>
+<td align="right">0</td>
+<td align="right">39</td>
+<td align="right">8872</td>
+<td align="right">522083</td>
+</tr>
+<tr class="odd">
+<td align="right">23</td>
+<td align="left">NC1109-A40</td>
+<td align="right">15140</td>
+<td align="right">1322566</td>
+<td align="right">0</td>
+<td align="right">150</td>
+<td align="right">15140</td>
+<td align="right">1322566</td>
+</tr>
+<tr class="even">
+<td align="right">24</td>
+<td align="left">NC1110-A40</td>
+<td align="right">0</td>
+<td align="right">65805</td>
+<td align="right">0</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">65805</td>
+</tr>
+<tr class="odd">
+<td align="right">25</td>
+<td align="left">OH1106-A40</td>
+<td align="right">22048</td>
+<td align="right">2891452</td>
+<td align="right">910</td>
+<td align="right">44797</td>
+<td align="right">21138</td>
+<td align="right">2846655</td>
+</tr>
+<tr class="even">
+<td align="right">26</td>
+<td align="left">OH1107-A40</td>
+<td align="right">1147</td>
+<td align="right">241801</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1147</td>
+<td align="right">241801</td>
+</tr>
+<tr class="odd">
+<td align="right">27</td>
+<td align="left">OH1108-A40</td>
+<td align="right">56058</td>
+<td align="right">2834094</td>
+<td align="right">0</td>
+<td align="right">34</td>
+<td align="right">56058</td>
+<td align="right">2834094</td>
+</tr>
+<tr class="even">
+<td align="right">28</td>
+<td align="left">OH1110-B40</td>
+<td align="right">12447</td>
+<td align="right">243845</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">12447</td>
+<td align="right">243845</td>
+</tr>
+<tr class="odd">
+<td align="right">29</td>
+<td align="left">OH1111-A40</td>
+<td align="right">1095</td>
+<td align="right">242735</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">1095</td>
+<td align="right">242735</td>
+</tr>
+<tr class="even">
+<td align="right">30</td>
+<td align="left">TX1113-A40</td>
+<td align="right">394</td>
+<td align="right">385529</td>
+<td align="right">0</td>
+<td align="right">6926</td>
+<td align="right">394</td>
+<td align="right">378603</td>
+</tr>
+<tr class="odd">
+<td align="right">31</td>
+<td align="left">TX1116-A40</td>
+<td align="right">0</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">50</td>
+</tr>
+<tr class="even">
+<td align="right">32</td>
+<td align="left">TX1119-A40</td>
+<td align="right">36</td>
+<td align="right">356593</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">36</td>
+<td align="right">356593</td>
+</tr>
+<tr class="odd">
+<td align="right">33</td>
+<td align="left">TX1120-A40</td>
+<td align="right">1774</td>
+<td align="right">238414</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">1774</td>
+<td align="right">238414</td>
+</tr>
+<tr class="even">
+<td align="right">34</td>
+<td align="left">TX1122-A40</td>
+<td align="right">9</td>
+<td align="right">12347</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">9</td>
+<td align="right">12347</td>
+</tr>
+</tbody>
+</table>
+<p>Broadband Initiative Project OH1106-A40 is one of the few project areas that has sufficient data from this specific CoreLogic dataset, so our analysis will be based upon the properties and their prices and characteristics within this project area. The OH1106-A40 project shapefile and plot of properties inside (green) and outside (orange) are presented below.</p>
+<p><img src="www/Rplot.png" alt="Rplot" style="width:60.0%" /></left> <img src="www/Website/map_before.png" alt="Map Before" style="width:60.0%" /></right></p>
+</div>
+<div id="model" class="section level1">
+<h1>Model</h1>
+<div id="variable-selection" class="section level3">
+<h3>Variable Selection</h3>
+<div id="dependent-variable-sales-price-vs-assessed-price" class="section level4">
+<h4>Dependent Variable: Sales Price vs Assessed Price</h4>
+<p>Our initial analysis was focused on assessing changes in property prices using the sale value as the dependent variable. However, the sales values data are largely incomplete with a completeness percentage of 65.90% as shown by the exploratory data analysis in the Data page. We shifted our dependent variable from sale value to the assessed values of the properties. The assessed values are calculated by county-level tax offices that conduct these assessments on a regular basis, varying by tax office. The assessed values had a completeness percentage of 99.41%, ensuring that our analysis could use most of the data. <br> <br> To establish that assessed values could serve as a good proxy for sales values within Ohio, we calculated the correlation between the medians and means of the two variables at the ZIP code level by year. We removed ZIP codes that had less than 40 observations within a given year. The correlation between the median and mean values was both strong and positive, with a correlation coefficient of 0.938 and 0.961, respectively. We plotted these points and overlayed them with a LOESS (locally weighted smoothing) regression shown below. We can confidently use assessed prices as the dependent variable of our analysis.</p>
+<p><img src="www/ohiomedian.png" style="width:40.0%" /></left> <img src="www/ohiomean.png" style="width:40.0%" /></right></p>
+</div>
+<div id="independent-variable-manipulation" class="section level4">
+<h4>Independent Variable Manipulation</h4>
+<div id="age-age" class="section level5">
+<h5>Age (age)</h5>
+<p>CoreLogic provides the year built and effective year built of properties, where the year built represents the initial property building year, and the effective year represents year where substantial renovation was completed to the property. Thus, we created a new variable that represented the most recent year built, i.e., if the property had an effective year built, then this value was used; otherwise, the initial year built was used. We then subtracted this value from the assessed year, which would give us the age of the property when the home was assessed. For example, if the home was assessed in 2009, and the home was renovated in 1993, the age of the home would be 16 years at the time of assessment. This age variable is used in our model.</p>
+</div>
+<div id="distance-distance_miles" class="section level5">
+<h5>Distance (distance_miles)</h5>
+<p>The distance is a main effect variable which calculates the distance of the property to the closest border of the project area, which was calculated using the shapefiles. Properties inside of the project areas have a negative distance while properties outside have a positive distance. This will be used to assess whether the program had an effect on property prices before/after the project was implemented. This distance_miles variable is used in our model.</p>
+</div>
+<div id="living-area-to-land-ratio-sqft_ratio-living_square_feet-land_square_footage" class="section level5">
+<h5>Living Area to Land ratio (sqft_ratio, living_square_feet, land_square_footage)</h5>
+<p>The ratio of the living area (square feet) to the land area (square feet) was taken to create the variable sqft_ratio. sqft_ratio, living_square_feet and land_square_footage are all used in our model.</p>
+</div>
+</div>
+<div id="dummy-variables" class="section level4">
+<h4>Dummy Variables</h4>
+<div id="insideoutside-project-area-dummy_out_in" class="section level5">
+<h5>Inside/Outside Project Area (dummy_out_in)</h5>
+<p>To specify whether a property is inside or outside of the project area, we created dummy variable dummy_out_in where 0 represents a property outside of the project area and 1 represents a property inside the project area. This was created using the project area shapefiles.</p>
+</div>
+<div id="beforeafter-project-implementation-dummy_before_after" class="section level5">
+<h5>Before/After Project Implementation (dummy_before_after)</h5>
+<p>To specify whether a property's value was before or after the project was implemented, we created dummy variable dummy_before_after where 0 represents an assessment before project implementation and 1 represents an assessment after project implementation. The OH1106-A40 project was implemented in 2010, so assessment values leading up to and including 2010 correspond to a 0 and assessment values after 2010 correspond to a 1.</p>
+</div>
+<div id="mobile-home-and-fireplace-dummy_mobile_home_ind-dummy_fire_place" class="section level5">
+<h5>Mobile Home and Fireplace (dummy_mobile_home_ind, dummy_fire_place)</h5>
+<p>The CoreLogic data has indicators for whether a property is a mobile home or has a fireplace. Thus, we create dummy variable where 1 represents that it is a mobile home or has a fireplace, and 0 if it is not a mobile home or doesn't include a fireplace. Variables dummy_mobile_home_ind and dummy_fire_place are included in our model.</p>
+</div>
+</div>
+<div id="factor-variables-factor_bedrooms-factor_total_baths_calculated-factor_number_of_units-factor_stories_number" class="section level4">
+<h4>Factor Variables (factor_bedrooms, factor_total_baths_calculated, factor_number_of_units, factor_stories_number)</h4>
+<p>CoreLogic data includes values for the number of bedrooms, bathrooms, units, and stories that each property has. These are all discrete variables and have varying distributions as seen on the boxplots to the left. These are all transformed to factor variables with fewer levels. The factor variable distributions should have near normal distributions, which is true for these variables, not including the number of stories. Variables factor_bedrooms, factor_total_baths_calculated, factor_number_of_units, and factor_stories_number are all used in our model.</p>
+<p><img src="www/Website/bedrooms.png" alt="bedrooms" style="width:45.0%" /></left> <img src="www/Website/factor_bedrooms.png" alt="factor_bedrooms" style="width:45.0%" /></right> <img src="www/Website/total_baths_calculated.png" alt="total_baths_calculated" style="width:45.0%" /></left> <img src="www/Website/factor_total_baths_calculated.png" alt="factor_total_baths_calculated" style="width:45.0%" /></right> <img src="www/Website/number_of_units.png" alt="number_of_units" style="width:45.0%" /></left> <img src="www/Website/factor_number_of_units.png" alt="factor_number_of_units" style="width:45.0%" /></right> <img src="www/Website/stories_number.png" alt="stories_number" style="width:45.0%" /></left> <img src="www/Website/factor_stories_number.png" alt="factor_stories_number" style="width:45.0%" /></right></p>
+</div>
+<div id="interactions-dummy_in_after_interaction-distance_after_interaction-distance_in_after_interaction." class="section level4">
+<h4>Interactions (dummy_in_after_interaction, distance_after_interaction, distance_in_after_interaction.)</h4>
+<p>Finally, we create three interactions between variables. The first interaction variable is dummy_in_after_interaction, an interaction between dummy_out_in and dummy_before_after. Thus, the observations will be valued at 1 if they are both inside the project area and after the project implementation. This variable is the main effect variable, and we will use the coefficient and p-value of this variable to determine the impact of the broadband initiative project. <br> <br> The next interaction variables are distance_after_interaction and distance_in_after_interaction. Interaction variable distance_in_after_interaction represents an interaction between the distance_miles and dummy_out_in and dummy_before_after. Thus, in a similar fashion to dummy_in_after_interaction, distance_in_after_interaction represents the effect on property prices for properties inside and after project implementation, magnified by the distance of the property to the project boundary. This variable is also the main effect variable, and we will use the coefficient and p-value of this variable to determine the impact of the broadband initiative project, although in a seperate model from the dummy_in_after_interaction variable.</p>
+</div>
+<div id="data-cleaning" class="section level4">
+<h4>Data Cleaning</h4>
+<p>After selecting and manipulating the variables, duplicated and incomplete property observations were deleted. Our final dataset had 137558 observations, compared to 289184 before the data was cleaned. The distribution of these properties by inside/outside the project area and before/after project implementation are shown in the contingency matrices below.</p>
+<img src="www/Website/contingency_before.png" style="width:80.0%" />
+</center>
+<img src="www/Website/contingency_after.png" style="width:90.0%" />
+</center>
+</div>
+</div>
+<div id="final-model" class="section level3">
+<h3>Final Model</h3>
+<p>With the variables mentioned above, we created two log-linear models with the dependent variable of assessed property values. The model to the left uses main effect variables dummy_out_in, dummy_before_after, and dummy_in_after_interaction. The main variable coefficient to consider is the dummy_in_after_interaction coefficient of -0.01409, which is 0.986 when exponentiated. This signals that homes inside the project area after the project implemention had a lower property value by 1.4%. However, this is the only variable in the model with an insignificant p-value, denoting that no significant conclusion can be made. <br> <br> The model on the right uses dummy_before_after, distance_miles, distance_after_interaction, and distance_in_after_interaction. The main variable coefficient to consider is the distance_in_after_interaction coefficient of -1.17e-05, which is 0.999 when exponentiated. This denotes that home that were inside the project area and after project implementation had a lower property value by 0.1%, showing almost no effect. Unlike the first model, this main effect variable is significant to the model. <br> <br> In both models, housing characteristics have strong influences on the property homes. Properties with fireplaces and higher numbers of bedrooms, bathrooms, units, stories, living area, and land area had a housing premium. On the other hand, properties that were older, classified as mobile homes, and had a higher living area to land area ratio had lower property values. <br> <br> The outputs are given below.</p>
+<p><img src="www/dummy.png" style="width:45.0%" /></left> <img src="www/distance.png" style="width:45.0%" /></right></p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>This project sought to determine if the implementation of broadband in rural areas would affect the property values of homes in said areas. Our analysis focused specifically on Broadband Initiative Project OH1106-A40. From the two models above, we can infer that there was no significant difference between the property values of homes that were inside of the project area versus outside of the project area after the project was implemented. Housing characteristics such as age, size, and the number of bedrooms/bathrooms in the property were significant indicators of the property value.</p>
+</div>
+<div id="next-steps" class="section level3">
+<h3>Next Steps</h3>
+<p>This analysis revolved around a specific project area, which we would like to use as a model to extrapolate to other project areas in the Broaband Initiative Project and other broaband projects more generally. We would also like to implement further modeling techniques such as the spatial regression model and difference in differences model mentioned in the overview page.</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

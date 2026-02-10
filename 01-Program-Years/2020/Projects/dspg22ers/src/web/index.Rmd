@@ -1,0 +1,45 @@
+---
+title: "Impacts of Broadband Development on Rural Property Values"
+
+---
+<font size="3">
+
+
+# **Background**
+Broadband investment is a high priority for the Administration and Congress. The importance of broadband became more evident during the COVID pandemic. There has been little research on the economic impacts of broadband programs so this project aims to devise novel statistical methodology that allow for program evaluation. The programs that this analysis focuses on are the Broadband Initiatives Program and Community Connect program
+
+### Broadband Initiatives Program
+The Broadband Initiatives Program is part of the American Recovery and Reinvestment Act of 2009, a \$2.5 billion investment allocated U.S. Department of Agriculture’s Rural Utilities Service (RUS) to deploy broadband in rural areas. The Recovery Act requires that a minimum 75 percent of the funded area be rural areas that lack access to high speed broadband. In total, the program provided over \$2.33 billion in grants and \$1.19 billion in loans to 320 projects, totaling over $3.5 billion. This program has supported near 100,000 households and thousands of businesses. The property value analysis surrounds this program. 
+
+### Community Connect 
+The Community Connect program provides financial assistance to in rural, economically-challenged communities that lack any existing broadband speed of at least 10 Mbps downstream and 1 Mbps upstream. The purpose of this program is to make differences “in the quality of life for people and businesses” with potential to tape into “Internet for jobs, education, healthcare, public safety, and community development.” Since 2013, this program has awarded more $160 million to over 80 project areas where 100k rural residents reside. The Ookla analysis surrounds this program.
+
+
+# **Goal**
+The goal of this project is to evaluate the effectiveness of United States Department of Agriculture (USDA) broadband initiatives. Our work on this project concerned the effect of broadband programs on two specific variables, internet speeds and assessed property values. 
+
+# **Research Questions**
+* How can we analyze the difference in broadband speeds resulting from the deployment of the aforementioned broadband infrastructure projects? 
+* How can we quantify the impact of the USDA's investments into broadband infrastructure on property values for a specific project area and more broadly, nationally? 
+<br>
+
+## **Project Sponsor**
+The sponsor of this project is the USDA Economic Research Service, and our stakeholder is John Pender, senior economist.
+
+# **Method**
+###Hedonic Regression Model 
+Housing prices were modelled with a hedonic regression model. Different characteristics of each property such as square footage, bedrooms, and bathrooms were evaluated for the effect on house prices so that we could isolate the effects of the program.
+
+###Difference in Differences 
+To illustrate the effects of the program on internet speeds and housing prices, we implemented difference in differences by including indicators for time elapsed, position relative to project border, and the interaction between the two.
+
+
+
+<!-- Here's how you make a list: -->
+
+<!-- *Tips for making figures look good:* -->
+
+<!-- - Make text sizes BIG -->
+<!-- - Stick to the same colors -->
+<!-- - Decide to add titles, captions, etc in the figures OR add on the website for all figures -->
+

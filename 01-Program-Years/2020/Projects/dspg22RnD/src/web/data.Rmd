@@ -1,0 +1,39 @@
+---
+title: "Data"
+---
+<p align="center">    
+<font size="3">
+
+![Federal RePORTER](www/reporter.PNG)  
+</p>  
+
+## Federal RePORTER Database
+"Federal RePORTER, a funded research and development grant database, contained a vast amount of information on federally funded R&D and was utilized by researchers and policymakers to uncover insights" (Linehan et al., 2022) Federal RePORTER data contains over 1 million federally funded R&D grants from science and technology federal agencies from 2000 (Linehan et al., 2022). Project information included title, funding department, funding agency, principal investigator (PI), organization, start date, and total cost. Federal RePORTER data were submitted by the individual agencies including HHS, NSF, USDA, NASA, DOD, VA, ED, and EPA.
+<br>
+<br>
+Federal RePORTER was retired in 2022, although archived data through fiscal year 2020 are available at https://federalreporter.nih.gov/.  
+
+## Data Wrangling  
+Our raw dataset contained 1,262,655 projects from FYs 2008-2020.  In order to prepare this data for analysis we  
+
+1.	Removed projects that were missing an abstract (42,536 projects),  
+
+2.	Deduplicated projects by title, abstract, and FY, and then removed the repeated project entries (71,902 projects), and  
+
+3.	Removed abstracts that were short phrases such as “Abstract not provided”.  
+
+Doc2Vec utilizes the raw abstract text. It takes items such as common words (i.e. the, and, it) and non-alphabetic characters into account to give documents as a whole meaning. The other factorization method, TF-IDF, requires text processing to be effective.  
+ 
+
+## Text Data Preparation  
+We processed the abstract text of each project by   
+
+1.	Removing phrases such as “description (provided by applicant)”,   
+
+2.	Performing standard Natural Language Processing (NLP) methods, specifically tokenization, lemmatization, stop word removal, and addition of bi-grams and tri-grams, and  
+
+3.	Discarding length one tokens and numeric tokens except those of length four (years).
+
+
+##Sources
+Linehan K, Oh E, Thurston J, Siwe GL, Garrett M, Keller S, Shipp S, Kindlon A, Jankowski, J. Technical Report - Detecting Federally Funded Research and Development Trends Using Machine Learning and Information Retrieval Methods, Technical Report. BI-2022-1531. Proceedings of the Biocomplexity Institute. University of Virginia; 2022 May. DOI: https://doi.org/10.18130/4c3g-k017.
