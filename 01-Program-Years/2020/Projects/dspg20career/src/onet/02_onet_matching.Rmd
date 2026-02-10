@@ -1,0 +1,114 @@
+---
+title: "ONET Matching Attempt"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# load packages 
+for (pkg in c("tidyverse", "igraph", "visNetwork", "data.table", "R.utils", "RPostgreSQL", "cowplot", "maditr", "stringr", "stringi", "mosaic", "dplyr", "ggplot2", "lubridate", "readxl")) {
+  library(pkg, character.only = TRUE)
+}
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+get_db_conn <-
+  function(db_name = "sdad",
+           db_host = "postgis1",
+           db_port = "5432",
+           db_user = Sys.getenv("db_usr"),
+           db_pass = Sys.getenv("db_pwd")) {
+    RPostgreSQL::dbConnect(
+      drv = RPostgreSQL::PostgreSQL(),
+      dbname = db_name,
+      host = db_host,
+      port = db_port,
+      user = db_user,
+      password = db_pass
+    )
+  }
+
+con <- get_db_conn()
+
+#query onet data
+onet <- DBI::dbGetQuery(con, "SELECT * FROM onet.job_zones")
+
+# query job data
+job <- DBI::dbGetQuery(con, "SELECT *
+FROM bgt_res.job A
+JOIN bgt_res.id_msa_dc B
+ON A.id = B.id"
+)
+
+DBI::dbDisconnect(con)
+```
+
+```{r}
+#check that id columns are identical and drop one
+ncol(job)
+identical(job[[1]],job[[10]])
+job <- job[-10]
+```
+
+
+There are `r length(unique(job$onet))` unique ONET codes in the job table and `r length(unique(onet$onetsoc_code))` unique ONET codes in the ONET table. 
+
+```{r}
+inner_onet <- merge(job, onet, by.x = "onet", by.y = "onetsoc_code")
+```
+
+An inner join (below) drops the number of observations in the table from `r nrow(job)` to `r nrow(inner_onet)`.
+
+Looking at the rows that did not join successfully with an anti-join:
+```{r}
+anti_onet <- anti_join(job, onet, by = c("onet" = "onetsoc_code"))
+```
+
+
+```{r}
+unique_anti <- unique(anti_onet$onet)
+```
+There are `r nrow(unique_anti)` unique ONET codes that did not join.
+
+The following are the codes that most commonly did not join:
+```{r}
+grouped_anti_onet <- anti_onet %>%
+  group_by(onet) %>%
+  summarize(n=n()) %>%
+  arrange(desc(n))
+grouped_anti_onet
+```
+
+Using the ONET codes found online (which are slightly different from the codes in the pgAdmin database), we can attempt to further investigate the ONET codes that didn't join.
+```{r}
+onet_web <- read_excel('~/Occupation_Data.xlsx')
+colnames(onet_web)
+```
+
+```{r}
+onet_web <- rename(onet_web, c("soc_code" = "O*NET-SOC Code"))
+```
+
+```{r}
+colnames(onet_web)
+```
+
+```{r}
+onet_web_soc <- onet_web$soc_code
+```
+
+```{r}
+grouped_anti_merged <- merge(grouped_anti_onet, onet_web, by.x = 'onet', by.y = 'soc_code')
+```
+
+Below are the most common values that *did* exist online, but did *not* merge with the job table. There are still codes that were in the pgAdmin ONET data that are not in the online data.
+```{r}
+grouped_anti_merged %>%   
+  group_by(onet) %>%
+  arrange(desc(n))
+```
+

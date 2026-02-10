@@ -1,0 +1,424 @@
+---
+title: "11 Baseline Onet55 Clustering"
+author:
+  "Crystal Zang"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    highlight: tango
+editor_options: 
+  chunk_output_type: console
+weight: 1
+draft: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+for (pkg in c("tidyverse",  "data.table", "R.utils", "maditr", "stringr", "stringi", "dplyr", "ggplot2", "lubridate", "gt", "DataExplorer", "TraMineR", "TraMineRextras", "cluster", "tools")) {
+  library(pkg, character.only = TRUE)
+}
+
+uva_color_palette <- 
+c("#232D4B", #space cadet
+  "#2C4F6B", #indigo dye
+  "#0E879C", #blue munsell
+  "#60999A", #cadet blue
+  "#D1E0BF", #tea green
+  "#D9E12B", #pear
+  "#E6CE3A", #citrine
+  "#E6A01D", #marigold
+  "#E57200" #princeton orange
+)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+#import veteran job data
+bg_vet_job <-read_csv("~/git/dspg20career/data/04_bg_vet_job.csv")%>%
+  mutate(year_enter_job_market = year(date_enter_job_market))%>%
+  select(-noofjobs, -sector, -tenure)
+colnames(bg_vet_job)
+
+#veterans and the date they ended their last ONET 55 job
+vet_endmilitary <- bg_vet_job%>%
+  mutate(date_end_onet55 = if_else(is_onet55==T, enddate, as.Date(NA)))%>%
+  filter(!is.na(date_end_onet55))%>%  #exluce people who don't have valid onet55 code
+  select(id, date_end_onet55) %>%
+  #keep the latest onet55 job
+  group_by(id)%>%   
+  arrange(desc(date_end_onet55))%>%
+  group_by(id)%>%
+  distinct(id, .keep_all = TRUE) 
+
+bg_vet_job  <- inner_join(bg_vet_job, vet_endmilitary, by = "id")
+
+## sequence data
+bg_vet_job_seq <- bg_vet_job %>%
+  select(id, end_year, onet_job_zone, startdate, enddate, job_duration_day, date_end_onet55, year_enter_job_market)%>%
+  mutate(year_end_onet55 = year(date_end_onet55))%>%
+  select(-year_enter_job_market)%>%
+  filter(startdate >= date_end_onet55)%>% #find jobs that came after the date ended onet55 job
+  filter(onet_job_zone != 55)  %>%  #filter out 55 jobs that have the same start and end date  
+  mutate(start_year = year(startdate))
+
+
+check <- bg_vet_job_seq%>%
+  mutate(year_until_first_job = start_year- year_end_onet55)%>%
+  group_by(id)%>%
+  summarize(years = min(year_until_first_job))
+
+ggplot(check, aes(x = years)) + 
+  geom_histogram(binwidth = 1.4) + 
+  labs(title = "", x = "years until first job") 
+
+summary(check$years)
+
+bg_vet_job_seq <- bg_vet_job_seq%>%
+  mutate(start_year = start_year - year_end_onet55 + 1)%>%  #transform from calender year to year start sequence analysis
+  mutate(end_year = end_year - year_end_onet55 + 1) %>% #transform from calender year to year start sequence analysis
+  select(id, start_year, end_year, onet_job_zone)%>%
+  group_by(id)%>%
+  arrange(desc(onet_job_zone))%>%
+  group_by(id)%>%
+  distinct(id, start_year, end_year, .keep_all = TRUE)
+```
+
+
+```{r}
+#table(bg_vet_job_seq$onet_job_zone)
+#length(unique(bg_vet_job_seq$id))  #confirm sample size match
+
+bg_vet_job_seq <- as.matrix(bg_vet_job_seq)
+bg_vet_job_seq <- as.data.frame(bg_vet_job_seq)
+
+min(bg_vet_job_seq$start_year)
+max(bg_vet_job_seq$start_year)
+```
+
+```{r}
+# STS format
+sts_vet <- seqformat(bg_vet_job_seq, from = "SPELL", to = "STS",
+                     id = "id",  begin = "start_year", end = "end_year", 
+                     status = "onet_job_zone", process = FALSE)
+
+#obtain jobs that appear after 10 years they exit military 
+sts_vet <- sts_vet[, 1:10]
+
+# Here we are renaming columns to be in format "yn" (year in the job market)
+names(sts_vet) <- paste0("y", 1:ncol(sts_vet))
+```
+
+# Normalize transition matrix
+```{r}
+vet.seq <- seqdef(sts_vet, left="Unemployment", gaps="Unemployment", right="Unemployment/Exit", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5", "#CBBEB5","#CBBEB5"))
+
+## Computing transition rates
+#counts
+transition_matrix <- seqtrate(vet.seq, weighted=FALSE, count=TRUE)
+round(transition_matrix,2)
+#standardize counts
+
+#make the diagnal 0
+diag(transition_matrix) = 0
+round(transition_matrix,2)
+
+#calculate rowsum
+rowsum <- apply(transition_matrix, 1, sum)
+
+#calculate percent 
+for(i in 1:nrow(transition_matrix)) {
+  for (j in 1:ncol(transition_matrix)){
+    transition_matrix[i,j] = transition_matrix[i,j]/rowsum[i]
+  }
+}
+
+#code NAs as 0
+for(j in 1:ncol(transition_matrix)){
+      transition_matrix[9,j] = transition_matrix[9,j] = 0
+}
+round(transition_matrix,2)
+
+
+#convert transition matrix to cost matrix
+cost_matrix <- 2-transition_matrix
+round(cost_matrix,2)
+
+#make the diagnal 0
+diag(cost_matrix) = 0
+round(cost_matrix,2)
+```
+
+# Sequence Clustering
+Sequence starts at the second year after they finished their last ONET 55 job
+```{r, fig.height = 10, fig.width = 8}
+# vet.seq.OM <- seqdist(vet.seq, method = "OM", indel = 3, sm = cost_matrix, with.missing = TRUE)
+# clusterward <- agnes(vet.seq.OM, diss = TRUE, method = "ward")
+# saveRDS(clusterward, file = "data/clusterward_onet55_10yrs_normalized_matrix.rds")
+
+clusterward <- readRDS(file = "~/git/dspg20career/data/clusterward_onet55_10yrs_normalized_matrix.rds")
+
+
+#dendrogram 
+plot(clusterward, which.plots =2)
+abline(h=200, col="purple")
+abline(h=90, col="red")
+```
+
+
+## Six clusters
+```{r, fig.height = 10, fig.width = 8}
+
+cluster6 <- cutree(clusterward, k=6)
+
+cluster6 <- factor(cluster6, labels = c("Type 1",  "Type 2", "Type 3", "Type 4", "Type 5", "Type 6"))
+table(cluster6)
+
+#longitudinal plot
+seqfplot(vet.seq, group = cluster6, pbarw = T)
+
+#another cluster plot
+seqmtplot(vet.seq, group = cluster6)
+```
+
+
+## Eight clusters
+```{r, fig.height = 13, fig.width = 8}
+cluster8 <- cutree(clusterward, k=8)
+cluster8 <- factor(cluster8, labels = c("Type 1",  "Type 2", "Type 3", "Type 4", "Type 5", "Type 6", "Type 7", "Type 8"))
+table(cluster8)
+
+#longitudinal plot
+seqfplot(vet.seq, group = cluster8, pbarw = T)
+
+#another cluster plot
+seqmtplot(vet.seq, group = cluster8)
+```
+
+
+## Twelve clusters
+```{r, fig.height = 18, fig.width = 8}
+cluster12 <- cutree(clusterward, k=12)
+cluster12 <- factor(cluster12, labels = c("Type 1",  "Type 2", "Type 3", "Type 4", "Type 5", "Type 6", "Type 7", "Type 8", "Type 9", "Type 10", "Type 11", "Type 12"))
+table(cluster12)
+
+#longitudinal plot
+seqfplot(vet.seq, group = cluster12, pbarw = T)
+
+#another cluster plot
+seqmtplot(vet.seq, group = cluster12)
+```
+
+## Fifteen clusters
+```{r, fig.height = 22, fig.width = 9}
+cluster15 <- cutree(clusterward, k=15)
+cluster15 <- factor(cluster15, labels = c("Type 1",  "Type 2", "Type 3", "Type 4", "Type 5", "Type 6", "Type 7", "Type 8", "Type 9", "Type 10", "Type 11", "Type 12", "Type 13", "Type 14", "Type 15"))
+table(cluster15)
+
+#longitudinal plot
+seqfplot(vet.seq, group = cluster15, pbarw = T)
+
+#another cluster plot
+seqmtplot(vet.seq, group = cluster15)
+```
+
+
+## Twenty clusters
+```{r, fig.height = 31, fig.width = 12}
+cluster20 <- cutree(clusterward, k=20)
+cluster20 <- factor(cluster20, labels = c("Type 1",  "Type 2", "Type 3", "Type 4", "Type 5", "Type 6", "Type 7", "Type 8", "Type 9", "Type 10", "Type 11", "Type 12", "Type 13", "Type 14", "Type 15", "Type 16", "Type 17", "Type 18", "Type 19","Type 20"))
+table(cluster20)
+
+#longitudinal plot
+seqfplot(vet.seq, group = cluster20, pbarw = T)
+
+#another cluster plot
+seqmtplot(vet.seq, group = cluster20)
+```
+
+# Q1. Do Veterans Who Had Different Education Level Have Different Career Trajectory?
+## Clusters V.S. Degree in 20 clusters
+```{r}
+vet <- unique(bg_vet_job_seq$id)
+#vet <- rownames(sts_vet)
+
+vet_df <- as.data.frame(cbind(vet, cluster20))
+colnames(vet_df) <- c("id", "cluster")
+
+class(vet_df$id)
+
+bg_vet_demographic <-read_csv("~/git/dspg20career/data/02_bg_vet_demographic.csv")
+vet_df <- left_join(vet_df, bg_vet_demographic, by = "id")
+
+degree <- vet_df %>%
+  filter(!is.na(degree_highest))%>%
+  group_by(cluster, degree_highest)%>%
+  summarize(count=n())%>%
+  group_by(degree_highest)%>%
+  mutate(sum = sum(count))%>%
+  mutate(perc = count/sum)
+
+#degree$count[is.na(degree$count)] <- 0
+
+degree$cluster <- as.factor(degree$cluster)
+degree$degree_highest <- factor(degree$degree_highest, levels = c("others","certificate","highschool", "associate", "bachelor", "master", "doctor"))
+
+
+degree <- as.data.frame(degree)
+
+ggplot(degree, aes(cluster, degree_highest, fill= count)) + 
+  geom_tile()+
+  scale_fill_gradient(low="white", high="blue")+
+  theme_classic()+
+  labs(title = "Clustering X Degree --before normalization")
+
+ggplot(degree, aes(cluster, degree_highest, fill= perc)) + 
+  geom_tile()+
+  scale_fill_gradient(low="white", high="blue")+
+  theme_classic()+
+  labs(title = "Clustering X Degree --after normalization")
+
+```
+
+## Clusters V.S. Degree in 8 clusters
+```{r}
+vet <- unique(bg_vet_job_seq$id)
+vet_df <- as.data.frame(cbind(vet, cluster8))
+colnames(vet_df) <- c("id", "cluster")
+
+class(vet_df$id)
+
+vet_df <- left_join(vet_df, bg_vet_demographic, by = "id")
+
+degree <- vet_df %>%
+  filter(!is.na(degree_highest))%>%
+  group_by(cluster, degree_highest)%>%
+  summarize(count=n())%>%
+  group_by(degree_highest)%>%
+  mutate(sum = sum(count))%>%
+  mutate(perc = count/sum)
+
+#degree$count[is.na(degree$count)] <- 0
+
+degree$cluster <- as.factor(degree$cluster)
+degree$degree_highest <- factor(degree$degree_highest, levels = c("others","certificate","highschool", "associate", "bachelor", "master", "doctor"))
+
+
+degree <- as.data.frame(degree)
+
+ggplot(degree, aes(cluster, degree_highest, fill= count)) + 
+  geom_tile()+
+  scale_fill_gradient(low="white", high="blue")+
+  theme_classic()+
+  labs(title = "Clustering X Degree --before normalization")
+
+
+ggplot(degree, aes(cluster, degree_highest, fill= perc)) + 
+  geom_tile()+
+  scale_fill_gradient(low="white", high="blue")+
+  theme_classic()+
+  labs(title = "Clustering X Degree --after normalization")
+```
+
+```{r}
+# contingency table
+vet <- unique(bg_vet_job_seq$id)
+vet_df <- as.data.frame(cbind(vet, cluster8))
+colnames(vet_df) <- c("id", "cluster")
+vet_df$cluster <- as.factor(vet_df$cluster)
+
+vet_df <- vet_df %>%
+  left_join(bg_vet_demographic, by = "id")%>%
+  filter(!is.na(degree_highest))
+
+table <- table(vet_df$cluster, vet_df$degree_highest)
+table
+degree_p_matrix <- c()
+for (degree in 1: ncol(table)){ 
+  degree_p_vector_i <- c()
+  for (i in 1:nrow(table)){ #cluster 1-8
+    tb_i <- matrix(NA, nrow = 2, ncol = 2)
+    tb_i[1,1] <- table[i,1]
+    tb_i[2,1] <- sum(table[,1])-table[i,1]
+    tb_i[1,2] <- sum(table[1,])-table[i,1]
+    tb_i[2,2] <- sum(table)-tb_i[1,1] - tb_i[2,1] -tb_i[1,2] 
+    degree_p_vector_i[i] <- fisher.test(tb_i)$p.value
+  }
+  degree_p_matrix <- cbind(degree_p_matrix, degree_p_vector_i)
+}
+colnames(degree_p_matrix) <- c("associate","bachelor","certificate", "doctor", "highschool", "master", "others")
+degree_p_matrix <- degree_p_matrix[,c("others","certificate","highschool", "associate", "bachelor", "master", "doctor")]
+
+degree_p_matrix
+degree_p_matrix <= 0.05
+table(degree_p_matrix <= 0.05)
+round(degree_p_matrix,2)
+```
+
+
+
+# Q2. Do Female and Male Veterans have different career trajectory?
+## Clusters V.S. Gender in 8 clusters
+In our sample, we have 15.9% (N=824) female veterans, 84.1% (N=3666) male veterans.
+We conducted $\chi^2$ test. Using 0.05 as the critical value, we conclude that female is statistically different from male in cluster 3, 4, 7, and 8.
+```{r}
+dev.off()
+
+gender <- vet_df %>%
+  filter(!is.na(gender))%>%
+  group_by(cluster, gender)%>%
+  summarize(count=n())%>%
+  group_by(gender)%>%
+  mutate(sum = sum(count))%>%
+  mutate(perc = count/sum )
+
+#degree$count[is.na(degree$count)] <- 0
+
+gender$cluster <- as.factor(gender$cluster)
+gender$gender <- as.factor(gender$gender)
+
+
+gender <- as.data.frame(gender)
+
+ggplot(gender, aes(cluster, gender, fill= count)) + 
+  geom_tile()+
+  scale_fill_gradient(low="white", high="blue")+
+  theme_classic()+
+  labs(title = "Clustering X Gender --before normalization")
+  
+
+ggplot(gender, aes(cluster, gender, fill= perc)) + 
+  geom_tile()+
+  scale_fill_gradient(low="white", high="blue")+
+  theme_classic()+
+  labs(title = "Clustering X Gender --after normalization")
+
+# contingency table
+vet <- unique(bg_vet_job_seq$id)
+vet_df <- as.data.frame(cbind(vet, cluster8))
+colnames(vet_df) <- c("id", "cluster")
+vet_df$cluster <- as.factor(vet_df$cluster)
+vet_df <- vet_df %>%
+  left_join(bg_vet_demographic, by = "id")%>%
+  filter(!is.na(gender))
+
+table <- table(vet_df$cluster, vet_df$gender)
+table
+
+gender_p_vector <- c()
+for (i in 1: nrow(table)){
+  tb_i <- matrix(NA, nrow = 2, ncol = 2)
+  tb_i[1,1] <- table[i,1]
+  tb_i[2,1] <- sum(table[,1])-table[i,1]
+  tb_i[1,2] <- table[i,2]
+  tb_i[2,2] <- sum(table[,2])-table[i,2]
+  gender_p_vector[i] <- chisq.test(tb_i)$p.value
+}
+gender_p_vector
+gender_p_vector <= 0.05
+
+```
+

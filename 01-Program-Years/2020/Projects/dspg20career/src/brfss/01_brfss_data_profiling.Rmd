@@ -1,0 +1,251 @@
+---
+title: "BRFSS Data Profiling"
+author: "Crystal"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    highlight: tango
+    theme: journal
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#library(SASxport)
+library(tidyverse)
+#library(survey)
+library(foreign)
+library(DataExplorer)
+library(ggformula)
+library(mosaic)
+library(manipulate)
+library(RColorBrewer)
+library(gt)
+library(readr)
+```
+
+
+Reference codebook: https://www.cdc.gov/brfss/annual_data/2018/pdf/codebook18_llcp-v2-508.pdf
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+brfss2018 <- read_csv("~/git/dspg20career/src/brfss/brfss2018.csv")%>%
+  select(-X1)
+data_profiling <- function(df){
+summary_table <- tibble(var = names(df),
+       variable_type = map_chr(.x = df, .f = function(col) class(x = col)),                 
+       num_unique = map_int(.x = df, .f = function(col) length(x = unique(x = col))),
+       num_missing = map_int(.x = df, .f = function(col) sum(x = is.na(x = col)))) %>%
+  mutate(perc_missing = round(x = 100 * num_missing / nrow(x = .), digits = 2L))
+
+return(summary_table)
+}
+
+brfss2018%>%
+  data_profiling()%>%
+  gt()
+```
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+#I think you can use recode for mapping those values (https://dplyr.tidyverse.org/reference/recode.html)
+
+brfss2018_subset <- brfss2018 %>%
+  select(
+    X_STATE,
+    X_AGE80, #Imputed Age value collapsed above 80
+    X_RACE, #cleaned
+  #  X_BMI5CAT,
+    X_INCOMG, #cleaned
+    SEX1, #cleaned
+    #MARITAL,
+    EDUCA, #cleaned
+   # RENTHOM1,
+    VETERAN3, #cleaned
+    EMPLOY1,  #cleaned
+    INCOME2 #cleaned
+  ) %>%
+  mutate(race = if_else(
+    X_RACE == 1,
+    "White only, non-Hispanic",
+    if_else(
+      X_RACE == 2,
+      "Black only, non-Hispanic",
+      if_else(
+        X_RACE == 3,
+        "American Indian or Alaskan Native only, non-Hispanic",
+        if_else(
+          X_RACE == 4,
+          "Asian only, non-Hispanic",
+          if_else(
+            X_RACE == 5,
+            "Native Hawaiian or other Pacific Islander only, non-Hispanic",
+            if_else(
+              X_RACE == 6,
+              "Other race only, non-Hispanic",
+              if_else(
+                X_RACE == 7,
+                "Multiracial, non-Hispanic",
+                if_else(
+                  X_RACE == 8,
+                  "Hispanic",
+                if_else(X_RACE ==9, 
+                        "Don't know/Not sure/Refused", "NA")
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+  )) %>%
+  mutate(income = if_else(X_INCOMG == 1, "Less than $15,000",
+                          if_else(X_INCOMG == 2, "$15,000-$25,000",
+                                  if_else(X_INCOMG == 3, "$25,000-$35,000",
+                                      if_else(X_INCOMG == 4, "$35,000-$50,000",
+                                              if_else(X_INCOMG == 5, "$50,000 or more", "Don't know/Not sure/Missing"))))))%>%
+  mutate(sex = if_else(SEX1 == 1, "Male", 
+                       if_else(SEX1 == 2, "Female", "Don't know/Not sure/Refused")))%>%
+  mutate(education = if_else(EDUCA == 1, "Never attended school or only kindergarten",
+                             if_else(EDUCA == 2, "Grades 1 through 8 (Elementary)",
+                                     if_else(EDUCA == 3, "Grades 9 through 11 (Some high school) ", 
+                                             if_else(EDUCA == 4, "Grade 12 or GED (High school graduate) ",
+                                                     if_else(EDUCA == 5,  "College 1 year to 3 years (Some college or technical school)",
+  if_else(EDUCA == 6, "College 4 years or more (College graduate)", 
+        if_else(EDUCA == 9, "Refused", "NA"))))))))%>%
+  mutate(veteran = if_else(VETERAN3 == 1, "Yes", 
+                           if_else(VETERAN3 == 2, "No",
+                                   if_else(VETERAN3 %in% c(7,9), "Don't know/Not sure/Refused", "NA"))))%>%
+  mutate(employment = if_else(EMPLOY1 == 1, "Employed for wages",
+                              if_else(EMPLOY1 == 2, "Self-employed",
+                                      if_else(EMPLOY1 == 3, "Out of work for 1 year or more", 
+                                              if_else(EMPLOY1 == 4, "Out of work for less than 1 year", 
+                                                      if_else(EMPLOY1 == 5, "A homemaker",
+                                                              if_else(EMPLOY1 == 6, "A student",
+                                                                      if_else(EMPLOY1 == 7, "Retired", 
+                                                                              if_else(EMPLOY1 == 8, "Unable to work", 
+                                                                                      if_else(EMPLOY1 == 9, "Refused", "NA"))))))))))%>%
+  mutate(income = if_else(INCOME2 == 1, "Less than $10,000",
+                          if_else(INCOME2 == 2, "less than $15,000",
+                                  if_else(INCOME2 == 3, "less than $20,000",
+                                        if_else(INCOME2 == 4, "less than $25,000",  
+                                                 if_else(INCOME2 == 5, "less than $35,000", 
+                                                         if_else(INCOME2 == 6, "less than $50,000",
+                                                                  if_else(INCOME2 == 7, "less than $75,000",
+                                                                           if_else(INCOME2 == 8, "$75,000 or more", 
+                                                                                    if_else(INCOME2 %in% c(77, 99), "Don't know/Not sure/Refused", "NA"))))))))))%>%
+  select(-X_RACE, -X_INCOMG, -SEX1, -EDUCA, -VETERAN3, -EMPLOY1, -INCOME2)%>%
+  rename("age" = "X_AGE80")
+
+brfss2018_subset$X_STATE <- as.character(brfss2018_subset$X_STATE)
+```
+
+The sample size of BRFSS 2018 is `r nrow(brfss2018)`. Calculated variables are: state, age, BMI, income. Self reported variables are: sex, marital status, education level, home rental status, veteran status, employment status, self reported income.   
+
+```{r fig.width=15, fig.height=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+plot_bar(brfss2018)
+```
+
+```{r}
+plot_histogram(brfss2018)
+```
+
+# DC
+```{r fig.width=12, fig.height=15, message=FALSE, warning=FALSE, paged.print=FALSE}
+dc <- brfss2018%>%
+  filter(X_STATE == 11)  #DC is coded 11
+
+#glimpse(brfss2018)
+plot_bar(dc)
+```
+
+```{r}
+plot_histogram(dc)
+```
+
+# Veteran/Age
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+dc_vet <- dc%>%
+  filter(veteran %in% c("Yes", "No"))
+
+ggplot(dc_vet, aes(x = age, fill = veteran)) + 
+  geom_histogram(binwidth = 3) + 
+ # aes(colour = veteran) + 
+  labs(title = "") + 
+  theme(legend.position = "top") + 
+  scale_fill_brewer(palette = "Set2")
+
+```
+
+# Veteran/Race
+```{r fig.width=8, fig.height=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+vet_race <- table(dc_vet$veteran, dc_vet$race)%>%
+  as.data.frame()%>%
+  rename("veteran" = "Var1", "race" = "Var2")
+
+ggplot(vet_race, aes(x = race, y = Freq))+
+  geom_bar(aes(fill = veteran), 
+           stat = "identity")+ 
+  scale_fill_brewer(palette = "Set2")+
+  facet_wrap(~veteran) +
+  theme(axis.text.x = element_text(angle = 90))
+
+
+```
+
+# Veteran/Education
+```{r fig.width=8, fig.height=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+vet_edu <- table(dc_vet$veteran, dc_vet$education)%>%
+  as.data.frame()%>%
+  rename("veteran" = "Var1", "education" = "Var2")
+
+ggplot(vet_edu, aes(x = education, y = Freq))+
+  geom_bar(aes(fill = veteran), 
+           stat = "identity")+ 
+  scale_fill_brewer(palette = "Set2")+
+  facet_wrap(~veteran) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+
+# Veteran/Gender
+```{r fig.width=8, fig.height=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+vet_sex <- table(dc_vet$veteran, dc_vet$sex)%>%
+  as.data.frame()%>%
+  rename("veteran" = "Var1", "sex" = "Var2")
+
+ggplot(vet_sex, aes(x = sex, y = Freq))+
+  geom_bar(aes(fill = veteran), 
+           stat = "identity")+ 
+  scale_fill_brewer(palette = "Set2")+
+  facet_wrap(~veteran) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+# Veteran/Employment
+```{r fig.width=8, fig.height=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+vet_emp <- table(dc_vet$veteran, dc_vet$employment)%>%
+  as.data.frame()%>%
+  rename("veteran" = "Var1", "employment" = "Var2")
+
+ggplot(vet_emp, aes(x = employment, y = Freq))+
+  geom_bar(aes(fill = veteran), 
+           stat = "identity")+ 
+  scale_fill_brewer(palette = "Set2")+
+  facet_wrap(~veteran) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+# Veteran/Income
+```{r fig.width=8, fig.height=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+vet_income <- table(dc_vet$veteran, dc_vet$income)%>%
+  as.data.frame()%>%
+  rename("veteran" = "Var1", "income" = "Var2")
+
+ggplot(vet_income, aes(x = income, y = Freq))+
+  geom_bar(aes(fill = veteran), 
+           stat = "identity")+ 
+  scale_fill_brewer(palette = "Set2")+
+  facet_wrap(~veteran) +
+  theme(axis.text.x = element_text(angle = 90))
+```

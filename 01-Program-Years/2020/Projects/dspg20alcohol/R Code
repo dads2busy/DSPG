@@ -1,0 +1,280 @@
+#Load required Packages
+library(DSPG)
+packages <- c("dplyr", "purrr", "readr", "stringr", "readr", "readxl",
+              "magrittr", "stringr", "ggplot2", "shiny", "sentimentr",
+              "shinythemes", "shinydashboard", "shinydashboardPlus", "plotly", "prophet","data.table", "dygraphs","ggthemes","lubridate","devtools","sf","leaflet","tidyr","tibble","plyr")
+
+for (pkgs in packages){
+  if(!require(pkgs, character.only = TRUE)){ # Condition
+    install.packages(pkgs) # Install if not
+    library(pkgs) # Load if installed
+  }
+}
+
+liquor_sales <- read_csv("Iowa_Liquor_Sales_by_Year_and_County.csv") #Named df_1 originally
+head(liquor_sales)
+pop_trends <- read.csv("IA_county_PopulationTotalTrends.csv") #Named ppl originally
+pop_trends = pop_trends %>%
+  select(county, e2012:e2019) 
+# clean data set
+liquor_sales <- liquor_sales %>% separate(Date, into = c("month","day","year", "time"))
+liquor_sales <- as.data.frame(liquor_sales)
+#Tidy datasets
+liquor_sales$County <- tolower(liquor_sales$County)
+liquor_sales$year <- as.factor(liquor_sales$year )
+liquor_sales[liquor_sales == "o'brien"] <- "obrien"
+liquor_sales[liquor_sales == "cerro gord"] <- "cerro gordo"
+liquor_sales[liquor_sales == "buena vist"] <- "buena vista"
+liquor_sales[liquor_sales == "pottawatta"] <- "pottawattamie"
+
+###Changed Xinyi's Code###
+liquor_sales_grouped <- liquor_sales %>%
+  group_by(County, year) %>%
+  summarise_at(vars(`Volume Sold (Gallons)`),list(sumVolumeSold = sum))
+
+#join alcohol sales data set with census data by county
+pop_trends_selected<- pop_trends %>%
+  select(county, e2012:e2019)
+pop_trends_selected$county <-tolower(pop_trends_selected$county)
+pop_trends_selected[pop_trends_selected == "o'brien"] <- "obrien"
+# rename
+head(pop_trends_selected)
+colnames(pop_trends_selected) <- c("County",2012, 2013, 2014, 2015,2016,2017,2018,2019)
+pop_trends_tibble <- pop_trends_selected %>%
+  pivot_longer("2012":"2019", names_to = 'year', values_to='population') #Originally called ppl_2
+head(pop_trends_tibble)
+pop_trends_tibble[pop_trends_tibble == "o'brien"] <- "obrien"
+#Merge data sets
+liquor_sales_by_pop <- merge(liquor_sales_grouped, pop_trends_tibble,by=c("County", "year")) ##Initially called total
+summary(liquor_sales_by_pop)
+colnames(liquor_sales_by_pop)[1] <-"COUNTY"
+#Plotting Map
+#map
+mymap<-st_read("county.shp")%>% st_transform(crs = 4326)
+#mymap<-ia_counties
+str(mymap)
+
+mymap$COUNTY <- tolower(mymap$COUNTY)
+mapData <- merge(mymap,liquor_sales_by_pop,by="COUNTY")
+str(mapData)
+mapData %>% 
+  filter(year ==2018)
+
+ggplot(mapData) +
+  geom_sf(aes(fill=sumVolumeSold/population)) + 
+  geom_sf_text(aes(label=COUNTY), colour = "white", size=2.5)+
+  ggtitle("Liquor Sales per county per capita in 2018")
+
+
+#Loading Iowa Unemployment Data
+Iowa_unemployment<-read.csv("Iowa LAUS Data 2020-05.csv")
+#Selecting the last 10 years duration
+Iowa_unemployment_data <- Iowa_unemployment %>% filter(YEAR >= 2010)
+#Checking if it's the 10 years wanted
+unique(Iowa_unemployment_data$YEAR) 
+#Only include county
+Iowa_unemployment_data<- Iowa_unemployment_data %>% filter(AREATYNAME == "County")
+#Mean for unemployment per year per county
+
+Iowa_unemployment_data_selected <- Iowa_unemployment_data %>%
+  select(AREANAME, YEAR, UNEMP,UNEMPRATE) ##Initially called ddf
+
+##Changed Xinyi's Code###
+Iowa_unemployment_data_selected_grouped <- Iowa_unemployment_data_selected %>%
+  group_by(AREANAME, YEAR) %>%
+  mutate(mean_rate = mean(UNEMPRATE)/12)%>% ##Initially called ddf_1
+  summarise_at(vars(mean_rate),list(mean_ratePerYear = sum))
+mymap_unemployment<-st_read("county.shp")%>% st_transform(crs = 4326) ##It was mymap before
+
+Iowa_unemployment_data_selected_grouped_mod<- Iowa_unemployment_data_selected_grouped %>% mutate(COUNTY = str_remove_all(AREANAME, " County")) ##It was ddf_1
+Iowa_unemployment_data_final_sel <- Iowa_unemployment_data_selected_grouped_mod[, c(4,2,3)] ##It was ddf_2
+
+Iowa_unemployment_data_final_sel$COUNTY <-tolower(Iowa_unemployment_data_final_sel$COUNTY)
+Iowa_unemployment_data_final_sel[Iowa_unemployment_data_final_sel == "o'brien"] <- "obrien"
+mymap_unemployment$COUNTY <- tolower(mymap_unemployment$COUNTY)
+
+#Merging 2 maps together
+map_Data_Unemp <- merge(mapData,Iowa_unemployment_data_final_sel,by="COUNTY")
+
+#check number of counties data
+#Changed Xinyi's Code
+c<-count(map_Data_Unemp, vars = "COUNTY") %>% head(99)
+c
+
+x = map_Data_Unemp$sumVolumeSold/map_Data_Unemp$population
+y = map_Data_Unemp$mean_ratePerYear
+bins <- c(0, (mean(x)-2*sd(x)), (mean(x)-1*sd(x)), (mean(x)),(mean(x)+1*sd(x)),(mean(x)+2*sd(x)),Inf)
+
+bins_1 <- c(0,(mean(y)-2*sd(y)), (mean(y)-1*sd(y)), (mean(y)),(mean(y)+1*sd(y)),(mean(y)+2*sd(y)),Inf)
+
+pal <- colorBin("YlOrRd", domain = x, bins = bins)
+pal_1 <- colorBin("YlOrRd", domain = y, bins = bins_1)
+###########################Deepak's Portion#####################################
+df = fread('Iowa_Liquor_Sales.csv',select =c("Date","Volume Sold (Gallons)"))
+df = dplyr::rename(df, Volume = `Volume Sold (Gallons)`)
+
+df1 = aggregate(df$Volume, by=list(Date=df$Date), FUN=sum)
+
+df1 = dplyr::rename(df1, ds = Date, y = x)
+df1$ds <- as.Date(df1$ds , format = "%m/%d/%Y")
+df1 = transform(df1, day = wday(ds))
+df1<-df1[!(df1$day==6),]
+df1<-df1[!(df1$day==7),]
+df1<-df1[!(df1$day==1),]
+m <- prophet(df1)
+future <- make_future_dataframe(m, periods = 365)
+tail(future)
+forecast <- predict(m, future)
+tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')])
+
+df2_1 = fread('2016-2018Iowa_Liquor_Sales(CollegeTowns) (2).csv',select =c("Date","Volume Sold (Gallons)"))
+df2_2 = fread('2019Iowa_Liquor_Sales(CollegeTowns).csv',select =c("Date","Volume Sold (Gallons)"))
+df2_bind = rbind(df2_1,df2_2)
+df2_bind = dplyr::rename(df2_bind, Volume = 'Volume Sold (Gallons)')
+
+df2 = aggregate(df2_bind$Volume, by=list(Date=df2_bind$Date), FUN=sum)
+#df2 = df2_bind %>% count(Date)
+df2 = dplyr::rename(df2, ds = Date, y = x)
+df2$ds <- as.Date(df2$ds , format = "%m/%d/%Y")
+df2 = transform(df2, day = wday(ds))
+df2$cap = 8000
+m2 <- prophet(df2,growth = 'logistic')
+future2 <- make_future_dataframe(m2, periods = 365)
+future2$cap = 8000
+tail(future2)
+forecast2 <- predict(m2, future2)
+tail(forecast2[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')])
+#plot(m2, forecast2)
+#prophet_plot_components(m2, forecast2)
+
+#dyplot.prophet(m2, forecast2)
+df3_1 = read.csv(file = 'crash data june 19 2020 (1).csv')
+df3_1 = filter(df3_1, Drug.or.Alcohol.Related == 'Alcohol (Statutory)'|Drug.or.Alcohol.Related == 'Under Influence of Alcohol/Drugs/Medications'|Drug.or.Alcohol.Related == 'Drug/Alcohol (Statutory)')
+df3_1 = filter(df3_1, Driver.Condition == 'Under the influence of alcohol')
+df3 = df3_1 %>%select(Date.of.Crash)
+df3 = df3 %>% dplyr::count(Date.of.Crash)
+df3 = dplyr::rename(df3, ds = Date.of.Crash, y = n)
+df3$ds <- as.Date(df3$ds , format = "%Y%m%d")
+df3 = transform(df3, day = wday(ds))
+m3 = prophet(df3)
+future3 = make_future_dataframe(m3, periods = 365)
+tail(future3)
+forecast3 = predict(m3,future3)
+tail(forecast3[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')])
+#dyplot.prophet(m3, forecast3)
+sidebar <- dashboardSidebar(
+  sidebarMenu(
+    #sliderInput("size", "Sample Size:", min = 2012, max = 2019,value = 2012),
+    menuItem("Alcohol Abuse - Statistics", icon = icon("bar-chart-o"), tabName = "Introduction"),
+    menuItem("Forecasts", icon = icon("bar-chart-o"), tabName = "Forecasts")
+
+    #textInput("name", "Enter your name:", value = "Heike"),
+    #selectInput("state", "Enter your State:", choices=c("Virginia", "Oregon", "Iowa", "Other"))
+  )
+)
+body <- dashboardBody(
+  tabItems(
+    tabItem(tabName = 'Introduction',
+            fluidRow(
+              boxPlus(
+                width = 10,
+                title = "Iowa Alcohol Sales Map",
+                closable = TRUE,
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                leafletOutput(outputId = "alcohol_map")
+              )
+            ),
+    ),
+    tabItem(tabName = 'Forecasts',
+            navbarPage("Datasets",
+                       tabPanel(("Alcohol Sales"),
+                                fluidRow(
+                                  boxPlus(
+                                    width = 10,
+                                    title = "Iowa Alcohol Sales Forecast",
+                                    closable = TRUE,
+                                    solidHeader = TRUE,
+                                    collapsible = TRUE,
+                                    dygraphOutput(outputId = "alcohol_forecast")
+                                  )
+                                ),
+                                fluidRow(
+                                  boxPlus(
+                                    width = 10,
+                                    title = "Iowa Alcohol Sales Trend",
+                                    closable = TRUE,
+                                    solidHeader = TRUE,
+                                    collapsible = TRUE,
+                                    plotOutput(outputId = "alcohol_trend")
+                                  )
+                                )),
+                       tabPanel(("Campus Town Alcohol Sales"),
+                                fluidRow(
+                                  boxPlus(
+                                    width = 10,
+                                    title = "Sales Forecast",
+                                    closable = TRUE,
+                                    solidHeader = TRUE,
+                                    collapsible = TRUE,
+                                    dygraphOutput(outputId = "campus_alcohol_forecast")
+                                  )
+                                ),
+                                fluidRow(
+                                  boxPlus(
+                                    width = 10,
+                                    title = "Campus Alcohol Sales Trend",
+                                    closable = TRUE,
+                                    solidHeader = TRUE,
+                                    collapsible = TRUE,
+                                    plotOutput(outputId = "campus_alcohol_trend")
+                                  )
+                                )),
+                       tabPanel(("Alcohol Related Crashes"),
+                                fluidRow(
+                                  boxPlus(
+                                    width = 10,
+                                    title = "Alcohol Related Crashes Forecast",
+                                    closable = TRUE,
+                                    solidHeader = TRUE,
+                                    collapsible = TRUE,
+                                    dygraphOutput(outputId = "crash_forecast")
+                                  )
+                                ),
+                                fluidRow(
+                                  boxPlus(
+                                    width = 10,
+                                    title = "Iowa Alcohol Sales Trend",
+                                    closable = TRUE,
+                                    solidHeader = TRUE,
+                                    collapsible = TRUE,
+                                    plotOutput(outputId = "crash_trend")
+                                  )
+                                ))
+            ))))
+
+ui <- dashboardPage(
+  dashboardHeader(title = "DEMOS"),
+  sidebar = sidebar,
+  body = body
+)
+
+server <- function(input, output) {
+
+  filter_mapData = reactive({filter(mapData, year ==input$size)})
+
+  output$alcohol_forecast = renderDygraph(dyplot.prophet(m, forecast))
+  output$alcohol_trend = renderPlot(prophet_plot_components(m, forecast))
+  output$campus_alcohol_forecast = renderDygraph(dyplot.prophet(m2, forecast2))
+  output$campus_alcohol_trend = renderPlot(prophet_plot_components(m2, forecast2))
+  output$crash_forecast = renderDygraph(dyplot.prophet(m3, forecast3))
+  output$crash_trend = renderPlot(prophet_plot_components(m3, forecast3))
+    output$alcohol_map = renderLeaflet({leaflet(map_Data_Unemp)%>%addProviderTiles("CartoDB")%>%
+      addTiles(group = "OSM (default)")%>%addPolygons(fill = 0, weight = 1, color = "#000000",group = "Base Map")%>%
+      addPolygons(color = ~pal(x), weight = 1,group = "Alcohol Consumption")%>%
+      addPolygons(color = ~pal_1(y), weight = 1,group = "Unemployment Rate")%>%
+      addLayersControl(baseGroups = c("Base Map", "Alcohol Consumption","Unemployment Rate"))
+    })
+}
+
+shinyApp(ui = ui, server = server)

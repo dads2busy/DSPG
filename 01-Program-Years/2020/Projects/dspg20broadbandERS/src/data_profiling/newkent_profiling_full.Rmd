@@ -1,0 +1,229 @@
+---
+title: "Full New Kent Profiling"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages}
+library(readxl)
+library(DataExplorer)
+library(ggplot2)
+library(dplyr)
+library(purrr)
+library(data.table)
+library(maditr)
+library(gridExtra)
+library(Hmisc)
+```
+
+```{r functions}
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- (len - (blanks + true_na + written_na)) / len
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+```{r}
+new_kent <- read_excel('~/git/dspg20broadbandERS/new-kent-data/NK ASSESSMENT REPORT 2020.xlsx')
+```
+
+Looking at: Building Area (Effective), Building Area (Gross), Building Area (Living), Land Area (Acres)
+
+```{r}
+check_complete(select(new_kent,53:56))
+introduce(select(new_kent, 53:56))
+plot_missing(select(new_kent, 53:56))
+```
+```{r}
+options(scipen = 10)
+grid.arrange(ggplot(new_kent, aes(x = `Land Area (Acres)`)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = `Building Area (Effective)`)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = `Building Area (Gross)`)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = `Building Area (Living)`)) + geom_histogram() + scale_x_log10(),
+             ncol = 2)
+```
+
+Looking at: Land, Improvement, Total
+
+```{r}
+check_complete(select(new_kent, 19:21))
+introduce(select(new_kent, 19:21))
+plot_missing(select(new_kent, 19:21))
+```
+```{r}
+grid.arrange(ggplot(new_kent, aes(x = Land)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = Improvement)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = Total)) + geom_histogram() + scale_x_log10(), 
+             nrow = 2)
+```
+```{r}
+new_kent <- new_kent %>%
+  dt_mutate(value_sum = Land + Improvement) %>%
+  dt_mutate(difference = Total - value_sum)
+sum(new_kent$difference)
+```
+
+Looking at: Record Date
+
+```{r}
+check_complete(select(new_kent, 29))
+introduce(select(new_kent, 29))
+plot_missing(select(new_kent, 29))
+```
+```{r}
+records <- as.POSIXlt(na.omit(new_kent$`Record Date`))
+record_years <- records$year + 1900
+h <- hist(record_years)
+text(h$mids, h$counts, labels = h$counts, adj = c(0.5, -0.1))
+```
+
+No information about tax amount, tax year, assessed year, market value as opposed to assessed value
+
+```{r}
+nk_sub <- new_kent %>%
+  select(Lot, City, GPIN, Unit, Subdivision, Consideration)
+```
+
+
+**completeness of variables**
+1) Unit is only 22% complete, consideration (which is similar to value) is 86% complete 
+2) remaining variable are between 99% and 100% complete. Lot is 100% complete.
+
+```{r}
+#completeness of variables
+check_complete(nk_sub) %>% knitr::kable()
+```
+
+Basic data intro
+```{r}
+plot_intro(nk_sub)
+```
+
+```{r}
+lot <- nk_sub[, c("Consideration", "Subdivision")]
+plot_scatterplot(lot, by="Consideration") 
+```
+
+consideration historgram
+```{r}
+grid.arrange(ggplot(nk_sub, aes(x = `Consideration`)) + geom_histogram() + scale_x_log10())
+```
+
+unit distribution
+```{r}
+grid.arrange(ggplot(nk_sub, aes(x = `Unit`)) + geom_bar())
+```
+
+```{r}
+#building__square_feet, living_square_feet, year_built, effective_year_built, bedrooms, total_baths, full_baths, half_baths
+
+profile <- select(new_kent, c(36,50:52,53,55))
+
+names(profile) <- c('year_built', 'num_beds', 'num_baths', 'num_halfbaths', 'building_area_eff', 'building_area_living')
+names(profile)
+
+sapply(profile, class)
+
+profile$num_baths <- as.numeric(profile$num_baths)
+profile$num_halfbaths <- as.numeric(profile$num_halfbaths)
+profile$num_beds <- as.numeric(profile$num_beds)
+profile$year_built <- as.factor(profile$year_built)
+profile$numeric <- as.numeric(profile$year_built)
+```
+
+
+```{r}
+nrow(profile)
+```
+
+
+```{r}
+check_complete(profile) %>% knitr::kable()
+```
+
+```{r}
+ggplot(data = profile) +
+  aes(x = year_built) + 
+  geom_histogram(stat = 'count')
+```
+
+
+```{r}
+describe(profile$year_built)
+```
+
+
+```{r}
+ggplot(profile) +
+  aes(num_beds) +
+  geom_histogram()
+```
+
+```{r}
+ggplot(profile) +
+  aes(num_baths) +
+  geom_histogram()
+```
+
+
+```{r}
+ggplot(profile) +
+  aes(num_halfbaths) +
+  geom_histogram()
+```
+
+
+```{r}
+ggplot(profile) +
+  aes(building_area_eff) +
+  geom_histogram()
+```
+
+
+```{r}
+summary(profile$building_area_eff)
+describe(profile$building_area_eff)
+```
+
+
+```{r}
+ggplot(profile) +
+  aes(building_area_living) +
+  geom_histogram()
+```
+
+```{r}
+summary(profile$building_area_living)
+describe(profile$building_area_living)
+```
+
+
+

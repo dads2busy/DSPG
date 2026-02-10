@@ -1,0 +1,42 @@
+name,value,Variable
+1,29.1,Household Size
+2,37.2,Household Size
+3,16.7,Household Size
+4+,17.1,Household Size
+Less than HS,14,Level of Education
+HS Diploma,38.4,Level of Education
+Some College (No Degree),19.1,Level of Education
+Associate's Degree,10,Level of Education
+BA/BS or Higher,18.5,Level of Education
+"<$5,000",3,Household Income
+"$5,000-$9,999",4,Household Income
+"$10,000-$14,999",7.2,Household Income
+"$15,000-$19,999",6.9,Household Income
+"$20,000-$24,999",6.3,Household Income
+"$25,000-$34,999",10.3,Household Income
+"$35,000-$49,999",15.1,Household Income
+"$50,000-$74,999",19.1,Household Income
+"$75,000-$99,999",13.4,Household Income
+"$100,000-$149,999",10,Household Income
+">$150,000",4.6,Household Income
+"<$50,000",13.3,Home Values
+"$50,000-$99,999",23.2,Home Values
+"$100,000-$149,999 ",21.4,Home Values
+"$150,000-$199,999",17.3,Home Values
+"$200,000-$299,999",13.9,Home Values
+"$300,000-$499,999",8.7,Home Values
+"$500,000-$999,999",1.9,Home Values
+">$1,000,000",0.3,Home Values
+"Ag, forestry, mining",3.5,Industry
+Construction,5.8,Industry
+Manufacturing,18,Industry
+Wholesale Trade,1.9,Industry
+Retail Trade,14.4,Industry
+"Transportation, utilities",3.4,Industry
+Information,0.5,Industry
+"Finance, insurance",2.3,Industry
+"Professional, scientific, management",7.8,Industry
+"Education, healthcare",24.8,Industry
+"Arts, recreation",7.5,Industry
+Other,4,Industry
+Public Admin,6.3,Industry

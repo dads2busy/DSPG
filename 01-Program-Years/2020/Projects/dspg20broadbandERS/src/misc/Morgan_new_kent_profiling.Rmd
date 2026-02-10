@@ -1,0 +1,105 @@
+---
+title: "New Kent Profiling"
+author: "Morgan Klutzke"
+date: "7/6/2020"
+output: html_document
+---
+
+```{r packages}
+library(readxl)
+library(DataExplorer)
+library(ggplot2)
+library(dplyr)
+library(purrr)
+library(data.table)
+library(maditr)
+library(gridExtra)
+```
+
+```{r functions}
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- (len - (blanks + true_na + written_na)) / len
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+```{r}
+new_kent <- read_excel("~/NK_ASSESSMENT_REPORT_2020.xlsx")
+```
+
+Looking at: Building Area (Effective), Building Area (Gross), Building Area (Living), Land Area (Acres)
+
+```{r}
+check_complete(select(new_kent,53:56))
+introduce(select(new_kent, 53:56))
+plot_missing(select(new_kent, 53:56))
+```
+```{r}
+options(scipen = 10)
+grid.arrange(ggplot(new_kent, aes(x = `Land Area (Acres)`)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = `Building Area (Effective)`)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = `Building Area (Gross)`)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = `Building Area (Living)`)) + geom_histogram() + scale_x_log10(),
+             ncol = 2)
+```
+
+Looking at: Land, Improvement, Total
+
+```{r}
+check_complete(select(new_kent, 19:21))
+introduce(select(new_kent, 19:21))
+plot_missing(select(new_kent, 19:21))
+```
+```{r}
+grid.arrange(ggplot(new_kent, aes(x = Land)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = Improvement)) + geom_histogram() + scale_x_log10(), 
+             ggplot(new_kent, aes(x = Total)) + geom_histogram() + scale_x_log10(), 
+             nrow = 2)
+```
+```{r}
+new_kent <- new_kent %>%
+  dt_mutate(value_sum = Land + Improvement) %>%
+  dt_mutate(difference = Total - value_sum)
+sum(new_kent$difference)
+```
+
+Looking at: Record Date
+
+```{r}
+check_complete(select(new_kent, 29))
+introduce(select(new_kent, 29))
+plot_missing(select(new_kent, 29))
+```
+```{r}
+records <- as.POSIXlt(na.omit(new_kent$`Record Date`))
+record_years <- records$year + 1900
+h <- hist(record_years)
+text(h$mids, h$counts, labels = h$counts, adj = c(0.5, -0.1))
+```
+
+No information about tax amount, tax year, assessed year, market value as opposed to assessed value

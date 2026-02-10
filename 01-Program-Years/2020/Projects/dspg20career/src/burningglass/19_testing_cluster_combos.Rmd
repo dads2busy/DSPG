@@ -1,0 +1,1255 @@
+---
+title: "19_testing_cluster_combos"
+author: "Joanna Schroeder"
+date: "9/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+for (pkg in c("tidyverse",  "data.table", "R.utils", "maditr", "stringr", "stringi", "dplyr", "ggplot2", "lubridate", "gt", "DataExplorer", "TraMineR", "TraMineRextras", "cluster", "tools", "WeightedCluster", "viridis")) {
+  library(pkg, character.only = TRUE)
+}
+
+uva_color_palette <- 
+c("#232D4B", #space cadet
+  "#2C4F6B", #indigo dye
+  "#0E879C", #blue munsell
+  "#60999A", #cadet blue
+  "#D1E0BF", #tea green
+  "#D9E12B", #pear
+  "#E6CE3A", #citrine
+  "#E6A01D", #marigold
+  "#E57200" #princeton orange
+)
+```
+
+```{r create-sequence-object, echo = FALSE}
+# Taking a sample of both veterans and nonveterans who have a complete first ten years of career, subsetting for only the first ten years
+
+set.seed(09292020)
+
+sts_all <- read.csv("~/git/DSPG2020/career/data/sts_all_ten.csv", row.names = 1)
+
+sample <- sts_all[sample(nrow(sts_all), 6000, replace = FALSE, prob = NULL),]
+
+sample <- seqdef(sample, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#a9a9a9",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+sample <- sample[, 1:10]
+
+
+# create transition matrix
+transition_matrix <- seqtrate(sample, weighted=FALSE, count=TRUE)
+round(transition_matrix,2)
+diag(transition_matrix) = 0
+round(transition_matrix,2)
+rowsum <- apply(transition_matrix, 1, sum)
+for(i in 1:nrow(transition_matrix)) {
+  for (j in 1:ncol(transition_matrix)){
+    transition_matrix[i,j] = transition_matrix[i,j]/rowsum[i]
+  }
+}
+for(j in 1:ncol(transition_matrix)){
+      transition_matrix[7,j] = transition_matrix[7,j] = 0
+}
+transition_matrix <- round(transition_matrix,2)
+cost_matrix <- 2-transition_matrix
+round(cost_matrix,2)
+diag(cost_matrix) = 0
+cost_matrix <- round(cost_matrix,2)
+```
+
+## Purpose
+
+We are interested in going throught the various combinations of dissimilarity metrics and types of clustering to sort through what is the best option (or set of options) for our analysis.
+
+Although analyzing veterans versus nonveterans as well as varying the time period of study (10, 20, 30 years etc) are also of interest, this investigation will focus on conducting a disciplined exploration of the available "cluster combinations" to narrow down a methodology for future investigation.
+
+## Research questions
+
+Framing the analysis with research questions will help us choose what parameters and combinations will best suit the analysis. The creators of the TraMineR package have implemented methods to cluster sequences based on three main sequence properties: sequencing, timing, and duration. Certain combinaitons of cluster parameters, then, are best suited for investigation of certain research questions. 
+
+Here is a short explaination of each sequence characteristic and some examples of research questions that would fall under insights into that characteristic.
+
+  - Sequencing (the order in which states are experienced)
+    - What characteristics define individuals in "promotion" clusters? "Demotion" clusters?
+    - What characteristics define individuals who experience unemployment before a high job zone?
+    - What characteristics define individuals who experience unemployment after a high job zone?
+
+  - Duration
+    - What characteristics define individuals who spend a long time in high job zones?
+    - What characteristics define individuals who spend a long time in unemployment?
+
+  - Timing
+    - What characteristics define individuals in early promotion clusters? Late promotion?
+    - How does the timing of unemployment in the first ten years of employment affect later job outcomes?
+  
+## Methods
+
+In this analysis we will go through each characteristic and vary the associated options for dissimiliarity and clustering for 2-20 clusters. The resulting cluster solutions will be compared first on a high levle based on cluster quality metrics. Once the optimal combinations are discovered, sequence clusters will be visualized and compared.
+
+### Cluster quality metrics
+
+The following cluster quality metrics are used in this analysis:
+
+  - Average Silhouette Width (ASW) [-1, 1]: Coherence of cluster assignments. High coherence indicated high between-group distances and strong within-group homogeneity. 
+    - Interpreting ASW:
+      - 0.71 - 1.00 : Strong structure identified
+      - 0.51 - 0.70 : Reasonable structure identified
+      - 0.26 - 0.50 : Structure is weak and could be artificial.
+      - <= 0.25 : No structure.
+  - Hubert's C (HC) [0, 1]: Gap between the partition obtained and the best partition theoretically possible with this number of groups and these distances. A small value indicated a good partition of the data.
+  - Point Biseral Correlation (PBC) [-1, 1]: Measure of the capacity of the clustering to reproduce the sequences.
+  - Pseudo R2 (R2) [0, 1]: Share of the discrepancy explained by the clustering soultion (only to compare partitions with identical number of groups).
+
+[Weighted Cluster Library Manual](https://cran.r-project.org/web/packages/WeightedCluster/vignettes/WeightedCluster.pdf)
+
+### Sequencing
+Sequencing (the order in which sequences are experienced)
+
+  - Dissimlarity options
+    - OM Spell, low expansion cost and low weight
+    - Our OM
+    - Our OM, low weight on origin 
+  - Cluster options
+    - Ward's
+    - PAM
+    - DIANA pattern
+    - DIANA transition
+
+```{r sequencing}
+## DISTANCE ----
+
+# OPTION 1 : OUR OM SPELL, LOW EXPANSION COST AND LOW WEIGHT
+sequencing.opt1 <- seqdist(sample, method = "OMspell", indel = "auto", sm = cost_matrix, with.missing = TRUE, otto = 0, expcost = 0)
+
+# OPTION 2 : OUR OM
+sequencing.opt2 <- seqdist(sample, method = "OMstran", indel = "auto", sm = cost_matrix, with.missing = TRUE, otto = 0.5)
+
+# OPTION 3 : OUR OM, LOW WEIGHT ON ORIGIN
+sequencing.opt3 <- seqdist(sample, method = "OMstran", indel = 1, sm = cost_matrix, with.missing = TRUE, otto = 0.01)
+
+
+## WARD'S CLUSTERING ------
+#sequencing.ward.op1 <- agnes(sequencing.opt1, diss = TRUE, method = "ward")
+#sequencing.ward.op2 <- agnes(sequencing.opt2, diss = TRUE, method = "ward")
+#sequencing.ward.opt3 <- agnes(sequencing.opt3, diss = TRUE, method = "ward")
+#saveRDS(sequencing.ward.op1, file = "~/git/DSPG2020/career/data/combotesting_sequencing_ward_opt1.rds")
+#saveRDS(sequencing.ward.op2, file = "~/git/DSPG2020/career/data/combotesting_sequencing_ward_opt2.rds")
+#saveRDS(sequencing.ward.opt3, file = "~/git/DSPG2020/career/data/combotesting_sequencing_ward_opt3.rds")
+sequencing.ward.opt1 <- readRDS(file = "~/git/DSPG2020/career/data/combotesting_sequencing_ward_opt1.rds")
+sequencing.ward.opt2 <- readRDS(file = "~/git/DSPG2020/career/data/combotesting_sequencing_ward_opt2.rds")
+sequencing.ward.opt3 <- readRDS(file = "~/git/DSPG2020/career/data/combotesting_sequencing_ward_opt3.rds")
+
+# QUALITY METRICS
+wardRange.opt1 <- as.clustrange(sequencing.ward.opt1, diss = sequencing.opt1, ncluster = 20)
+wardRange.opt2 <- as.clustrange(sequencing.ward.opt2, diss = sequencing.opt2, ncluster = 20)
+wardRange.opt3 <- as.clustrange(sequencing.ward.opt3, diss = sequencing.opt3, ncluster = 20)
+#summary(wardRange.opt1, max.rank = 2)
+#summary(wardRange.opt2, max.rank = 2)
+#summary(wardRange.opt3, max.rank = 2)
+
+ward.ASW.Opt1 <- as.matrix(wardRange.opt1$stats$ASW)
+colnames(ward.ASW.Opt1) <- c("ASW opt1")
+ward.ASW.Opt2 <- as.matrix(wardRange.opt2$stats$ASW)
+colnames(ward.ASW.Opt2) <- c("ASW opt2")
+ward.ASW.Opt3 <- as.matrix(wardRange.opt3$stats$ASW)
+colnames(ward.ASW.Opt3) <- c("ASW opt3")
+ward.ASW <- bind_cols(ward.ASW.Opt1, ward.ASW.Opt2, ward.ASW.Opt3)
+ward.ASW <- ward.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.ASW$rowname <- as.numeric(ward.ASW$rowname)
+
+ward.HC.Opt1 <- as.matrix(wardRange.opt1$stats$HC)
+colnames(ward.HC.Opt1) <- c("HC opt1")
+ward.HC.Opt2 <- as.matrix(wardRange.opt2$stats$HC)
+colnames(ward.HC.Opt2) <- c("HC opt2")
+ward.HC.Opt3 <- as.matrix(wardRange.opt3$stats$HC)
+colnames(ward.HC.Opt3) <- c("HC opt3")
+ward.HC <- bind_cols(ward.HC.Opt1, ward.HC.Opt2, ward.HC.Opt3)
+ward.HC <- ward.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.HC$rowname <- as.numeric(ward.HC$rowname)
+
+ward.PBC.Opt1 <- as.matrix(wardRange.opt1$stats$PBC)
+colnames(ward.PBC.Opt1) <- c("PBC opt1")
+ward.PBC.Opt2 <- as.matrix(wardRange.opt2$stats$PBC)
+colnames(ward.PBC.Opt2) <- c("PBC opt2")
+ward.PBC.Opt3 <- as.matrix(wardRange.opt3$stats$PBC)
+colnames(ward.PBC.Opt3) <- c("PBC opt3")
+ward.PBC <- bind_cols(ward.PBC.Opt1, ward.PBC.Opt2, ward.PBC.Opt3)
+ward.PBC <- ward.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.PBC$rowname <- as.numeric(ward.PBC$rowname)
+
+ward.R2.Opt1 <- as.matrix(wardRange.opt1$stats$R2)
+colnames(ward.R2.Opt1) <- c("R2 opt1")
+ward.R2.Opt2 <- as.matrix(wardRange.opt2$stats$R2)
+colnames(ward.R2.Opt2) <- c("R2 opt2")
+ward.R2.Opt3 <- as.matrix(wardRange.opt3$stats$R2)
+colnames(ward.R2.Opt3) <- c("R2 opt3")
+ward.R2 <- bind_cols(ward.R2.Opt1, ward.R2.Opt2, ward.R2.Opt3)
+ward.R2 <- ward.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.R2$rowname <- as.numeric(ward.R2$rowname)
+
+## PAM CLUSTERING -----
+numbers <- (2:20)
+pamstats <- NULL
+#rownames(pamstats) <- numbers
+pamstats <- NULL
+for (number in numbers) {
+  clusterpam <- wcKMedoids(sequencing.opt1, k = number)
+  assign(paste0("sequencing.pam.opt1.", number), clusterpam, envir = .GlobalEnv)
+  pamstats[[number]] <- clusterpam$stats
+}
+pamstats.opt1 <- dplyr::bind_rows(pamstats)
+pamstats <- NULL
+for (number in numbers) {
+  clusterpam <- wcKMedoids(sequencing.opt2, k = number)
+  assign(paste0("sequencing.pam.opt2.", number), clusterpam, envir = .GlobalEnv)
+  pamstats[[number]] <- clusterpam$stats
+}
+pamstats.opt2 <- dplyr::bind_rows(pamstats)
+for (number in numbers) {
+  clusterpam <- wcKMedoids(sequencing.opt3, k = number)
+  assign(paste0("sequencing.pam.opt3.", number), clusterpam, envir = .GlobalEnv)
+  pamstats[[number]] <- clusterpam$stats
+}
+pamstats.opt3 <- dplyr::bind_rows(pamstats)
+
+# QUALITY METRICS
+rownames(pamstats.opt1) <- numbers
+PAM.ASW.Opt1 <- as.matrix(pamstats.opt1$ASW)
+colnames(PAM.ASW.Opt1) <- c("ASW opt1")
+PAM.ASW.Opt2 <- as.matrix(pamstats.opt2$ASW)
+colnames(PAM.ASW.Opt2) <- c("ASW opt2")
+PAM.ASW.Opt3 <- as.matrix(pamstats.opt3$ASW)
+colnames(PAM.ASW.Opt3) <- c("ASW opt3")
+PAM.ASW <- bind_cols(PAM.ASW.Opt1, PAM.ASW.Opt2, PAM.ASW.Opt3)
+PAM.ASW <- PAM.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.ASW$rowname <- as.numeric(PAM.ASW$rowname)
+
+rownames(pamstats.opt1) <- numbers
+PAM.HC.Opt1 <- as.matrix(pamstats.opt1$HC)
+colnames(PAM.HC.Opt1) <- c("HC opt1")
+PAM.HC.Opt2 <- as.matrix(pamstats.opt2$HC)
+colnames(PAM.HC.Opt2) <- c("HC opt2")
+PAM.HC.Opt3 <- as.matrix(pamstats.opt3$HC)
+colnames(PAM.HC.Opt3) <- c("HC opt3")
+PAM.HC <- bind_cols(PAM.HC.Opt1, PAM.HC.Opt2, PAM.HC.Opt3)
+PAM.HC <- PAM.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.HC$rowname <- as.numeric(PAM.HC$rowname)
+
+rownames(pamstats.opt1) <- numbers
+PAM.PBC.Opt1 <- as.matrix(pamstats.opt1$PBC)
+colnames(PAM.PBC.Opt1) <- c("PBC opt1")
+PAM.PBC.Opt2 <- as.matrix(pamstats.opt2$PBC)
+colnames(PAM.PBC.Opt2) <- c("PBC opt2")
+PAM.PBC.Opt3 <- as.matrix(pamstats.opt3$PBC)
+colnames(PAM.PBC.Opt3) <- c("PBC opt3")
+PAM.PBC <- bind_cols(PAM.PBC.Opt1, PAM.PBC.Opt2, PAM.PBC.Opt3)
+PAM.PBC <- PAM.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.PBC$rowname <- as.numeric(PAM.PBC$rowname)
+
+rownames(pamstats.opt1) <- numbers
+PAM.R2.Opt1 <- as.matrix(pamstats.opt1$R2)
+colnames(PAM.R2.Opt1) <- c("R2 opt1")
+PAM.R2.Opt2 <- as.matrix(pamstats.opt2$R2)
+colnames(PAM.R2.Opt2) <- c("R2 opt2")
+PAM.R2.Opt3 <- as.matrix(pamstats.opt3$R2)
+colnames(PAM.R2.Opt3) <- c("R2 opt3")
+PAM.R2 <- bind_cols(PAM.R2.Opt1, PAM.R2.Opt2, PAM.R2.Opt3)
+PAM.R2 <- PAM.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.R2$rowname <- as.numeric(PAM.R2$rowname)
+
+## DIANA CLUSTERING ------
+
+# PATTERN
+sequencing.pattern.opt1 <- seqpropclust(sample, diss = sequencing.opt1, properties = "pattern", maxcluster = 20)
+sequencing.pattern.opt2 <- seqpropclust(sample, diss = sequencing.opt2, properties = "pattern", maxcluster = 20)
+sequencing.pattern.opt3 <- seqpropclust(sample, diss = sequencing.opt3, properties = "pattern", maxcluster = 20)
+
+patternRange.opt1 <- as.clustrange(sequencing.pattern.opt1, diss=sequencing.opt1, ncluster=11)
+patternRange.opt2 <- as.clustrange(sequencing.pattern.opt2, diss=sequencing.opt2, ncluster=11)
+patternRange.opt3 <- as.clustrange(sequencing.pattern.opt3, diss=sequencing.opt3, ncluster=11)
+
+#summary(patternRange.opt1, max.rank = 2)
+#summary(patternRange.opt2, max.rank = 2)
+#summary(patternRange.opt3, max.rank = 2)
+
+pattern.ASW.Opt1 <- as.matrix(patternRange.opt1$stats$ASW)
+colnames(pattern.ASW.Opt1) <- c("ASW opt1")
+pattern.ASW.Opt2 <- as.matrix(patternRange.opt2$stats$ASW)
+colnames(pattern.ASW.Opt2) <- c("ASW opt2")
+pattern.ASW.Opt3 <- as.matrix(patternRange.opt3$stats$ASW)
+colnames(pattern.ASW.Opt3) <- c("ASW opt3")
+pattern.ASW <- bind_cols(pattern.ASW.Opt1, pattern.ASW.Opt2, pattern.ASW.Opt3)
+pattern.ASW <- pattern.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "pattern")
+pattern.ASW$rowname <- as.numeric(pattern.ASW$rowname)
+
+pattern.HC.Opt1 <- as.matrix(patternRange.opt1$stats$HC)
+colnames(pattern.HC.Opt1) <- c("HC opt1")
+pattern.HC.Opt2 <- as.matrix(patternRange.opt2$stats$HC)
+colnames(pattern.HC.Opt2) <- c("HC opt2")
+pattern.HC.Opt3 <- as.matrix(patternRange.opt3$stats$HC)
+colnames(pattern.HC.Opt3) <- c("HC opt3")
+pattern.HC <- bind_cols(pattern.HC.Opt1, pattern.HC.Opt2, pattern.HC.Opt3)
+pattern.HC <- pattern.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "pattern")
+pattern.HC$rowname <- as.numeric(pattern.HC$rowname)
+
+pattern.PBC.Opt1 <- as.matrix(patternRange.opt1$stats$PBC)
+colnames(pattern.PBC.Opt1) <- c("PBC opt1")
+pattern.PBC.Opt2 <- as.matrix(patternRange.opt2$stats$PBC)
+colnames(pattern.PBC.Opt2) <- c("PBC opt2")
+pattern.PBC.Opt3 <- as.matrix(patternRange.opt3$stats$PBC)
+colnames(pattern.PBC.Opt3) <- c("PBC opt3")
+pattern.PBC <- bind_cols(pattern.PBC.Opt1, pattern.PBC.Opt2, pattern.PBC.Opt3)
+pattern.PBC <- pattern.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "pattern")
+pattern.PBC$rowname <- as.numeric(pattern.PBC$rowname)
+
+pattern.R2.Opt1 <- as.matrix(patternRange.opt1$stats$R2)
+colnames(pattern.R2.Opt1) <- c("R2 opt1")
+pattern.R2.Opt2 <- as.matrix(patternRange.opt2$stats$R2)
+colnames(pattern.R2.Opt2) <- c("R2 opt2")
+pattern.R2.Opt3 <- as.matrix(patternRange.opt3$stats$R2)
+colnames(pattern.R2.Opt3) <- c("R2 opt3")
+pattern.R2 <- bind_cols(pattern.R2.Opt1, pattern.R2.Opt2, pattern.R2.Opt3)
+pattern.R2 <- pattern.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "pattern")
+pattern.R2$rowname <- as.numeric(pattern.R2$rowname)
+
+# TRANSITION
+sequencing.transition.opt1 <- seqpropclust(sample, diss = sequencing.opt1, properties = "transition", maxcluster = 30)
+sequencing.transition.opt2 <- seqpropclust(sample, diss = sequencing.opt2, properties = "transition", maxcluster = 20)
+sequencing.transition.opt3 <- seqpropclust(sample, diss = sequencing.opt3, properties = "transition", maxcluster = 20)
+
+transitionRange.opt1 <- as.clustrange(sequencing.transition.opt1, diss=sequencing.opt1, ncluster=10)
+transitionRange.opt2 <- as.clustrange(sequencing.transition.opt2, diss=sequencing.opt2, ncluster=10)
+transitionRange.opt3 <- as.clustrange(sequencing.transition.opt3, diss=sequencing.opt3, ncluster=10)
+
+Transition.ASW.Opt1 <- as.matrix(transitionRange.opt1$stats$ASW)
+colnames(Transition.ASW.Opt1) <- c("ASW opt1")
+Transition.ASW.Opt2 <- as.matrix(transitionRange.opt2$stats$ASW)
+colnames(Transition.ASW.Opt2) <- c("ASW opt2")
+Transition.ASW.Opt3 <- as.matrix(transitionRange.opt3$stats$ASW)
+colnames(Transition.ASW.Opt3) <- c("ASW opt3")
+Transition.ASW <- bind_cols(Transition.ASW.Opt1, Transition.ASW.Opt2, Transition.ASW.Opt3)
+Transition.ASW <- Transition.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "transition")
+Transition.ASW$rowname <- as.numeric(Transition.ASW$rowname)
+
+Transition.HC.Opt1 <- as.matrix(transitionRange.opt1$stats$HC)
+colnames(Transition.HC.Opt1) <- c("HC opt1")
+Transition.HC.Opt2 <- as.matrix(transitionRange.opt2$stats$HC)
+colnames(Transition.HC.Opt2) <- c("HC opt2")
+Transition.HC.Opt3 <- as.matrix(transitionRange.opt3$stats$HC)
+colnames(Transition.HC.Opt3) <- c("HC opt3")
+Transition.HC <- bind_cols(Transition.HC.Opt1, Transition.HC.Opt2, Transition.HC.Opt3)
+Transition.HC <- Transition.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "transition")
+Transition.HC$rowname <- as.numeric(Transition.HC$rowname)
+
+Transition.PBC.Opt1 <- as.matrix(transitionRange.opt1$stats$PBC)
+colnames(Transition.PBC.Opt1) <- c("PBC opt1")
+Transition.PBC.Opt2 <- as.matrix(transitionRange.opt2$stats$PBC)
+colnames(Transition.PBC.Opt2) <- c("PBC opt2")
+Transition.PBC.Opt3 <- as.matrix(transitionRange.opt3$stats$PBC)
+colnames(Transition.PBC.Opt3) <- c("PBC opt3")
+Transition.PBC <- bind_cols(Transition.PBC.Opt1, Transition.PBC.Opt2, Transition.PBC.Opt3)
+Transition.PBC <- Transition.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "transition")
+Transition.PBC$rowname <- as.numeric(Transition.PBC$rowname)
+
+Transition.R2.Opt1 <- as.matrix(transitionRange.opt1$stats$R2)
+colnames(Transition.R2.Opt1) <- c("R2 opt1")
+Transition.R2.Opt2 <- as.matrix(transitionRange.opt2$stats$R2)
+colnames(Transition.R2.Opt2) <- c("R2 opt2")
+Transition.R2.Opt3 <- as.matrix(transitionRange.opt3$stats$R2)
+colnames(Transition.R2.Opt3) <- c("R2 opt3")
+Transition.R2 <- bind_cols(Transition.R2.Opt1, Transition.R2.Opt2, Transition.R2.Opt3)
+Transition.R2 <- Transition.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "transition")
+Transition.R2$rowname <- as.numeric(Transition.R2$rowname)
+
+## HEATMAPS ------
+
+# PAM and wards rowname is one number off
+sequencing.ASW.comp <- bind_rows(PAM.ASW, ward.ASW, pattern.ASW, Transition.ASW) %>% mutate(clusters = rowname + 1)
+sequencing.HC.comp <- bind_rows(PAM.HC, ward.HC, pattern.HC, Transition.HC) %>% mutate(clusters = rowname + 1)
+sequencing.PBC.comp <- bind_rows(PAM.PBC, ward.PBC, pattern.PBC, Transition.PBC) %>% mutate(clusters = rowname + 1)
+sequencing.R2.comp <- bind_rows(PAM.R2, ward.R2, pattern.R2, Transition.PBC) %>% mutate(clusters = rowname + 1)
+
+sequencing.ASW.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "ASW value", type = "viridis") +
+  labs(title = "Sequencing - ASW (optimal 1)", caption = "Average silhouette width (ASW) is the coherence of assignments, high coherence indicates high between-group distances and strong
+within-group homogeneity \n Dissimiarlity options:\n Option 1: Optimal matching of spell sequences, low expansion cost, low weight, using our custom cost matrix \n Option 2: Optimal matching of transition sequences using our custom cost matrix \n Option 3: Optimal matching of transition sequences, low weight, using our custom cost matrix") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+sequencing.HC.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "HC value", type = "viridis") +
+  labs(title = "Sequencing - HC (optimal 0)", caption = "Hubert's C (HC) is a measure of the gap between the partition obtained and the best partition theoretically possible with this number
+of groups and these distances \n Dissimiarlity options:\n Option 1: Optimal matching of spell sequences, low expansion cost, low weight, using our custom cost matrix \n Option 2: Optimal matching of transition sequences using our custom cost matrix \n Option 3: Optimal matching of transition sequences, low weight, using our custom cost matrix") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+sequencing.PBC.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "PBC value", type = "viridis") +
+  labs(title = "Sequencing - PBC (optimal 1)", caption = "Point Biseral Correlation (PBC) is a measure of the capacity of the clustering to reproduce the distances \n Dissimiarlity options:\n Option 1: Optimal matching of spell sequences, low expansion cost, low weight, using our custom cost matrix \n Option 2: Optimal matching of transition sequences using our custom cost matrix \n Option 3: Optimal matching of transition sequences, low weight, using our custom cost matrix") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+sequencing.R2.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "R2 value", type = "viridis") +
+  labs(title = "Sequencing - R2 (optimal 1)", caption = "Pseudo R2 (R2) is the share of the discrepancy explained by the clustering solution (only to compare partitions with
+identical number of groups) \n Dissimiarlity options:\n Option 1: Optimal matching of spell sequences, low expansion cost, low weight, using our custom cost matrix \n Option 2: Optimal matching of transition sequences using our custom cost matrix \n Option 3: Optimal matching of transition sequences, low weight, using our custom cost matrix") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+```
+
+Comparing the results of the cluster quality tests for sequencing, a few combinations stand out as high performers. These combinations will be visualized and compared to subsequent outputs. 
+
+  - Option 2 dissimilarity and PAM clustering with 5-6 clusters.
+  - Option 3 dissimilarity and PAM clustering with 17-18 clusters.
+  - Option 2 dissimilarity and DIANA transition clustering with 5 clusters.
+  - Option 1 dissimilarity and PAM clustering with 19-20 clusters.
+
+
+### Timing
+Timing of states (age norms, state position in life trajectory)
+
+  - Dissimilariy options
+    - Hamming
+    - CHI2 interval 10
+  - Cluster options
+    - Ward's
+    - PAM
+    - DIANA state
+    - DIANA spell.age
+    - DIANA AF pattern
+    - DIANA AF transition
+    
+```{r timing}
+## DISTANCE -------------------
+# HAMMING
+timing.opt1 <- seqdist(sample, method = "HAM")
+
+# CHI2 INTERVAL 10
+timing.opt2 <- seqdist(sample, method = "CHI2", step = 10)
+
+## WARD'S CLUSTERING -----------
+#timing.ward.opt1 <- agnes(timing.opt1, diss = TRUE, method = "ward")
+#timing.ward.opt2 <- agnes(timing.opt2, diss = TRUE, method = "ward")
+#saveRDS(timing.ward.opt1, file = "~/git/DSPG2020/career/data/combotesting_timing_ward_opt1.rds")
+#saveRDS(timing.ward.opt2, file = "~/git/DSPG2020/career/data/combotesting_timing_ward_opt2.rds")
+timing.ward.opt1 <- readRDS(file = "~/git/DSPG2020/career/data/combotesting_timing_ward_opt1.rds")
+timing.ward.opt2 <- readRDS(file = "~/git/DSPG2020/career/data/combotesting_timing_ward_opt2.rds")
+
+# QUALITY METRICS
+wardRange.opt1 <- as.clustrange(timing.ward.opt1, diss = timing.opt1, ncluster = 20)
+wardRange.opt2 <- as.clustrange(timing.ward.opt2, diss = timing.opt2, ncluster = 20)
+
+#summary(wardRange.opt1, max.rank = 2)
+#summary(wardRange.opt2, max.rank = 2)
+
+ward.ASW.Opt1 <- as.matrix(wardRange.opt1$stats$ASW)
+colnames(ward.ASW.Opt1) <- c("ASW opt1")
+ward.ASW.Opt2 <- as.matrix(wardRange.opt2$stats$ASW)
+colnames(ward.ASW.Opt2) <- c("ASW opt2")
+ward.ASW <- bind_cols(ward.ASW.Opt1, ward.ASW.Opt2)
+ward.ASW <- ward.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.ASW$rowname <- as.numeric(ward.ASW$rowname)
+
+ward.ASW.Opt1 <- as.matrix(wardRange.opt1$stats$ASW)
+colnames(ward.ASW.Opt1) <- c("ASW opt1")
+ward.ASW.Opt2 <- as.matrix(wardRange.opt2$stats$ASW)
+colnames(ward.ASW.Opt2) <- c("ASW opt2")
+ward.ASW <- bind_cols(ward.ASW.Opt1, ward.ASW.Opt2)
+ward.ASW <- ward.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.ASW$rowname <- as.numeric(ward.ASW$rowname)
+
+ward.HC.Opt1 <- as.matrix(wardRange.opt1$stats$HC)
+colnames(ward.HC.Opt1) <- c("HC opt1")
+ward.HC.Opt2 <- as.matrix(wardRange.opt2$stats$HC)
+colnames(ward.HC.Opt2) <- c("HC opt2")
+ward.HC <- bind_cols(ward.HC.Opt1, ward.HC.Opt2)
+ward.HC <- ward.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.HC$rowname <- as.numeric(ward.HC$rowname)
+
+ward.PBC.Opt1 <- as.matrix(wardRange.opt1$stats$PBC)
+colnames(ward.PBC.Opt1) <- c("PBC opt1")
+ward.PBC.Opt2 <- as.matrix(wardRange.opt2$stats$PBC)
+colnames(ward.PBC.Opt2) <- c("PBC opt2")
+ward.PBC <- bind_cols(ward.PBC.Opt1, ward.PBC.Opt2)
+ward.PBC <- ward.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.PBC$rowname <- as.numeric(ward.PBC$rowname)
+
+ward.R2.Opt1 <- as.matrix(wardRange.opt1$stats$R2)
+colnames(ward.R2.Opt1) <- c("R2 opt1")
+ward.R2.Opt2 <- as.matrix(wardRange.opt2$stats$R2)
+colnames(ward.R2.Opt2) <- c("R2 opt2")
+ward.R2 <- bind_cols(ward.R2.Opt1, ward.R2.Opt2)
+ward.R2 <- ward.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.R2$rowname <- as.numeric(ward.R2$rowname)
+
+
+## PAM CLUSTERING --------------
+numbers <- (2:20)
+pamstats <- NULL
+for (number in numbers) {
+  clusterpam <- wcKMedoids(timing.opt1, k = number)
+  assign(paste0("timing.pam.opt1.", number), clusterpam, envir = .GlobalEnv)
+  pamstats[[number]] <- clusterpam$stats
+}
+pamstats.opt1 <- dplyr::bind_rows(pamstats)
+pamstats <- NULL
+for (number in numbers) {
+  clusterpam <- wcKMedoids(timing.opt2, k = number)
+  assign(paste0("timing.pam.opt2.", number), clusterpam, envir = .GlobalEnv)
+  pamstats[[number]] <- clusterpam$stats
+}
+pamstats.opt2 <- dplyr::bind_rows(pamstats)
+
+# QUALITY METRICS
+rownames(pamstats.opt1) <- numbers
+PAM.ASW.Opt1 <- as.matrix(pamstats.opt1$ASW)
+colnames(PAM.ASW.Opt1) <- c("ASW opt1")
+PAM.ASW.Opt2 <- as.matrix(pamstats.opt2$ASW)
+colnames(PAM.ASW.Opt2) <- c("ASW opt2")
+PAM.ASW <- bind_cols(PAM.ASW.Opt1, PAM.ASW.Opt2)
+PAM.ASW <- PAM.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.ASW$rowname <- as.numeric(PAM.ASW$rowname)
+
+rownames(pamstats.opt1) <- numbers
+PAM.HC.Opt1 <- as.matrix(pamstats.opt1$HC)
+colnames(PAM.HC.Opt1) <- c("HC opt1")
+PAM.HC.Opt2 <- as.matrix(pamstats.opt2$HC)
+colnames(PAM.HC.Opt2) <- c("HC opt2")
+PAM.HC <- bind_cols(PAM.HC.Opt1, PAM.HC.Opt2)
+PAM.HC <- PAM.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.HC$rowname <- as.numeric(PAM.HC$rowname)
+
+rownames(pamstats.opt1) <- numbers
+PAM.PBC.Opt1 <- as.matrix(pamstats.opt1$PBC)
+colnames(PAM.PBC.Opt1) <- c("PBC opt1")
+PAM.PBC.Opt2 <- as.matrix(pamstats.opt2$PBC)
+colnames(PAM.PBC.Opt2) <- c("PBC opt2")
+PAM.PBC <- bind_cols(PAM.PBC.Opt1, PAM.PBC.Opt2)
+PAM.PBC <- PAM.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.PBC$rowname <- as.numeric(PAM.PBC$rowname)
+
+rownames(pamstats.opt1) <- numbers
+PAM.R2.Opt1 <- as.matrix(pamstats.opt1$R2)
+colnames(PAM.R2.Opt1) <- c("R2 opt1")
+PAM.R2.Opt2 <- as.matrix(pamstats.opt2$R2)
+colnames(PAM.R2.Opt2) <- c("R2 opt2")
+PAM.R2 <- bind_cols(PAM.R2.Opt1, PAM.R2.Opt2)
+PAM.R2 <- PAM.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.R2$rowname <- as.numeric(PAM.R2$rowname)
+
+
+## DIANA CLUSTERING ------------
+# STATE
+timing.state.opt1 <- seqpropclust(sample, diss = timing.opt1, properties = "state", maxcluster = 20)
+timing.state.opt2 <- seqpropclust(sample, diss = timing.opt2, properties = "state", maxcluster = 20)
+
+stateRange.opt1 <- as.clustrange(timing.state.opt1, diss=timing.opt1, ncluster=16)
+stateRange.opt2 <- as.clustrange(timing.state.opt2, diss=timing.opt2, ncluster=16)
+
+#summary(stateRange.opt1, max.rank = 2)
+#summary(stateRange.opt2, max.rank = 2)
+
+state.ASW.Opt1 <- as.matrix(stateRange.opt1$stats$ASW)
+colnames(state.ASW.Opt1) <- c("ASW opt1")
+state.ASW.Opt2 <- as.matrix(stateRange.opt2$stats$ASW)
+colnames(state.ASW.Opt2) <- c("ASW opt2")
+state.ASW <- bind_cols(state.ASW.Opt1, state.ASW.Opt2)
+state.ASW <- state.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "state")
+state.ASW$rowname <- as.numeric(state.ASW$rowname)
+
+state.HC.Opt1 <- as.matrix(stateRange.opt1$stats$HC)
+colnames(state.HC.Opt1) <- c("HC opt1")
+state.HC.Opt2 <- as.matrix(stateRange.opt2$stats$HC)
+colnames(state.HC.Opt2) <- c("HC opt2")
+state.HC <- bind_cols(state.HC.Opt1, state.HC.Opt2)
+state.HC <- state.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "state")
+state.HC$rowname <- as.numeric(state.HC$rowname)
+
+state.PBC.Opt1 <- as.matrix(stateRange.opt1$stats$PBC)
+colnames(state.PBC.Opt1) <- c("PBC opt1")
+state.PBC.Opt2 <- as.matrix(stateRange.opt2$stats$PBC)
+colnames(state.PBC.Opt2) <- c("PBC opt2")
+state.PBC <- bind_cols(state.PBC.Opt1, state.PBC.Opt2)
+state.PBC <- state.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "state")
+state.PBC$rowname <- as.numeric(state.PBC$rowname)
+
+state.R2.Opt1 <- as.matrix(stateRange.opt1$stats$R2)
+colnames(state.R2.Opt1) <- c("R2 opt1")
+state.R2.Opt2 <- as.matrix(stateRange.opt2$stats$R2)
+colnames(state.R2.Opt2) <- c("R2 opt2")
+state.R2 <- bind_cols(state.R2.Opt1, state.R2.Opt2)
+state.R2 <- state.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "state")
+state.R2$rowname <- as.numeric(state.R2$rowname)
+
+
+# SPELL.AGE
+timing.spellage.opt1 <- seqpropclust(sample, diss = timing.opt1, properties = "spell.age", maxcluster = 20)
+timing.spellage.opt2 <- seqpropclust(sample, diss = timing.opt2, properties = "spell.age", maxcluster = 20)
+
+spellageRange.opt1 <- as.clustrange(timing.spellage.opt1, diss=timing.opt1, ncluster=15)
+spellageRange.opt2 <- as.clustrange(timing.spellage.opt2, diss=timing.opt2, ncluster=15)
+
+#summary(spellageRange.opt1, max.rank = 2)
+#summary(spellageRange.opt2, max.rank = 2)
+
+spellage.ASW.Opt1 <- as.matrix(spellageRange.opt1$stats$ASW)
+colnames(spellage.ASW.Opt1) <- c("ASW opt1")
+spellage.ASW.Opt2 <- as.matrix(spellageRange.opt2$stats$ASW)
+colnames(spellage.ASW.Opt2) <- c("ASW opt2")
+spellage.ASW <- bind_cols(spellage.ASW.Opt1, spellage.ASW.Opt2)
+spellage.ASW <- spellage.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "spellage")
+spellage.ASW$rowname <- as.numeric(spellage.ASW$rowname)
+
+spellage.HC.Opt1 <- as.matrix(spellageRange.opt1$stats$HC)
+colnames(spellage.HC.Opt1) <- c("HC opt1")
+spellage.HC.Opt2 <- as.matrix(spellageRange.opt2$stats$HC)
+colnames(spellage.HC.Opt2) <- c("HC opt2")
+spellage.HC <- bind_cols(spellage.HC.Opt1, spellage.HC.Opt2)
+spellage.HC <- spellage.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "spellage")
+spellage.HC$rowname <- as.numeric(spellage.HC$rowname)
+
+spellage.PBC.Opt1 <- as.matrix(spellageRange.opt1$stats$PBC)
+colnames(spellage.PBC.Opt1) <- c("PBC opt1")
+spellage.PBC.Opt2 <- as.matrix(spellageRange.opt2$stats$PBC)
+colnames(spellage.PBC.Opt2) <- c("PBC opt2")
+spellage.PBC <- bind_cols(spellage.PBC.Opt1, spellage.PBC.Opt2)
+spellage.PBC <- spellage.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "spellage")
+spellage.PBC$rowname <- as.numeric(spellage.PBC$rowname)
+
+spellage.R2.Opt1 <- as.matrix(spellageRange.opt1$stats$R2)
+colnames(spellage.R2.Opt1) <- c("R2 opt1")
+spellage.R2.Opt2 <- as.matrix(spellageRange.opt2$stats$R2)
+colnames(spellage.R2.Opt2) <- c("R2 opt2")
+spellage.R2 <- bind_cols(spellage.R2.Opt1, spellage.R2.Opt2)
+spellage.R2 <- spellage.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "spellage")
+spellage.R2$rowname <- as.numeric(spellage.R2$rowname)
+
+
+# AF PATTERN
+timing.AFpattern.opt1 <- seqpropclust(sample, diss = timing.opt1, properties = "AFpattern", maxcluster = 20)
+timing.AFpattern.opt2 <- seqpropclust(sample, diss = timing.opt2, properties = "AFpattern", maxcluster = 20)
+
+AFpatternRange.opt1 <- as.clustrange(timing.AFpattern.opt1, diss=timing.opt1, ncluster=15)
+AFpatternRange.opt2 <- as.clustrange(timing.AFpattern.opt2, diss=timing.opt2, ncluster=15)
+
+#summary(AFpatternRange.opt1, max.rank = 2)
+#summary(AFpatternRange.opt2, max.rank = 2)
+
+AFpattern.ASW.Opt1 <- as.matrix(AFpatternRange.opt1$stats$ASW)
+colnames(AFpattern.ASW.Opt1) <- c("ASW opt1")
+AFpattern.ASW.Opt2 <- as.matrix(AFpatternRange.opt2$stats$ASW)
+colnames(AFpattern.ASW.Opt2) <- c("ASW opt2")
+AFpattern.ASW <- bind_cols(AFpattern.ASW.Opt1, AFpattern.ASW.Opt2)
+AFpattern.ASW <- AFpattern.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "AFpattern")
+AFpattern.ASW$rowname <- as.numeric(AFpattern.ASW$rowname)
+
+AFpattern.HC.Opt1 <- as.matrix(AFpatternRange.opt1$stats$HC)
+colnames(AFpattern.HC.Opt1) <- c("HC opt1")
+AFpattern.HC.Opt2 <- as.matrix(AFpatternRange.opt2$stats$HC)
+colnames(AFpattern.HC.Opt2) <- c("HC opt2")
+AFpattern.HC <- bind_cols(AFpattern.HC.Opt1, AFpattern.HC.Opt2)
+AFpattern.HC <- AFpattern.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "AFpattern")
+AFpattern.HC$rowname <- as.numeric(AFpattern.HC$rowname)
+
+AFpattern.PBC.Opt1 <- as.matrix(AFpatternRange.opt1$stats$PBC)
+colnames(AFpattern.PBC.Opt1) <- c("PBC opt1")
+AFpattern.PBC.Opt2 <- as.matrix(AFpatternRange.opt2$stats$PBC)
+colnames(AFpattern.PBC.Opt2) <- c("PBC opt2")
+AFpattern.PBC <- bind_cols(AFpattern.PBC.Opt1, AFpattern.PBC.Opt2)
+AFpattern.PBC <- AFpattern.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "AFpattern")
+AFpattern.PBC$rowname <- as.numeric(AFpattern.PBC$rowname)
+
+AFpattern.R2.Opt1 <- as.matrix(AFpatternRange.opt1$stats$R2)
+colnames(AFpattern.R2.Opt1) <- c("R2 opt1")
+AFpattern.R2.Opt2 <- as.matrix(AFpatternRange.opt2$stats$R2)
+colnames(AFpattern.R2.Opt2) <- c("R2 opt2")
+AFpattern.R2 <- bind_cols(AFpattern.R2.Opt1, AFpattern.R2.Opt2)
+AFpattern.R2 <- AFpattern.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "AFpattern")
+AFpattern.R2$rowname <- as.numeric(AFpattern.R2$rowname)
+
+
+# AF TRANSITION
+timing.AFtransition.opt1 <- seqpropclust(sample, diss = timing.opt1, properties = "AFtransition", maxcluster = 20)
+timing.AFtransition.opt2 <- seqpropclust(sample, diss = timing.opt2, properties = "AFtransition", maxcluster = 20)
+
+AFtransitionRange.opt1 <- as.clustrange(timing.AFtransition.opt1, diss=timing.opt1, ncluster=11)
+AFtransitionRange.opt2 <- as.clustrange(timing.AFtransition.opt2, diss=timing.opt2, ncluster=11)
+
+summary(AFtransitionRange.opt1, max.rank = 2)
+summary(AFtransitionRange.opt2, max.rank = 2)
+
+AFtransition.ASW.Opt1 <- as.matrix(AFtransitionRange.opt1$stats$ASW)
+colnames(AFtransition.ASW.Opt1) <- c("ASW opt1")
+AFtransition.ASW.Opt2 <- as.matrix(AFtransitionRange.opt2$stats$ASW)
+colnames(AFtransition.ASW.Opt2) <- c("ASW opt2")
+AFtransition.ASW <- bind_cols(AFtransition.ASW.Opt1, AFtransition.ASW.Opt2)
+AFtransition.ASW <- AFtransition.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "AFtransition")
+AFtransition.ASW$rowname <- as.numeric(AFtransition.ASW$rowname)
+
+AFtransition.HC.Opt1 <- as.matrix(AFtransitionRange.opt1$stats$HC)
+colnames(AFtransition.HC.Opt1) <- c("HC opt1")
+AFtransition.HC.Opt2 <- as.matrix(AFtransitionRange.opt2$stats$HC)
+colnames(AFtransition.HC.Opt2) <- c("HC opt2")
+AFtransition.HC <- bind_cols(AFtransition.HC.Opt1, AFtransition.HC.Opt2)
+AFtransition.HC <- AFtransition.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "AFtransition")
+AFtransition.HC$rowname <- as.numeric(AFtransition.HC$rowname)
+
+AFtransition.PBC.Opt1 <- as.matrix(AFtransitionRange.opt1$stats$PBC)
+colnames(AFtransition.PBC.Opt1) <- c("PBC opt1")
+AFtransition.PBC.Opt2 <- as.matrix(AFtransitionRange.opt2$stats$PBC)
+colnames(AFtransition.PBC.Opt2) <- c("PBC opt2")
+AFtransition.PBC <- bind_cols(AFtransition.PBC.Opt1, AFtransition.PBC.Opt2)
+AFtransition.PBC <- AFtransition.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "AFtransition")
+AFtransition.PBC$rowname <- as.numeric(AFtransition.PBC$rowname)
+
+AFtransition.R2.Opt1 <- as.matrix(AFtransitionRange.opt1$stats$R2)
+colnames(AFtransition.R2.Opt1) <- c("R2 opt1")
+AFtransition.R2.Opt2 <- as.matrix(AFtransitionRange.opt2$stats$R2)
+colnames(AFtransition.R2.Opt2) <- c("R2 opt2")
+AFtransition.R2 <- bind_cols(AFtransition.R2.Opt1, AFtransition.R2.Opt2)
+AFtransition.R2 <- AFtransition.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "AFtransition")
+AFtransition.R2$rowname <- as.numeric(AFtransition.R2$rowname)
+
+## HEATMAPS --------------------
+timing.ASW.comp <- bind_rows(PAM.ASW, ward.ASW, state.ASW, spellage.ASW, AFpattern.ASW, AFtransition.ASW) %>% mutate(clusters = rowname + 1)
+timing.HC.comp <- bind_rows(PAM.HC, ward.HC, state.HC, spellage.HC, AFpattern.HC, AFtransition.HC) %>% mutate(clusters = rowname + 1)
+timing.PBC.comp <- bind_rows(PAM.PBC, ward.PBC, state.PBC, spellage.PBC, AFpattern.PBC, AFtransition.PBC) %>% mutate(clusters = rowname + 1)
+timing.R2.comp <- bind_rows(PAM.R2, ward.R2, state.R2, spellage.R2, AFpattern.R2, AFtransition.R2) %>% mutate(clusters = rowname + 1)
+
+timing.ASW.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "ASW value", type = "viridis") +
+  labs(title = "Timing - ASW", caption = "Average silhouette width (ASW) is the coherence of assignments, high coherence indicates high between-group distances and strong within-group homogeneity \n Dissimiarlity options:\n Option 1: Hamming distance \n Option 2: Chi-squared with an interval equal to sequence length (10)") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+timing.HC.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "HC value", type = "viridis") +
+  labs(title = "Timing - HC", caption = "Hubert's C (HC) is a measure of the gap between the partition obtained and the best partition theoretically possible with this number of groups and these distances \n Dissimiarlity options:\n Option 1: Hamming distance \n Option 2: Chi-squared with an interval equal to sequence length (10)") +
+  scale_x_discrete(name = "dissimilarity option") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+timing.PBC.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "PBC value", type = "viridis") +
+  labs(title = "Timing - PBC", caption = "Point Biseral Correlation (PBC) is a measure of the capacity of the clustering to reproduce the distances \n Dissimiarlity options:\n Dissimiarlity options:\n Option 1: Hamming distance \n Option 2: Chi-squared with an interval equal to sequence length (10)") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+timing.R2.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "R2 value", type = "viridis") +
+  labs(title = "Timing - R2", caption = "Pseudo R2 (R2) is the share of the discrepancy explained by the clustering solution (only to compare partitions with
+identical number of groups) \n Dissimiarlity options:\n Dissimiarlity options:\n Option 1: Hamming distance \n Option 2: Chi-squared with an interval equal to sequence length (10)") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+```
+
+Comparing the results of the cluster quality tests for timing, a few combinations stand out as high performers. These combinations will be visualized and compared to subsequent outputs. 
+
+  - Option 2 dissimilarity and PAM clustering with 10-20 clusters.
+  - Option 1 dissimiliarty and PAM clustering with 5-6 clusters.
+  - Option 2 dissimilarity and Ward's clustering with 7-8 clusters.
+  - Option 2 dissimilarity and Ward's clustering with 19-20 clusters.
+
+
+### Duration
+Spell duration
+
+  - Dissimilarity options
+    - LCS 
+    - CHI2 interval 1
+    - spell, high expansion cost
+  - Clustering options
+    - Ward's
+    - PAM
+    - DIANA spell.dur
+    - DIANA duration
+
+```{r duration, fig.width = 15, fig.height = 5}
+## DISTANCE ---------------
+# LCS
+duration.opt1 <- seqdist(sample, method = "LCS")
+
+# CHI2 INTERVAL 1
+duration.opt2 <- seqdist(sample, method = "CHI2", step = 1)
+
+# SPELL, HIGH EXPANSION COST
+duration.opt3 <- seqdist(sample, method = "OMspell", indel = "auto", sm = cost_matrix, with.missing = TRUE, otto = 0.1, expcost = 1)
+
+
+## WARD'S CLUSTERING ------
+#duration.ward.op1 <- agnes(duration.opt1, diss = TRUE, method = "ward")
+#duration.ward.op2 <- agnes(duration.opt2, diss = TRUE, method = "ward")
+#duration.ward.opt3 <- agnes(duration.opt3, diss = TRUE, method = "ward")
+#saveRDS(duration.ward.op1, file = "~/git/DSPG2020/career/data/combotesting_duration_ward_opt1.rds")
+#saveRDS(duration.ward.op2, file = "~/git/DSPG2020/career/data/combotesting_duration_ward_opt2.rds")
+#saveRDS(duration.ward.opt3, file = "~/git/DSPG2020/career/data/combotesting_duration_ward_opt3.rds")
+duration.ward.opt1 <- readRDS(file = "~/git/DSPG2020/career/data/combotesting_duration_ward_opt1.rds")
+duration.ward.opt2 <- readRDS(file = "~/git/DSPG2020/career/data/combotesting_duration_ward_opt2.rds")
+duration.ward.opt3 <- readRDS(file = "~/git/DSPG2020/career/data/combotesting_duration_ward_opt3.rds")
+
+# QUALITY METRICS
+wardRange.opt1 <- as.clustrange(duration.ward.opt1, diss = duration.opt1, ncluster = 20)
+wardRange.opt2 <- as.clustrange(duration.ward.opt2, diss = duration.opt2, ncluster = 20)
+wardRange.opt3 <- as.clustrange(duration.ward.opt3, diss = duration.opt3, ncluster = 20)
+#summary(wardRange.opt1, max.rank = 2)
+#summary(wardRange.opt2, max.rank = 2)
+#summary(wardRange.opt3, max.rank = 2)
+
+ward.ASW.Opt1 <- as.matrix(wardRange.opt1$stats$ASW)
+colnames(ward.ASW.Opt1) <- c("ASW opt1")
+ward.ASW.Opt2 <- as.matrix(wardRange.opt2$stats$ASW)
+colnames(ward.ASW.Opt2) <- c("ASW opt2")
+ward.ASW.Opt3 <- as.matrix(wardRange.opt3$stats$ASW)
+colnames(ward.ASW.Opt3) <- c("ASW opt3")
+ward.ASW <- bind_cols(ward.ASW.Opt1, ward.ASW.Opt2, ward.ASW.Opt3)
+ward.ASW <- ward.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.ASW$rowname <- as.numeric(ward.ASW$rowname)
+
+ward.HC.Opt1 <- as.matrix(wardRange.opt1$stats$HC)
+colnames(ward.HC.Opt1) <- c("HC opt1")
+ward.HC.Opt2 <- as.matrix(wardRange.opt2$stats$HC)
+colnames(ward.HC.Opt2) <- c("HC opt2")
+ward.HC.Opt3 <- as.matrix(wardRange.opt3$stats$HC)
+colnames(ward.HC.Opt3) <- c("HC opt3")
+ward.HC <- bind_cols(ward.HC.Opt1, ward.HC.Opt2, ward.HC.Opt3)
+ward.HC <- ward.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.HC$rowname <- as.numeric(ward.HC$rowname)
+
+ward.PBC.Opt1 <- as.matrix(wardRange.opt1$stats$PBC)
+colnames(ward.PBC.Opt1) <- c("PBC opt1")
+ward.PBC.Opt2 <- as.matrix(wardRange.opt2$stats$PBC)
+colnames(ward.PBC.Opt2) <- c("PBC opt2")
+ward.PBC.Opt3 <- as.matrix(wardRange.opt3$stats$PBC)
+colnames(ward.PBC.Opt3) <- c("PBC opt3")
+ward.PBC <- bind_cols(ward.PBC.Opt1, ward.PBC.Opt2, ward.PBC.Opt3)
+ward.PBC <- ward.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.PBC$rowname <- as.numeric(ward.PBC$rowname)
+
+ward.R2.Opt1 <- as.matrix(wardRange.opt1$stats$R2)
+colnames(ward.R2.Opt1) <- c("R2 opt1")
+ward.R2.Opt2 <- as.matrix(wardRange.opt2$stats$R2)
+colnames(ward.R2.Opt2) <- c("R2 opt2")
+ward.R2.Opt3 <- as.matrix(wardRange.opt3$stats$R2)
+colnames(ward.R2.Opt3) <- c("R2 opt3")
+ward.R2 <- bind_cols(ward.R2.Opt1, ward.R2.Opt2, ward.R2.Opt3)
+ward.R2 <- ward.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "ward")
+ward.R2$rowname <- as.numeric(ward.R2$rowname)
+
+
+## PAM CLUSTERING ---------
+numbers <- (2:20)
+pamstats <- NULL
+#rownames(pamstats) <- numbers
+pamstats <- NULL
+for (number in numbers) {
+  clusterpam <- wcKMedoids(duration.opt1, k = number)
+  assign(paste0("duration.pam.opt1.", number), clusterpam, envir = .GlobalEnv)
+  pamstats[[number]] <- clusterpam$stats
+}
+pamstats.opt1 <- dplyr::bind_rows(pamstats)
+pamstats <- NULL
+for (number in numbers) {
+  clusterpam <- wcKMedoids(duration.opt2, k = number)
+  assign(paste0("duration.pam.opt2.", number), clusterpam, envir = .GlobalEnv)
+  pamstats[[number]] <- clusterpam$stats
+}
+pamstats.opt2 <- dplyr::bind_rows(pamstats)
+for (number in numbers) {
+  clusterpam <- wcKMedoids(duration.opt3, k = number)
+  assign(paste0("duration.pam.opt3.", number), clusterpam, envir = .GlobalEnv)
+  pamstats[[number]] <- clusterpam$stats
+}
+pamstats.opt3 <- dplyr::bind_rows(pamstats)
+
+# QUALITY METRICS
+rownames(pamstats.opt1) <- numbers
+PAM.ASW.Opt1 <- as.matrix(pamstats.opt1$ASW)
+colnames(PAM.ASW.Opt1) <- c("ASW opt1")
+PAM.ASW.Opt2 <- as.matrix(pamstats.opt2$ASW)
+colnames(PAM.ASW.Opt2) <- c("ASW opt2")
+PAM.ASW.Opt3 <- as.matrix(pamstats.opt3$ASW)
+colnames(PAM.ASW.Opt3) <- c("ASW opt3")
+PAM.ASW <- bind_cols(PAM.ASW.Opt1, PAM.ASW.Opt2, PAM.ASW.Opt3)
+PAM.ASW <- PAM.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.ASW$rowname <- as.numeric(PAM.ASW$rowname)
+
+rownames(pamstats.opt1) <- numbers
+PAM.HC.Opt1 <- as.matrix(pamstats.opt1$HC)
+colnames(PAM.HC.Opt1) <- c("HC opt1")
+PAM.HC.Opt2 <- as.matrix(pamstats.opt2$HC)
+colnames(PAM.HC.Opt2) <- c("HC opt2")
+PAM.HC.Opt3 <- as.matrix(pamstats.opt3$HC)
+colnames(PAM.HC.Opt3) <- c("HC opt3")
+PAM.HC <- bind_cols(PAM.HC.Opt1, PAM.HC.Opt2, PAM.HC.Opt3)
+PAM.HC <- PAM.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.HC$rowname <- as.numeric(PAM.HC$rowname)
+
+rownames(pamstats.opt1) <- numbers
+PAM.PBC.Opt1 <- as.matrix(pamstats.opt1$PBC)
+colnames(PAM.PBC.Opt1) <- c("PBC opt1")
+PAM.PBC.Opt2 <- as.matrix(pamstats.opt2$PBC)
+colnames(PAM.PBC.Opt2) <- c("PBC opt2")
+PAM.PBC.Opt3 <- as.matrix(pamstats.opt3$PBC)
+colnames(PAM.PBC.Opt3) <- c("PBC opt3")
+PAM.PBC <- bind_cols(PAM.PBC.Opt1, PAM.PBC.Opt2, PAM.PBC.Opt3)
+PAM.PBC <- PAM.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.PBC$rowname <- as.numeric(PAM.PBC$rowname)
+
+rownames(pamstats.opt1) <- numbers
+PAM.R2.Opt1 <- as.matrix(pamstats.opt1$R2)
+colnames(PAM.R2.Opt1) <- c("R2 opt1")
+PAM.R2.Opt2 <- as.matrix(pamstats.opt2$R2)
+colnames(PAM.R2.Opt2) <- c("R2 opt2")
+PAM.R2.Opt3 <- as.matrix(pamstats.opt3$R2)
+colnames(PAM.R2.Opt3) <- c("R2 opt3")
+PAM.R2 <- bind_cols(PAM.R2.Opt1, PAM.R2.Opt2, PAM.R2.Opt3)
+PAM.R2 <- PAM.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "pam")
+PAM.R2$rowname <- as.numeric(PAM.R2$rowname)
+
+
+## DIANA CLUSTERING -------
+# SPELL.DUR
+duration.spelldur.opt1 <- seqpropclust(sample, diss = duration.opt1, properties = "spell.dur", maxcluster = 20)
+duration.spelldur.opt2 <- seqpropclust(sample, diss = duration.opt2, properties = "spell.dur", maxcluster = 20)
+duration.spelldur.opt3 <- seqpropclust(sample, diss = duration.opt3, properties = "spell.dur", maxcluster = 20)
+
+spelldurRange.opt1 <- as.clustrange(duration.spelldur.opt1, diss=duration.opt1, ncluster=11)
+spelldurRange.opt2 <- as.clustrange(duration.spelldur.opt2, diss=duration.opt2, ncluster=11)
+spelldurRange.opt3 <- as.clustrange(duration.spelldur.opt3, diss=duration.opt2, ncluster=11)
+
+#summary(spelldurRange.opt1, max.rank = 2)
+#summary(spelldurRange.opt2, max.rank = 2)
+
+spelldur.ASW.Opt1 <- as.matrix(spelldurRange.opt1$stats$ASW)
+colnames(spelldur.ASW.Opt1) <- c("ASW opt1")
+spelldur.ASW.Opt2 <- as.matrix(spelldurRange.opt2$stats$ASW)
+colnames(spelldur.ASW.Opt2) <- c("ASW opt2")
+spelldur.ASW.Opt3 <- as.matrix(spelldurRange.opt3$stats$ASW)
+colnames(spelldur.ASW.Opt3) <- c("ASW opt3")
+
+spelldur.HC.Opt1 <- as.matrix(spelldurRange.opt1$stats$HC)
+colnames(spelldur.HC.Opt1) <- c("HC opt1")
+spelldur.HC.Opt2 <- as.matrix(spelldurRange.opt2$stats$HC)
+colnames(spelldur.HC.Opt2) <- c("HC opt2")
+spelldur.HC.Opt3 <- as.matrix(spelldurRange.opt3$stats$HC)
+colnames(spelldur.HC.Opt3) <- c("HC opt3")
+spelldur.HC <- bind_cols(spelldur.HC.Opt1, spelldur.HC.Opt2, spelldur.HC.Opt3)
+spelldur.HC <- spelldur.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "spelldur")
+spelldur.HC$rowname <- as.numeric(spelldur.HC$rowname)
+
+spelldur.PBC.Opt1 <- as.matrix(spelldurRange.opt1$stats$PBC)
+colnames(spelldur.PBC.Opt1) <- c("PBC opt1")
+spelldur.PBC.Opt2 <- as.matrix(spelldurRange.opt2$stats$PBC)
+colnames(spelldur.PBC.Opt2) <- c("PBC opt2")
+spelldur.PBC.Opt3 <- as.matrix(spelldurRange.opt3$stats$PBC)
+colnames(spelldur.PBC.Opt3) <- c("PBC opt3")
+spelldur.PBC <- bind_cols(spelldur.PBC.Opt1, spelldur.PBC.Opt2, spelldur.PBC.Opt3)
+spelldur.PBC <- spelldur.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "spelldur")
+spelldur.PBC$rowname <- as.numeric(spelldur.PBC$rowname)
+
+spelldur.R2.Opt1 <- as.matrix(spelldurRange.opt1$stats$R2)
+colnames(spelldur.R2.Opt1) <- c("R2 opt1")
+spelldur.R2.Opt2 <- as.matrix(spelldurRange.opt2$stats$R2)
+colnames(spelldur.R2.Opt2) <- c("R2 opt2")
+spelldur.R2.Opt3 <- as.matrix(spelldurRange.opt3$stats$R2)
+colnames(spelldur.R2.Opt3) <- c("R2 opt3")
+spelldur.R2 <- bind_cols(spelldur.R2.Opt1, spelldur.R2.Opt2, spelldur.R2.Opt3)
+spelldur.R2 <- spelldur.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "spelldur")
+spelldur.R2$rowname <- as.numeric(spelldur.R2$rowname)
+
+spelldur.ASW <- bind_cols(spelldur.ASW.Opt1, spelldur.ASW.Opt2, spelldur.ASW.Opt3)
+
+spelldur.ASW <- spelldur.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "spelldur")
+spelldur.ASW$rowname <- as.numeric(spelldur.ASW$rowname)
+
+
+# DURATION
+duration.duration.opt1 <- seqpropclust(sample, diss = duration.opt1, properties = "duration", maxcluster = 20)
+duration.duration.opt2 <- seqpropclust(sample, diss = duration.opt2, properties = "duration", maxcluster = 20)
+duration.duration.opt3 <- seqpropclust(sample, diss = duration.opt3, properties = "duration", maxcluster = 20)
+
+durationRange.opt1 <- as.clustrange(duration.duration.opt1, diss=duration.opt1, ncluster=11)
+durationRange.opt2 <- as.clustrange(duration.duration.opt2, diss=duration.opt2, ncluster=11)
+durationRange.opt3 <- as.clustrange(duration.duration.opt3, diss=duration.opt2, ncluster=11)
+
+#summary(durationRange.opt1, max.rank = 2)
+#summary(durationRange.opt2, max.rank = 2)
+
+duration.HC.Opt1 <- as.matrix(durationRange.opt1$stats$HC)
+colnames(duration.HC.Opt1) <- c("HC opt1")
+duration.HC.Opt2 <- as.matrix(durationRange.opt2$stats$HC)
+colnames(duration.HC.Opt2) <- c("HC opt2")
+duration.HC.Opt3 <- as.matrix(durationRange.opt3$stats$HC)
+colnames(duration.HC.Opt3) <- c("HC opt3")
+duration.HC <- bind_cols(duration.HC.Opt1, duration.HC.Opt2, duration.HC.Opt3)
+duration.HC <- duration.HC %>% rownames_to_column() %>% melt() %>% mutate(group = "duration")
+duration.HC$rowname <- as.numeric(duration.HC$rowname)
+
+duration.PBC.Opt1 <- as.matrix(durationRange.opt1$stats$PBC)
+colnames(duration.PBC.Opt1) <- c("PBC opt1")
+duration.PBC.Opt2 <- as.matrix(durationRange.opt2$stats$PBC)
+colnames(duration.PBC.Opt2) <- c("PBC opt2")
+duration.PBC.Opt3 <- as.matrix(durationRange.opt3$stats$PBC)
+colnames(duration.PBC.Opt3) <- c("PBC opt3")
+duration.PBC <- bind_cols(duration.PBC.Opt1, duration.PBC.Opt2, duration.PBC.Opt3)
+duration.PBC <- duration.PBC %>% rownames_to_column() %>% melt() %>% mutate(group = "duration")
+duration.PBC$rowname <- as.numeric(duration.PBC$rowname)
+
+duration.R2.Opt1 <- as.matrix(durationRange.opt1$stats$R2)
+colnames(duration.R2.Opt1) <- c("R2 opt1")
+duration.R2.Opt2 <- as.matrix(durationRange.opt2$stats$R2)
+colnames(duration.R2.Opt2) <- c("R2 opt2")
+duration.R2.Opt3 <- as.matrix(durationRange.opt3$stats$R2)
+colnames(duration.R2.Opt3) <- c("R2 opt3")
+duration.R2 <- bind_cols(duration.R2.Opt1, duration.R2.Opt2, duration.R2.Opt3)
+duration.R2 <- duration.R2 %>% rownames_to_column() %>% melt() %>% mutate(group = "duration")
+duration.R2$rowname <- as.numeric(duration.R2$rowname)
+
+duration.ASW.Opt1 <- as.matrix(durationRange.opt1$stats$ASW)
+colnames(duration.ASW.Opt1) <- c("ASW opt1")
+duration.ASW.Opt2 <- as.matrix(durationRange.opt2$stats$ASW)
+colnames(duration.ASW.Opt2) <- c("ASW opt2")
+duration.ASW.Opt3 <- as.matrix(durationRange.opt3$stats$ASW)
+colnames(duration.ASW.Opt3) <- c("ASW opt3")
+
+duration.ASW <- bind_cols(duration.ASW.Opt1, duration.ASW.Opt2, duration.ASW.Opt3)
+
+duration.ASW <- duration.ASW %>% rownames_to_column() %>% melt() %>% mutate(group = "duration")
+duration.ASW$rowname <- as.numeric(duration.ASW$rowname)
+
+## HEATMAP ----------------
+duration.ASW.comp <- bind_rows(PAM.ASW, ward.ASW, spelldur.ASW, duration.ASW) %>% mutate(clusters = rowname + 1)
+duration.HC.comp <- bind_rows(PAM.HC, ward.HC, spelldur.HC, duration.HC) %>% mutate(clusters = rowname + 1)
+duration.PBC.comp <- bind_rows(PAM.PBC, ward.PBC, spelldur.PBC, duration.PBC) %>% mutate(clusters = rowname + 1)
+duration.R2.comp <- bind_rows(PAM.R2, ward.R2, spelldur.R2, duration.PBC) %>% mutate(clusters = rowname + 1)
+
+duration.ASW.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "ASW value", type = "viridis") +
+  labs(title = "Duration - ASW", caption = "Average silhouette width (ASW) is the coherence of assignments, high coherence indicates high between-group distances and strong within-group homogeneity \n Dissimiarlity options:\n Option 1: Longest common subsequence \n Option 2: Chi-squared with interval of one \n Option 3: Optimal matching of spell sequences, high expansion cost, using our custom cost matrix") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+duration.HC.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "HC value", type = "viridis") +
+  labs(title = "Duration - HC", caption = "Hubert's C (HC) is a measure of the gap between the partition obtained and the best partition theoretically possible with this number
+of groups and these distances \n Dissimiarlity options:\n Option 1: Longest common subsequence \n Option 2: Chi-squared with interval of one \n Option 3: Optimal matching of spell sequences, high expansion cost, using our custom cost matrix") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+duration.PBC.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "PBC value", type = "viridis") +
+  labs(title = "Duration - PBC", caption = "Point Biseral Correlation (PBC) is a measure of the capacity of the clustering to reproduce the distances \n Dissimilarity options: \n Option 1: Longest common subsequence \n Option 2: Chi-squared with interval of one \n Option 3: Optimal matching of spell sequences, high expansion cost, using our custom cost matrix") +
+  scale_x_discrete(name = "dissimilarity option") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+duration.R2.comp %>% #arrange(rowname) %>%
+ggplot(aes(x = variable, y = clusters, fill = value)) +
+  facet_grid(. ~ group, scales = "free") +
+  geom_tile() +
+  scale_fill_continuous(name = "R2 value", type = "viridis") +
+  labs(title = "Duration - R2", caption = "Pseudo R2 (R2) is the share of the discrepancy explained by the clustering solution (only to compare partitions with
+identical number of groups) \n Dissimiarlity options:\n Option 1: Longest common subsequence \n Option 2: Chi-squared with interval of one \n Option 3: Optimal matching of spell sequences, high expansion cost, using our custom cost matrix") +
+  scale_x_discrete(name = "dissimilarity option") +
+  scale_x_discrete(name = "dissimilarity option", labels = c("1", "2", "3")) +
+  ylab("number of clusters") +
+  ylim(1,21) +
+  theme_bw()
+
+
+
+```
+
+Comparing the results of the cluster quality tests for duration, a few combinations stand out as high performers. These combinations will be visualized and compared to subsequent outputs. 
+
+  - Option 1 dissimilarity and DIANA duration clustering with 5 clusters
+  - Option 1 dissimilarity and PAM clustering with 5 clusters
+  - Option 1 dissimilarity and PAM clustering with 12 clusters
+  - Option 1 dissimilarity and Ward's clustering with 5 clusters
+
+
+### Comparing outputs
+
+  - Sequencing 
+    - Option 2 dissimilarity and PAM clustering with 5-6 clusters.
+    - Option 3 dissimilarity and PAM clustering with 17-18 clusters.
+    - Option 2 dissimilarity and DIANA transition clustering with 5 clusters.
+    - Option 1 dissimilarity and PAM clustering with 19-20 clusters.
+  - Timing
+    - Option 2 dissimilarity and PAM clustering with 10-20 clusters.
+    - Option 1 dissimiliarty and PAM clustering with 5-6 clusters.
+    - Option 2 dissimilarity and Ward's clustering with 7-8 clusters.
+    - Option 2 dissimilarity and Ward's clustering with 19-20 clusters.
+  - Duration
+    - Option 1 dissimilarity and DIANA duration clustering with 5 clusters
+    - Option 1 dissimilarity and PAM clustering with 5 clusters
+    - Option 1 dissimilarity and PAM clustering with 12 clusters
+    - Option 1 dissimilarity and Ward's clustering with 5 clusters
+  
+  
+
+```{r, fig.height=10, fig.width=15}
+## SEQUENCING -------------
+clusterpam_18 <- sequencing.pam.opt2.18$clustering
+clusterpam_18_fac <- factor(clusterpam_18, labels = paste("Type", 1:18))
+
+seqdplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 6, withlegend = F, sortv = "from.start", main = "sequencing - pam(opt2)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+clusterpam_18 <- sequencing.pam.opt2.5$clustering
+clusterpam_18_fac <- factor(clusterpam_18, labels = paste("Type", 1:5))
+
+seqdplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 5, withlegend = F, sortv = "from.start", main = "sequencing - pam(opt2)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+sequencing.transition.opt2 <- seqpropclust(sample, diss = sequencing.opt2, properties = "transition", maxcluster = 5)
+clusterprop_8 <- sequencing.transition.opt2$fitted
+clusterprop_10_fac <- factor(clusterprop_8$`(fitted)`, labels = paste("Type", 1:5))
+prop_plot <- seqdplot(sample, group = clusterprop_10_fac, border = NA, use.layout = TRUE, cols = 5, withlegend = F, main = "sequencing - transition(opt2)",
+                      cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+clusterpam_18 <- sequencing.pam.opt1.20$clustering
+clusterpam_18_fac <- factor(clusterpam_18, labels = paste("Type", 1:20))
+
+seqdplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 6, withlegend = F, sortv = "from.start", main = "sequencing - pam(opt1)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+## TIMING -------------------
+
+clusterpam_18 <- timing.pam.opt2.14$clustering
+clusterpam_18_fac <- factor(clusterpam_18, labels = paste("Type", 1:14))
+
+seqIplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 7, withlegend = F, sortv = timing.opt2, main = "timing - pam(opt2)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+clusterpam_18 <- timing.pam.opt1.6$clustering
+clusterpam_18_fac <- factor(clusterpam_18, labels = paste("Type", 1:6))
+
+seqIplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 6, withlegend = F, sortv = timing.opt2, main = "timing - pam (opt1)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+clusterward <- cutree(timing.ward.opt2, k = 7)
+clusterpam_18_fac <- factor(clusterward, labels = paste("Type", 1:7))
+
+seqIplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 7, withlegend = F, sortv = timing.opt2, main = "timing - ward(opt2)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+clusterward <- cutree(timing.ward.opt2, k = 20)
+clusterpam_18_fac <- factor(clusterward, labels = paste("Type", 1:20))
+
+seqIplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 5, withlegend = F, sortv = timing.opt2, main = "timing - ward(opt2)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+
+## DURATION -------------------
+duration.duration.opt1 <- seqpropclust(sample, diss = duration.opt1, properties = "duration", maxcluster = 5)
+clusterprop_8 <- duration.duration.opt1$fitted
+clusterprop_10_fac <- factor(clusterprop_8$`(fitted)`, labels = paste("Type", 1:5))
+
+prop_plot <- seqIplot(sample, group = clusterprop_10_fac, border = NA, use.layout = TRUE, cols = 5, withlegend = F, sortv = "from.start", main = "duration - duration(opt1)", cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+clusterpam_18 <- duration.pam.opt1.5$clustering
+clusterpam_18_fac <- factor(clusterpam_18, labels = paste("Type", 1:5))
+
+seqIplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 5, withlegend = F, sortv = "from.start", main = "duration - pam (opt1)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+clusterpam_18 <- duration.pam.opt1.12$clustering
+clusterpam_18_fac <- factor(clusterpam_18, labels = paste("Type", 1:12))
+
+seqIplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 6, withlegend = F, sortv = "from.start", main = "duration - pam(opt1)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+clusterward <- cutree(duration.ward.opt1, k = 5)
+clusterpam_18_fac <- factor(clusterward, labels = paste("Type", 1:5))
+
+seqdplot(sample, group = clusterpam_18_fac, border = NA, use.layout = TRUE, cols = 5, withlegend = F, sortv = timing.opt2, main = "duration - ward(opt1)",
+         cpal = c("#555555",  uva_color_palette[1], uva_color_palette[2],
+                  uva_color_palette[4], uva_color_palette[6], uva_color_palette[9],
+                  "#CBBEB5"))
+
+```
+

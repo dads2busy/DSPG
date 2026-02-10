@@ -1,0 +1,25 @@
+---
+title: "ACS data access"
+output: html_document
+---
+
+Step 1: Install acs package:
+
+```{r}
+install.packages("acs")
+```
+
+Step 2: Fill out and submit the key request form at https://api.census.gov/data/key_signup.html
+You'll get an email with your API key. Copy and paste to use it for the "key" arguement below:
+
+```{r}
+api.key.install(key = "")
+```
+
+The above function calls only need to be done once. From now on, you can just call the package with:
+
+```{r}
+library(acs)
+```
+
+whenver you want to use it.

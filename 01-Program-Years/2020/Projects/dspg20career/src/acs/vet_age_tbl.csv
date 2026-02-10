@@ -1,0 +1,15 @@
+variable,estimate,pct,isnonvet
+vet_total,388703,8.308486796,Veteran
+nonvet_total,4289682,91.6915132,Non-Veteran
+male_total,331728,14.79499929,Veteran
+male_total,1910435,85.20500071,Non-Veteran
+male_1834,29979,4.192521177,Veteran
+male_1834,685080,95.80747882,Non-Veteran
+male_3554,104804,12.40806778,Veteran
+male_3554,739840,87.59193222,Non-Veteran
+male_5564,66050,18.69706508,Veteran
+male_5564,287214,81.30293492,Non-Veteran
+male_6574,69980,33.40318185,Veteran
+male_6574,139521,66.59681815,Non-Veteran
+male_75plus,60915,50.89185012,Veteran
+male_75plus,58780,49.10814988,Non-Veteran

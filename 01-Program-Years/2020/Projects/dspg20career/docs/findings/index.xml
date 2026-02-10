@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Findings on UVA Biocomplexity Institute</title>
+    <link>/dspg20career/findings/</link>
+    <description>Recent content in Findings on UVA Biocomplexity Institute</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/dspg20career/findings/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Results Overview</title>
+      <link>/dspg20career/findings/general-overview/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20career/findings/general-overview/</guid>
+      <description>.imgContainer{ float:left; }  Main Findings From our research, we have come to several major findings.
+Data profiling, benchmarking, and exploration. 1. BGT resume data overrepresents young and white collar veterans.    Figure 1. Results from data benchmarking using Behavioral Risk Factor Surveillance System, American Community Survey, Veterans Employment Outcomes, and BGT Resume data. In both graphs, BGT observations are in orange. These findings show BGT over estimates white collar veterans by comparison, for both education and industry variables.</description>
+    </item>
+    
+    <item>
+      <title>Data Benchmarking</title>
+      <link>/dspg20career/findings/results-section-one/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20career/findings/results-section-one/</guid>
+      <description>In order to better understand the Burning Glass resume data, particularly in the context of veterans in the DC metro area, we wanted to benchmark it against other veteran- and career-related datasets to understand any differences in the populations. For more details about the data sources used here, see the Data section.
+Veterans Employment Outcomes (VEO) comparison with BGT data The following plot compares the percentage of veterans in a given career for veterans nationally (in the Veterans Employment Outcomes data) and veterans in the BGT data (for the DC Metropolitan Statistical Area).</description>
+    </item>
+    
+    <item>
+      <title>Sequence Exploration</title>
+      <link>/dspg20career/findings/results-section-two/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20career/findings/results-section-two/</guid>
+      <description>Exploring veteran’s whole career sequences After cleaning the BGT data, we created our sequence objects using TraMineR. To begin, we created a sequence object using the whole career of veterans. This yielded 8,068 sequences of varying lengths. When creating the whole career sequence object, we defined eight unique states: Zone 1, Zone 2, Zone 3, Zone 4, Zone 5, Missing zone, Military, Military transition unemployment, Civilian unemployment, and Retired.</description>
+    </item>
+    
+    <item>
+      <title>Sequence Clustering</title>
+      <link>/dspg20career/findings/results-section-clustering/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20career/findings/results-section-clustering/</guid>
+      <description>In the previous Sequence Exploration, we introduced the following sequence state naming system, shown in Table 1.
+ {&#34;x&#34;:{&#34;filter&#34;:&#34;none&#34;,&#34;data&#34;:[[&#34;Zone 1&#34;,&#34;Zone 2&#34;,&#34;Zone 3&#34;,&#34;Zone 4&#34;,&#34;Zone 5&#34;,&#34;Missing zone&#34;,&#34;Military&#34;,&#34;Military transition unemployed&#34;,&#34;Civilian unemployed&#34;,&#34;Retired&#34;],[&#34;O*NET SOC Code&#34;,&#34;O*NET SOC Code&#34;,&#34;O*NET SOC Code&#34;,&#34;O*NET SOC Code&#34;,&#34;O*NET SOC Code&#34;,&#34;O*NET SOC Code&#34;,&#34;O*NET SOC Code&#34;,&#34;seqdef() left =&#34;,&#34;seqdef() gaps =&#34;,&#34;seqdef() right =&#34;],[&#34;Some of these occupations may require a high school diploma or GED certificate. Little or no previous work-related skill, knowledge, or experience is needed for these occupations&#34;</description>
+    </item>
+    
+    <item>
+      <title>Tournament Theory</title>
+      <link>/dspg20career/findings/results-section-four/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20career/findings/results-section-four/</guid>
+      <description>Tournament Theory Rosenbaum’s (1979) tournament model (described in more detail in the Methodology section) argues that career mobility can be represented as rounds of a tournament, where each round has winners and losers and the results of each round affect subsequent career opportunities. We use 10-year career sequences of veterans beginning after their last military job to test hypotheses about career mobility.
+We are particularly interested in two potential tournament “results” for veterans: early promotion (promotion within two years of leaving the military) and transitional unemployment (unemployment occurring directly after leaving the military).</description>
+    </item>
+    
+  </channel>
+</rss>

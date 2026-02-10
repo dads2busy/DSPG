@@ -1,0 +1,121 @@
+---
+title: "Results Section One"
+description: "Social and Economic Vulnerability Index"
+tags: ["R", "ggmap"]
+weight: 1
+draft: false
+output: html_document
+---
+
+Loudoun County is part of the northern Virginia region. Along with Loudoun County, the NoVA area is composed of:
+
+* City of Alexandria
++ Arlington County
++ City of Fairfax
++ Fairfax county
++ City of Falls Church
++ Fauquier County
++ Loudoun County
++ City of Manassas
++ City of Manassas Park
++ Prince William County
+
+Recognizing that food insecurity is not bound by county or city, we constructed social and economic vulnerability indices for NOVA at the census tract levels. This examines demand-side factors affecting food insecurity in lieu of data on actual household food consumption. In fact, Ibok, Osbahr, and Srinivasan (2019) suggest that per capita calorie consumption and food consumption scores may not be good indicators of food insecurity. 
+
+The social and economic vulnerability index (SEVI) is constructed using census tract-level data on poverty rate, ethnicity, spoken language, household composition, and crowdedness, physical and mental disabilities, housing type, and access to private/public transportation. All of these factors can affect the ability of households to obtain healthy, nutritious foods. It is important to note that food insecurity can and often does, go hand in hand with obesity (Eisenmann, Gunersen, Lohman, Garasky, and Stewart, 2011).
+
+
+```{r, include=FALSE, echo = TRUE, eval = TRUE}
+library(rgdal)
+library(tidyverse)
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(tidycensus)
+myACSkey <- "f69e67b9edaba057db9eb6c475030af08cf1adb9"
+map  <- sf::st_read("../../data/VirginiaShapeFiles/tl_2019_51_tract.shp", stringsAsFactors = FALSE)
+dataCDC <- read.csv("../../data/Virginia_CDC_SVI.csv")
+str(map)
+str(dataCDC)
+nova_counties  <- c("Arlington",
+                    "Fairfax",
+                    "Loudoun",
+                    "Prince William",
+                    "Alexandria City",
+                    "Falls Church City",
+                    "Fairfax City",
+                    "Manassas City",
+                    "Manassas Park City",
+                    "Fauquier")
+
+dataCDC_modified <- dataCDC %>%
+  filter(COUNTY %in% nova_counties ) %>%
+  separate(LOCATION, into = c("NAMELSAD", "State"), sep= ", ")
+
+map_and_data <- inner_join(map, dataCDC_modified, by="NAMELSAD")
+
+# str(map_and_data)
+
+map_and_data$RPL_THEMES[map_and_data$RPL_THEMES<0] <- NA
+
+# unique(map_and_data$RPL_THEMES)
+
+
+va_sf<-get_acs(geography = "county",
+               state="VA",
+               county=c("Arlington county",
+                        "Fairfax county",
+                        "Loudoun county",
+                        "Prince William county",
+                        "Alexandria city",
+                        "Falls Church city",
+                        "Fairfax city",
+                        "Manassas city",
+                        "Manassas Park city",
+                        "Fauquier County"),
+               variables = "B19058_002",
+               survey = "acs5",
+               key = myACSkey,
+               year=2018,
+               output = "wide",
+               show_call = T,
+               geometry = T,
+               keep_geo_vars = T)%>%
+  select(COUNTYFP,geometry)
+
+
+loudoun_outline<-get_acs(geography = "county",
+               state="VA",
+               county=c("Loudoun county"),
+               variables = "B19058_002",
+               survey = "acs5",
+               key = myACSkey,
+               year=2018,
+               output = "wide",
+               show_call = T,
+               geometry = T,
+               keep_geo_vars = T)%>%
+  select(COUNTYFP,geometry)
+
+```
+```{r plot, echo=FALSE, fig.height = 6, fig.width = 10, fig.align = "center", eval=TRUE}
+ggplot(map_and_data) + 
+  geom_sf(aes(fill= RPL_THEMES)) +
+  geom_sf(data= va_sf, fill="transparent", color="black", size=.5) +
+  geom_sf(data=loudoun_outline, fill="transparent", color="red", size=.75) +
+  ylim(-38.4,-39.3) + xlim(-78.1, -77) + 
+  scale_fill_viridis_c() + scale_color_viridis_c() +
+  theme(legend.title = element_blank()) 
+```
+<!-- ![](/dspg20loudon/knitted_demographics_Loudoun_files/figure-html/plot-1.png){style="width:75%; display: block; margin-left: auto; margin-right: auto;"} -->
+
+The SEVI is shown in Figure 1 where lighter colors represent more vulnerable populations. The map shows that across NOVA, and even within Loudoun County, there are important differences in social and economic vulnerability. Socially and economically vulnerable areas are often located close to areas with low vulnerability. However, the SEVI is only one side of the food insecurity story. Food insecurity is also affected by access to food in the local area. Nonetheless, the SEVI provides a means of assessing areas that may need targeted assistance.
+
+<br>
+
+#### References:
+Eisenmann, J. C., Gundersen, C., Lohman, B. J., Garasky, S., & Stewart, S. D. (2011). Is food insecurity related to overweight and obesity in children and adolescents? A summary of studies, 1995–2009. Obesity Reviews, 12(5), 73-83.
+
+Ibok, O. W., Osbahr, H., & Srinivasan, C. (2019). Advancing a new index for measuring household vulnerability to food insecurity. Food Policy, 84, 10-20. 
+
+CDC Social Vulnerability Index. Retrieved from: https://svi.cdc.gov/

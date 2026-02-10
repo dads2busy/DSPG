@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tidycensus on DSPG 2020</title>
+    <link>/dspg20loudon/tags/tidycensus/</link>
+    <description>Recent content in tidycensus on DSPG 2020</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/dspg20loudon/tags/tidycensus/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Results Section Two</title>
+      <link>/dspg20loudon/findings/foodaccessmaps/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20loudon/findings/foodaccessmaps/</guid>
+      <description>Food insecurity may also be affected by food accessibility. Those with access to high quality food outlets were less likely to be food insecure (Mayer, Hillier, Bachhuber and Long, 2014). We measured food access in the Loudoun County and northern Virginia area using three indicators. These indicators correspond to traditional food retailers, farmers’ markets, and food pantries. Unlike traditional food retailers and farmers’ markets, food pantries usually provide food to vulnerable populations for free or at especially discounted prices.</description>
+    </item>
+    
+  </channel>
+</rss>

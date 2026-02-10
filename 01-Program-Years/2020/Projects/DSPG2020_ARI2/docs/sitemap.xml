@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/DSPG2020_ARI2/findings/performance_tidy_text/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/findings/performance_lda/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/methods/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/overview/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/team/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/findings/biterm_markdown/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/tags/biterms/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/tags/btm/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/findings/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/tags/lda/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/tags/r/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/tags/sentiment/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/tags/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/tags/text-analysis/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/tags/tidytext/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/tags/topic-models/</loc>
+  </url>
+  
+  <url>
+    <loc>/DSPG2020_ARI2/</loc>
+  </url>
+  
+</urlset>

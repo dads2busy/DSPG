@@ -1,0 +1,494 @@
+---
+title: "15b_alternative_cluster_tests.Rmd"
+author: "Joanna Schroeder"
+date: "9/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+for (pkg in c("tidyverse",  "data.table", "R.utils", "maditr", "stringr", "stringi", "dplyr", "ggplot2", "lubridate", "gt", "DataExplorer", "TraMineR", "TraMineRextras", "cluster", "tools", "WeightedCluster")) {
+  library(pkg, character.only = TRUE)
+}
+
+uva_color_palette <- 
+c("#232D4B", #space cadet
+  "#2C4F6B", #indigo dye
+  "#0E879C", #blue munsell
+  "#60999A", #cadet blue
+  "#D1E0BF", #tea green
+  "#D9E12B", #pear
+  "#E6CE3A", #citrine
+  "#E6A01D", #marigold
+  "#E57200" #princeton orange
+)
+```
+
+How does time to run Ward's vs PAM vs DIANA clustering differ with scale?
+
+We will test this using sequence objects with 1,000, 2,000, and 4,000 members for Ward's and PAM. For DIANA, we will test a 4,000 member sample for all possible properties.
+
+## Definitions
+* Ward's
+  + Agglomerative hierarchical clustering, minimizes median distances between groups.
+* PAM (Partitioning around medoids)
+  + Direct partitioning, minimizes dissimilarities within the cluster. Faster, number of clusters set before. 
+* DIANA (divisive analysis)
+  + Divisive analysis is the opposite of agglomerative. It is hierarchical clustering, better at identifying large than small clusters
+  
+* Hierarchical clustering
+  + Starts with all the observations, grouped together in interations until all observations form a single group. 
+  + Once the groupings are created, number of groups is determined and "cut" at the desired level.
+  + Ward's generally performs well, though outliers can bias the result.
+  + Hierarchical clustering groups based on a local criterion, can lead to worse results at the global level.
+  
+* Partitioning around medoids (PAM) 
+  + Aims to maximize a global criterion, the best partitioning of the data based on a predetermined number of groups.
+  + Identify the k best representatives of groups, which has the smallest weighted sum of distances from the other observations in the group.
+  + Disadvantages include needing to specify the number of groups beforehand, creating "spherical" groups centered around the medoids, which may not match the reality of the data.
+  
+* Choosing a partition
+  + The literature doesn't say much about when it is more appropriate to use one method versus another depending on data structure, research question etc.
+  + The literature does speak to analyzing the quality of clusters, though more often specifically when choosing a cluster partition
+  + Still, it may be worth it to work through different cluster quality tests on different cluster solutions with out data to see if any clear patterns emerge that would help us make an informed choice for our clustering methodology.
+
+
+[WeightedCluster Manual](http://mephisto.unige.ch/weightedcluster/WeightedCluster.pdf)
+
+## Create sequence objects
+```{r create-sequence-objects}
+set.seed(09112020)
+
+sts_nonvet <- read.csv("~/git/DSPG2020/career/data/sts_all_ten.csv", row.names = 1)
+
+small <- sts_nonvet[sample(nrow(sts_nonvet), 1000, replace = FALSE, prob = NULL),]
+medium <- sts_nonvet[sample(nrow(sts_nonvet), 2000, replace = FALSE, prob = NULL),]
+large <- sts_nonvet[sample(nrow(sts_nonvet), 4000, replace = FALSE, prob = NULL),]
+
+small <- seqdef(small, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+medium <- seqdef(medium, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+
+large <- seqdef(large, left="DEL", gaps="Civilian unemployment", right="DEL", cpal = c("#CBBEB5",  uva_color_palette[1], uva_color_palette[2],uva_color_palette[4],  uva_color_palette[6], uva_color_palette[9], "#CBBEB5"))
+```
+Our sample data comes from a sample of nonveterans who have at least ten years of employment history. We will cluster based on the whole sequence and in exploratory plots limit the axis to the first 30 years of employment history.
+
+## 1,000 member clustering
+
+```{r 1000-member-clustering}
+reps = 1:10
+diss <- seqdist(small, method = "OM", indel = 1, sm = "TRATE", with.missing = TRUE)
+
+cluster_times <- for(rep in reps) {
+rep = as.character(rep)
+
+# Ward's clustering
+start_w <- Sys.time()
+clusterward <- agnes(diss, diss = TRUE, method = "ward")
+end_w <- Sys.time()
+assign(paste0("w_run_", rep), (end_w - start_w), envir = .GlobalEnv)
+
+# PAM clustering
+start_p <- Sys.time()
+clusterpam <- wcKMedoids(diss, k = 8)
+end_p <- Sys.time()
+assign(paste0("p_run_", rep), (end_p - start_p), envir = .GlobalEnv)
+
+assign("clusterward_s", clusterward, envir = .GlobalEnv)
+assign("clusterpam_s", clusterpam, envir = .GlobalEnv)
+}
+
+small_w_time <- mean.difftime((w_run_1 + w_run_2 + w_run_3 + w_run_4 + w_run_5 + w_run_6 + w_run_7 + w_run_8 + w_run_9 + w_run_10)/10)
+
+small_p_time <- mean.difftime((p_run_1 + p_run_2 + p_run_3 + p_run_4 + p_run_5 + p_run_6 + p_run_7 + p_run_8 + p_run_9 + p_run_10)/10)
+
+small_w_time
+small_p_time
+```
+In small samples PAM is about twice as fast.
+
+
+## 2,000 member clustering
+```{r 2000-member-clustering}
+# Normal clustering
+
+reps = 1:5
+diss <- seqdist(medium, method = "OM", indel = 1, sm = "TRATE", with.missing = TRUE)
+
+cluster_times <- for(rep in reps) {
+rep = as.character(rep)
+
+# Ward's cluster
+start_w <- Sys.time()
+clusterward <- agnes(diss, diss = TRUE, method = "ward")
+end_w <- Sys.time()
+assign(paste0("w_run_", rep), (end_w - start_w), envir = .GlobalEnv)
+
+# PAM cluster
+start_p <- Sys.time()
+clusterpam <- wcKMedoids(diss, k = 8)
+end_p <- Sys.time()
+assign(paste0("p_run_", rep), (end_p - start_p), envir = .GlobalEnv)
+
+assign("clusterward_m", clusterward, envir = .GlobalEnv)
+assign("clusterpam_m", clusterpam, envir = .GlobalEnv)
+}
+
+medium_w_time <- mean.difftime((w_run_1 + w_run_2 + w_run_3 + w_run_4 + w_run_5)/5)
+
+medium_p_time <- mean.difftime((p_run_1 + p_run_2 + p_run_3 + p_run_4 + p_run_5)/5)
+
+medium_w_time
+medium_p_time
+```
+In medium samples PAM is about twice as fast.
+
+## 4,000 member clustering
+```{r 4000-member-clustering}
+# Normal clustering
+
+reps = 3
+diss <- seqdist(large, method = "OM", indel = 1, sm = "TRATE", with.missing = TRUE)
+
+cluster_times <- for (rep in reps) {
+rep = as.character(rep)
+  
+start_w <- Sys.time()
+clusterward <- agnes(diss, diss = TRUE, method = "ward")
+end_w <- Sys.time()
+assign(paste0("w_run_", rep), (end_w - start_w), envir = .GlobalEnv)
+
+# Weighted clustering
+start_p <- Sys.time()
+clusterpam <- wcKMedoids(diss, k = 8)
+end_p <- Sys.time()
+assign(paste0("p_run_", rep), (end_p - start_p), envir = .GlobalEnv)
+
+assign("clusterward_l", clusterward, envir = .GlobalEnv)
+assign("clusterpam_l", clusterpam, envir = .GlobalEnv)
+}
+
+large_w_time <- mean.difftime((w_run_1 + w_run_2 + w_run_3)/3)
+
+large_p_time <- mean.difftime((p_run_1 + w_run_2 + p_run_3)/3)
+
+large_w_time
+large_p_time
+```
+In large samples PAM is more than twice as fast.
+
+## Time table
+```{r time-table}
+times <- tibble("type" = c("unweighted", "weighted"),
+                "1000" = c(small_w_time, small_p_time),
+                "2000" = c(medium_w_time, medium_p_time),
+                "4000" = c(large_w_time, large_p_time))
+
+times
+```
+Overall PAM is faster than Ward's at all levels, with the difference increasing as the sample size increases. Though even the "large" sample runs for both methods in under a minute, it is important to remember we are interested in clustering sequence objects with 40,000+ members.
+
+(Assuming no differences in the cluster outputs) Because of the flexible nature of Ward's clustering (number of clusters selected after clustering), it may be advantageous to perform exploratory analysis to decide number of clusters on a small sample using Ward's method before clustering the whole object with PAM.
+
+# Cluster differences
+```{r cluster-differences, fig.height=5, fig.width=15}
+# small clusters
+clusterward_8 <- cutree(clusterward_s, k = 8)
+clusterward_8_fac <- factor(clusterward_8, labels = paste("Type", 1:8))
+
+clusterpam_8 <- clusterpam_s$clustering
+clusterpam_8_fac <- factor(clusterpam_8, labels = paste("Type", 1:8))
+
+clusterpam_8_fac <- factor(clusterpam_8_fac, levels = c("Type 2", "Type 8", "Type 3", "Type 7", "Type 4", "Type 5", "Type 1", "Type 6"))
+
+par(mfrow=c(1,3))
+w_plot <- seqIplot(small[,1:30], group = clusterward_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "wards")
+p_plot <- seqIplot(small[,1:30], group = clusterpam_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "pam")
+seqlegend(small)
+
+as.data.frame(clusterward_8_fac) %>%
+  group_by(clusterward_8_fac) %>% summarise(n = n())
+
+as.data.frame(clusterpam_8_fac) %>%
+  group_by(clusterpam_8_fac) %>% summarise(n = n()) 
+
+# medium clusters
+clusterward_8 <- cutree(clusterward_m, k = 8)
+clusterward_8_fac <- factor(clusterward_8, labels = paste("Type", 1:8))
+
+clusterpam_8 <- clusterpam_m$clustering
+clusterpam_8_fac <- factor(clusterpam_8, labels = paste("Type", 1:8))
+
+clusterpam_8_fac <- factor(clusterpam_8_fac, levels = c("Type 2", "Type 8", "Type 3", "Type 7", "Type 4", "Type 5", "Type 1", "Type 6"))
+
+par(mfrow=c(1,3))
+w_plot <- seqIplot(medium[,1:30], group = clusterward_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "wards")
+p_plot <- seqIplot(medium[,1:30], group = clusterpam_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "pam")
+seqlegend(medium)
+
+as.data.frame(clusterward_8_fac) %>%
+  group_by(clusterward_8_fac) %>% summarise(n = n())
+
+as.data.frame(clusterpam_8_fac) %>%
+  group_by(clusterpam_8_fac) %>% summarise(n = n()) 
+
+# large clusters
+clusterward_8 <- cutree(clusterward, k = 8)
+clusterward_8_fac <- factor(clusterward_8, labels = paste("Type", 1:8))
+
+clusterpam_8 <- clusterpam$clustering
+clusterpam_8_fac <- factor(clusterpam_8, labels = paste("Type", 1:8))
+
+clusterpam_8_fac <- factor(clusterpam_8_fac, levels = c("Type 2", "Type 8", "Type 3", "Type 7", "Type 4", "Type 5", "Type 1", "Type 6"))
+
+par(mfrow=c(1,3))
+w_plot <- seqIplot(large[,1:30], group = clusterward_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "wards")
+p_plot <- seqIplot(large[,1:30], group = clusterpam_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "pam")
+seqlegend(large)
+
+as.data.frame(clusterward_8_fac) %>%
+  group_by(clusterward_8_fac) %>% summarise(n = n())
+
+as.data.frame(clusterpam_8_fac) %>%
+  group_by(clusterpam_8_fac) %>% summarise(n = n()) 
+```
+
+Overall the clusters look pretty similar. The biggest differences are the Ward's solution has two unemployment clusters. The PAM solution has a career mobility cluster (Type 3). Surprisingly, the PAM cluster solution has a more even distribution (523 range) than the Ward's (885 range) solution. 
+
+The similar cluster outputs support choosing Ward's or PAM clustering based on desired efficiency in flexibility in the number of clusters or a quicker runtime varying with sample size. It is likely that choosing a specific dissimilarity metric or performing DIANA clustering will have a greater impact on the cluster outputs. 
+
+## DIANA clustering
+
+The creators of the TraMineR and WeightedCluster package have created tools to implement monothetic divise clustering of sequences in R (https://link.springer.com/chapter/10.1007/978-3-319-95420-2_13). This type of clustering is reffered to as property based clustering, as it gives us more control over the specific properties of sequences used to create clusters.
+
+* state: The state in which an individual is found, at each time position t
+* spell.age: The age at the beginning of each spell of a given type
+* spell.dur: The duration of each of the spells presented above
+* duration: The total time spent in each state
+* pattern: Count of the frequent subsequences of states in the distinct successive states
+* AFpattern: Age at the first occurrence of the above frequent subsequence
+* transition: Count of the frequent subsequence of events in each sequence, where each transition is considered another event
+* AFtransition: Age at the first occurrence of the above frequent subsequence
+* Complexity: Complexity index, number of transitions, turbulence
+
+Here we test the speed of clustering by each of these properties with the large subset.
+
+```{r diana, fig.height=5, fig.width=15}
+properties <- c("state", "spell.age", "spell.dur", "duration", "pattern", "AFpattern", "transition", "AFtransition", "Complexity")
+
+for (property in properties) {
+start_prop <- Sys.time()
+clusterprop <- seqpropclust(large, diss = diss, properties = property, maxcluster = 8)
+end_prop <- Sys.time()
+
+clusterprop_8 <- clusterprop$fitted
+clusterprop_10_fac <- factor(clusterprop_8$`(fitted)`, labels = paste("Type", 1:8))
+
+prop_plot <- seqIplot(large[,1:30], group = clusterprop_10_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = property)
+
+assign(paste0("clusterprop", property), clusterprop, envir = .GlobalEnv)
+assign(paste0("prop_run_", property), (end_prop - start_prop), envir = .GlobalEnv)
+assign(property, prop_plot, envir = .GlobalEnv)
+}
+
+prop_run_state
+prop_run_spell.age
+prop_run_spell.dur
+prop_run_duration
+prop_run_pattern
+prop_run_AFpattern
+prop_run_transition
+prop_run_AFtransition
+prop_run_Complexity
+
+prop_time <- mean.difftime((prop_run_state + prop_run_spell.age + prop_run_spell.dur + prop_run_duration + prop_run_pattern + prop_run_AFpattern + prop_run_transition + prop_run_AFtransition + prop_run_Complexity)/9)
+
+prop_time
+
+```
+
+state: The state in which an individual is found, at each time position t
+Clustered by state in early, mid, and late career. Clusters 1 and 2 are Zone 4 early career, Cluster 3 is Zone 4 mid career. Cluster 4 is Zone 3 early career. Cluster 5 is Zone 3 mid career. Cluster 6 is Zone 2 mid career. Cluster 7 is zone 5 mid career. Cluster 8 is missing/unemployed mid career.
+Pretty similar to PAM and Wards Solutions
+
+spell.age: The age at the beginning of each spell of a given type
+I think these are emphasizing the relationships between subsequence or two states. Type 1 is Zone 4 and Zone 3, Type 2 is Zone 4 and Unemployment/Missing, Type 3 is Zone 4 and Zone 2, Type 4 is Zone 4 and Zone 5, Type 5 is Zone 3 and Zone 2, Type 8 is Zone 5 and unemployment/missing.
+
+spell.dur: The duration of each of the spells presented above
+duration: The total time spent in each state
+These look pretty similar, though you can see how duration slightly preferences single state durations whereas spell.dur preferences subsequence durations
+
+pattern: Count of the frequent subsequences of states in the distinct successive states
+AFpattern: Age at the first occurrence of the above frequent subsequence
+Pretty similar
+
+transition: Count of the frequent subsequence of events in each sequence, where each transition is considered another event
+AFtransition: Age at the first occurrence of the above frequent subsequence
+These look pretty similar but the most different of AF pairs.
+
+Complexity: Complexity index, number of transitions, turbulence
+These are interesting though maybe not as useful as others. I think Type 3 is really interesting, with a mid-career zone change, back to the original zone. I wonder if this may be more useful with less clusters.
+
+## Testing cluster quality
+
+  * Point Biserial Correlation PBC [−1; 1] Max Measure of the capacity of the clustering to reproduce the distances.
+  * Hubert’s Gamma HG [−1; 1] Max Measure of the capacity of the clustering to reproduce the distances (order of magnitude).
+  * Hubert’s Somers’ D HGSD [−1; 1] Max Measure of the capacity of the clustering to reproduce the distances (order of magnitude) taking into account ties in distances.
+  * Hubert’s C HC [0; 1] Min Gap between the partition obtained and the best
+partition theoretically possible with this number of groups and these distances.
+  * Average Silhouette Width ASW [−1; 1] Max Coherence of assignments. High coherence indicates high between-group distances and strong within-group homogeneity. If this
+is weak, it means that the groups are not clearly separated or that the homogeneity of the groups is low.
+  * Average Silhouette Width (weighted) ASWw [−1; 1] Max As previous, for floating point weights.
+  * Calinski-Harabasz index CH [0; +∞[ Max Pseudo F computed from the distances.
+  * Calinski-Harabasz index CHsq [0; +∞[ Max As previous, but using squared distances.
+  * Pseudo R2 R2 [0; 1] Max Share of the discrepancy explained by the clustering solution (only to compare partitions with identical number of groups).
+  * Pseudo R2 R2sq [0; 1] Max As previous, but using squared distances
+
+  * ASW Interpretation proposed
+    * 0.71 − 1.00 Strong structure identified.
+    * 0.51 − 0.70 Reasonable structure identified.
+    * 0.26 − 0.50 Structure is weak and could be artificial. Try other algorithms.
+    * ≤ 0.25 No structure.
+  
+
+```{r fig.width = 15, fig.height = 5, eval = FALSE}
+clusterpam_l$stats
+wardRange <- as.clustrange(clusterward_l, diss = diss, ncluster = 20)
+summary(wardRange, max.rank = 2)
+
+numbers <- (2:20)
+for (number in numbers) {
+  clusterpam <- wcKMedoids(diss, k = number)
+  assign(paste0("clusterpam_", number), clusterpam, envir = .GlobalEnv)
+}
+
+#pclustqual_AFpattern <- as.clustrange(clusterpropAFpattern, diss=diss, ncluster=8)
+#pclustqual_AFtransition <- as.clustrange(clusterpropAFtransition, diss=diss, ncluster=8)
+#pclustqual_Complexity <- as.clustrange(clusterpropComplexity, diss=diss, ncluster=8)
+#pclustqual_duration <- as.clustrange(clusterpropduration, diss=diss, ncluster=8)
+#pclustqual_pattern <- as.clustrange(clusterproppattern, diss=diss, ncluster=8)
+#pclustqual_spell.age <- as.clustrange(clusterpropspell.age, diss=diss, ncluster=8)
+#pclustqual_spell.dur <- as.clustrange(clusterpropspell.dur, diss=diss, ncluster=8)
+#pclustqual_state <- as.clustrange(clusterpropstate, diss=diss, ncluster=8)
+#pclustqual_transition <- as.clustrange(clusterproptransition, diss=diss, ncluster=8)
+
+summary(pclustqual_AFpattern, max.rank = 2)
+summary(pclustqual_AFtransition, max.rank = 2)
+summary(pclustqual_Complexity, max.rank = 2)
+summary(pclustqual_duration, max.rank = 2)
+summary(pclustqual_pattern, max.rank = 2)
+summary(pclustqual_spell.age, max.rank = 2)
+summary(pclustqual_spell.dur, max.rank = 2)
+summary(pclustqual_state, max.rank = 2)
+summary(pclustqual_transition, max.rank = 2)
+
+clusterpam_2$stats #0.24
+clusterpam_3$stats #0.3
+clusterpam_4$stats #0.34
+clusterpam_5$stats #0.38
+clusterpam_6$stats #0.28
+clusterpam_7$stats #0.27
+clusterpam_8$stats #0.26
+clusterpam_9$stats #0.22
+clusterpam_10$stats #0.19
+clusterpam_11$stats #0.19
+clusterpam_12$stats #0.18
+clusterpam_13$stats #0.16
+clusterpam_14$stats #0.16
+clusterpam_15$stats #0.17
+clusterpam_16$stats #0.17
+clusterpam_17$stats #0.15
+clusterpam_18$stats #0.15
+clusterpam_19$stats #0.14
+clusterpam_20$stats #0.15
+
+#ASWs are all super low, the highest comes from Ward's at 0.28, but in the interpretation this is still a weak structure and could be artificial
+
+wardRange$stats$ASW # Clusters about even
+clusterpam_5$ASW # A few clusters greatly reduce ASW
+pclustqual_state$stats$ASW
+
+clusterpam_8 <- clusterpam_5$clustering
+clusterpam_8_fac <- factor(clusterpam_8) #, labels = paste("Type", 1:8))
+
+#clusterpam_8_fac <- factor(clusterpam_8_fac, levels = c("Type 2", "Type 8", "Type 3", "Type 7", "Type 4", "Type 5", "Type 1", "Type 6"))
+
+p_plot <- seqIplot(large[,1:30], group = clusterpam_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "pam")
+
+
+```
+
+## Normalized clustering
+
+Using norm = TRUE in seqdist() arguments makes the distance insenstitive to differences in sequence length. It is sometimes recommended in the literature (TraMineR User's Guide p. 93, recommended with LCP). 
+
+```{r normalization, fig.width= 15, fig.height = 5}
+# Normal clustering
+
+diss_norm <- seqdist(large, method = "OM", indel = 1, sm = "TRATE", with.missing = TRUE, norm = TRUE)
+diss <- seqdist(large, method = "OM", indel = 1, sm = "TRATE", with.missing = TRUE)
+
+clusterward <- agnes(diss, diss = TRUE, method = "ward")
+clusterpam <- wcKMedoids(diss, k = 8)
+
+clusterward_norm <- agnes(diss_norm, diss = TRUE, method = "ward")
+clusterpam_norm <- wcKMedoids(diss_norm, k = 8)
+
+
+# no normalization
+clusterward_8 <- cutree(clusterward, k = 8)
+clusterward_8_fac <- factor(clusterward_8, labels = paste("Type", 1:8))
+
+clusterpam_8 <- clusterpam$clustering
+clusterpam_8_fac <- factor(clusterpam_8, labels = paste("Type", 1:8))
+
+clusterpam_8_fac <- factor(clusterpam_8_fac, levels = c("Type 2", "Type 8", "Type 3", "Type 7", "Type 4", "Type 5", "Type 1", "Type 6"))
+
+par(mfrow=c(1,3))
+w_plot <- seqIplot(large[,1:30], group = clusterward_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "wards")
+p_plot <- seqIplot(large[,1:30], group = clusterpam_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "pam")
+seqlegend(large)
+
+as.data.frame(clusterward_8_fac) %>%
+  group_by(clusterward_8_fac) %>% summarise(n = n())
+
+as.data.frame(clusterpam_8_fac) %>%
+  group_by(clusterpam_8_fac) %>% summarise(n = n()) 
+
+# normalized
+
+clusterward_8 <- cutree(clusterward_norm, k = 8)
+clusterward_8_fac <- factor(clusterward_8, labels = paste("Type", 1:8))
+
+clusterpam_8 <- clusterpam_norm$clustering
+clusterpam_8_fac <- factor(clusterpam_8, labels = paste("Type", 1:8))
+
+clusterpam_8_fac <- factor(clusterpam_8_fac, levels = c("Type 2", "Type 8", "Type 3", "Type 7", "Type 4", "Type 5", "Type 1", "Type 6"))
+
+par(mfrow=c(1,3))
+w_plot <- seqIplot(large[,1:30], group = clusterward_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "wards_norm")
+p_plot <- seqIplot(large[,1:30], group = clusterpam_8_fac, border = NA, use.layout = TRUE, cols = 8, withlegend = F, sortv = "from.start", main = "pam_norm")
+seqlegend(large)
+
+as.data.frame(clusterward_8_fac) %>%
+  group_by(clusterward_8_fac) %>% summarise(n = n())
+
+as.data.frame(clusterpam_8_fac) %>%
+  group_by(clusterpam_8_fac) %>% summarise(n = n()) 
+
+wardRange <- as.clustrange(clusterward, diss = diss, ncluster = 8)
+summary(wardRange, max.rank = 2)
+wardRange <- as.clustrange(clusterward_norm, diss = diss, ncluster = 8)
+summary(wardRange, max.rank = 2)
+
+clusterpam$stats
+clusterpam_norm$stats
+```
+
+The differences aren't very pronounced in this comparison. Comparing the Ward's there do seem to be some differences in the clusters created, but only for the very low membership clusters. It is possible that normalization only makes a difference when classifying the border/fuzzy sequences. 
+
+The stats for the both the Ward's and PAM cluster solutions indicate that the normalized clusters are a bit lower quality. This makes sense because the normalization parameter inherently introduces clusters with less strong within-group homogeneity. 

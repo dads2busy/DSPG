@@ -1,0 +1,97 @@
+---
+title: "Biterm Modeling of Performance Scales"
+description: "A summary  of our approach to using BTM to uncover the themes of performance scales."
+tags: ["R", "text analysis", "topic models", "BTM", "biterms"]
+output: html_document
+---
+
+```{css, echo=FALSE}
+/* this chunk of code centers all of the headings */
+h1, h2, h3 {
+  text-align: center;
+}
+```
+
+## About BTM
+
+Biterm Topic Modeling [(BTM)](https://cran.r-project.org/web/packages/BTM/BTM.pdf) is a method of detecting the topics occurring in short texts. In other approaches to topic modeling,  each document is analyzed for topic occurrences within that document. The challenge with applying traditional topic modeling techniques to short documents is that there is not enough data to work with. BTM solves this problem by analyzing the entire corpus of documents together.
+
+BTM works by collecting information about biterms in the document corpus. A "biterm" is an unordered co-occurrence of words. 
+
+Our data consists of individual items taken from performance evaluation scales. Since each item is the length of a sentence, we decided it would be appropriate to apply BTM to our data. 
+
+```{r packages, message=FALSE, warning=FALSE, include=FALSE}
+library(readr)
+library(BTM)
+library(tidyverse)
+library(dplyr)
+library(tidytext)
+library(readxl)
+library(textplot)
+library(ggraph)
+library(concaveman)
+library(DT)
+set.seed(2020)
+```
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+
+# df <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",
+#                  sheet = "Performance Items")
+df <- read_excel("../../data/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",
+                 sheet = "Performance Items")
+
+data <- df[-c(403:628),]
+```
+
+## Methods
+
+Here the model is defined. We kept the alpha and beta parameters standard to maintain a balance in the output between the number, specificity, and type of the topics. K was set to 10 to indicate that 10 topics should be identified.
+
+```{r model, echo=FALSE, message=FALSE, warning=FALSE}
+data <- data.frame(data$ITEM)
+data$ID <- seq.int(nrow(data))
+
+job_bi <- tibble(id = data$ID, text = data$data.ITEM)
+
+tidy_bi <- job_bi %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words)
+
+model  <- BTM(tidy_bi, k = 10, alpha = 5, beta = 0.1,
+              iter = 1000, window = 7)
+model
+```
+
+##Output
+
+One of the outputs of the biterm model is a table of the biterm terms and their associated topics. Using the search bar on the right, you can search for a term to what other terms it frequently appears with. Try performance! 
+
+```{r biterms, echo=FALSE, message=FALSE, warning=FALSE}
+
+termsHold <- terms(model,type = "biterms")
+termsTable <- termsHold[["biterms"]]
+   datatable(termsTable)
+```
+
+## Findings
+
+The model uncovers and organizes the topics inferred from the document corpus. The shapes represent topics, and terms associated with a topic are displayed within the corresponding shape. The lines connecting terms represent the degree to which the terms occur together. 
+
+The model reveals themes involving:
+
+- Company policies (yellow diamond)
+- Objectives
+- Time (blue triangle)
+- Relationships
+- Health and Safety (teal diamond)
+- Life
+
+```{r plot, echo=FALSE, message=FALSE, warning=FALSE}
+plot(model, top_n = 5)
+```
+
+##Conclusions
+
+These themes help understand the component of performance and how people assess performance across a broad sampling of occupations. We can see that, in addition to what people do in a job (e.g., the skills that they employ) other important factors involve their feelings towards the organization of which they are a part, having opportunities to grow, how they communicate with their supefvisors, and the ability to provide feedback. Understanding the essence of performance and how it is measured is an important first step towards capturing (and ultimately improving) performance in the United States Army. 
+

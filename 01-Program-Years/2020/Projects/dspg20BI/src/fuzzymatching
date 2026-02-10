@@ -1,0 +1,735 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## String matching with Fuzzywuzzy\n",
+    "### Loading required packages"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/home/ig5eq/.local/lib/python3.7/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning\n",
+      "  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')\n"
+     ]
+    }
+   ],
+   "source": [
+    "from fuzzywuzzy import fuzz\n",
+    "from fuzzywuzzy import process\n",
+    "import pandas as pd\n",
+    "from collections import Counter"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "91"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "fuzz.ratio(\"Albert Thompson\", \"Albert G. Thompson\") "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Read in xlsx file"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fda = pd.read_excel('../data/original/fda_companies.xlsx',\n",
+    "              sheet_name='FDA Company List')\n",
+    "#There are 975 entries"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "dna = pd.read_csv('../data/working/validcompaniesdictionary.csv')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Unnamed: 0</th>\n",
+       "      <th>Code</th>\n",
+       "      <th>Description</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0</td>\n",
+       "      <td>AA</td>\n",
+       "      <td>AA PLC</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>2</td>\n",
+       "      <td>AAAADJ</td>\n",
+       "      <td>Emperial Americas, Inc.</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>3</td>\n",
+       "      <td>AAAAIY</td>\n",
+       "      <td>American Academy of Allergy, Asthma and Immuno...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>5</td>\n",
+       "      <td>AAABBB</td>\n",
+       "      <td>Bird Studies Canada</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>6</td>\n",
+       "      <td>AAACK</td>\n",
+       "      <td>Aesculap AG &amp; Co. KG</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>8</td>\n",
+       "      <td>AAACT</td>\n",
+       "      <td>AAA Cooper Transportation</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>9</td>\n",
+       "      <td>AAAEMG</td>\n",
+       "      <td>ARA Asset Management Limited</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>12</td>\n",
+       "      <td>AAAFES</td>\n",
+       "      <td>Army and Air Force Exchange Service</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>13</td>\n",
+       "      <td>AAAFTS</td>\n",
+       "      <td>AAA Foundation for Traffic Safety</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>14</td>\n",
+       "      <td>AAAHC</td>\n",
+       "      <td>Accreditation Association for Ambulatory Healt...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>15</td>\n",
+       "      <td>AAALCL</td>\n",
+       "      <td>Anhui Anli Material Technology Co Ltd</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>11</th>\n",
+       "      <td>16</td>\n",
+       "      <td>AAAMAI</td>\n",
+       "      <td>AAA Mid-Atlantic Inc</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12</th>\n",
+       "      <td>18</td>\n",
+       "      <td>AAANRG</td>\n",
+       "      <td>Cheniere Energy Partners, L.P.</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>13</th>\n",
+       "      <td>20</td>\n",
+       "      <td>AAAPIN</td>\n",
+       "      <td>A&amp;A Pharmachem Inc</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>14</th>\n",
+       "      <td>21</td>\n",
+       "      <td>AAAPP</td>\n",
+       "      <td>Assa Abloy Australia Pacific Pty Ltd</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>15</th>\n",
+       "      <td>23</td>\n",
+       "      <td>AAAVTA</td>\n",
+       "      <td>American Association of Advertising Agencies</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>16</th>\n",
+       "      <td>25</td>\n",
+       "      <td>AABAYU</td>\n",
+       "      <td>Al al-Bayt University</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>17</th>\n",
+       "      <td>26</td>\n",
+       "      <td>AABBNK</td>\n",
+       "      <td>AABB</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>18</th>\n",
+       "      <td>28</td>\n",
+       "      <td>AABDEN</td>\n",
+       "      <td>AaB A/S</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>30</td>\n",
+       "      <td>AABKRD</td>\n",
+       "      <td>Kreditbanken A/S</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>20</th>\n",
+       "      <td>31</td>\n",
+       "      <td>AABLS</td>\n",
+       "      <td>ABN Amro Bank (Luxembourg) S.A.</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>21</th>\n",
+       "      <td>33</td>\n",
+       "      <td>AABRAI</td>\n",
+       "      <td>Allison Abrasives Inc</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>22</th>\n",
+       "      <td>35</td>\n",
+       "      <td>AABRIN</td>\n",
+       "      <td>ARC Abrasives Inc.</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>23</th>\n",
+       "      <td>36</td>\n",
+       "      <td>AABSOI</td>\n",
+       "      <td>A &amp; B Sound Inc</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>24</th>\n",
+       "      <td>37</td>\n",
+       "      <td>AACAOR</td>\n",
+       "      <td>American Association of Collegiate Registrars ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25</th>\n",
+       "      <td>38</td>\n",
+       "      <td>AACATH</td>\n",
+       "      <td>AAC Technologies Holdings Incorporated</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>26</th>\n",
+       "      <td>44</td>\n",
+       "      <td>AACCEA</td>\n",
+       "      <td>Advanced Accelerator Applications SA</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>27</th>\n",
+       "      <td>45</td>\n",
+       "      <td>AACCHE</td>\n",
+       "      <td>American Association for Clinical Chemistry</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>28</th>\n",
+       "      <td>47</td>\n",
+       "      <td>AACCNU</td>\n",
+       "      <td>American Association of Critical-Care Nurses</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>29</th>\n",
+       "      <td>49</td>\n",
+       "      <td>AACCO</td>\n",
+       "      <td>Asset Acceptance Capital Corp</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>30</th>\n",
+       "      <td>50</td>\n",
+       "      <td>AACCTA</td>\n",
+       "      <td>American Accounting Association</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>31</th>\n",
+       "      <td>52</td>\n",
+       "      <td>AACEND</td>\n",
+       "      <td>American Association of Clinical Endocrinologists</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>32</th>\n",
+       "      <td>54</td>\n",
+       "      <td>AACFCU</td>\n",
+       "      <td>Army Aviation Center Federal Credit Union</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>33</th>\n",
+       "      <td>55</td>\n",
+       "      <td>AACFSVN</td>\n",
+       "      <td>Menlo College</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>34</th>\n",
+       "      <td>56</td>\n",
+       "      <td>AACHO</td>\n",
+       "      <td>AAC Holdings Inc</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    Unnamed: 0     Code                                        Description\n",
+       "0            0       AA                                             AA PLC\n",
+       "1            2   AAAADJ                            Emperial Americas, Inc.\n",
+       "2            3   AAAAIY  American Academy of Allergy, Asthma and Immuno...\n",
+       "3            5   AAABBB                                Bird Studies Canada\n",
+       "4            6    AAACK                               Aesculap AG & Co. KG\n",
+       "5            8    AAACT                          AAA Cooper Transportation\n",
+       "6            9   AAAEMG                       ARA Asset Management Limited\n",
+       "7           12   AAAFES                Army and Air Force Exchange Service\n",
+       "8           13   AAAFTS                  AAA Foundation for Traffic Safety\n",
+       "9           14    AAAHC  Accreditation Association for Ambulatory Healt...\n",
+       "10          15   AAALCL              Anhui Anli Material Technology Co Ltd\n",
+       "11          16   AAAMAI                               AAA Mid-Atlantic Inc\n",
+       "12          18   AAANRG                     Cheniere Energy Partners, L.P.\n",
+       "13          20   AAAPIN                                 A&A Pharmachem Inc\n",
+       "14          21    AAAPP               Assa Abloy Australia Pacific Pty Ltd\n",
+       "15          23   AAAVTA       American Association of Advertising Agencies\n",
+       "16          25   AABAYU                              Al al-Bayt University\n",
+       "17          26   AABBNK                                               AABB\n",
+       "18          28   AABDEN                                            AaB A/S\n",
+       "19          30   AABKRD                                   Kreditbanken A/S\n",
+       "20          31    AABLS                    ABN Amro Bank (Luxembourg) S.A.\n",
+       "21          33   AABRAI                              Allison Abrasives Inc\n",
+       "22          35   AABRIN                                 ARC Abrasives Inc.\n",
+       "23          36   AABSOI                                    A & B Sound Inc\n",
+       "24          37   AACAOR  American Association of Collegiate Registrars ...\n",
+       "25          38   AACATH             AAC Technologies Holdings Incorporated\n",
+       "26          44   AACCEA               Advanced Accelerator Applications SA\n",
+       "27          45   AACCHE        American Association for Clinical Chemistry\n",
+       "28          47   AACCNU       American Association of Critical-Care Nurses\n",
+       "29          49    AACCO                      Asset Acceptance Capital Corp\n",
+       "30          50   AACCTA                    American Accounting Association\n",
+       "31          52   AACEND  American Association of Clinical Endocrinologists\n",
+       "32          54   AACFCU          Army Aviation Center Federal Credit Union\n",
+       "33          55  AACFSVN                                      Menlo College\n",
+       "34          56    AACHO                                   AAC Holdings Inc"
+      ]
+     },
+     "execution_count": 43,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dna.head(35)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Splitting the data frame in half "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Index(['FDA Companies '], dtype='object')"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "fda_sub = fda[487:]\n",
+    "fda_sub.columns"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Two different methods for fuzzy matching:\n",
+    "\n",
+    "The first method does not include any data cleaning, instead we will be using a weighted fuzzymatching to matching the company names from FDA to DNA data. \n",
+    "\n",
+    "The second method will only look at the first word of the company name and group them based on the first word of the company name, the assumption is that first word is representative of the same company. "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### What are the most common words in the entire data frame? "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "ValueError",
+     "evalue": "The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mValueError\u001b[0m                                Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-8-4605c15344fa>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0mword_freq\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mCounter\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m \u001b[0;32mfor\u001b[0m \u001b[0mwords\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mfda\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'FDA Companies '\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0mdna\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'Description'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      3\u001b[0m     \u001b[0mword_freq\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mupdate\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mstr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mwords\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msplit\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\" \"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m~/.local/lib/python3.7/site-packages/pandas/core/generic.py\u001b[0m in \u001b[0;36m__nonzero__\u001b[0;34m(self)\u001b[0m\n\u001b[1;32m   1477\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0m__nonzero__\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1478\u001b[0m         raise ValueError(\n\u001b[0;32m-> 1479\u001b[0;31m             \u001b[0;34mf\"The truth value of a {type(self).__name__} is ambiguous. \"\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1480\u001b[0m             \u001b[0;34m\"Use a.empty, a.bool(), a.item(), a.any() or a.all().\"\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1481\u001b[0m         )\n",
+      "\u001b[0;31mValueError\u001b[0m: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all()."
+     ]
+    }
+   ],
+   "source": [
+    "word_freq = Counter()\n",
+    "for words in fda['FDA Companies '] and dna['Description']:\n",
+    "    word_freq.update(str(words).split(\" \"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dna_word_freq = Counter()\n",
+    "for words in dna['Description']:\n",
+    "    dna_word_freq.update(str(words).split(\" \"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[('PHARMS', 190),\n",
+       " ('INC', 162),\n",
+       " ('LLC', 82),\n",
+       " ('PHARMA', 81),\n",
+       " ('LABS', 62),\n",
+       " ('LTD', 58),\n",
+       " ('PHARM', 51),\n",
+       " ('CO', 30),\n",
+       " ('USA', 21),\n",
+       " ('US', 20),\n",
+       " ('HLTHCARE', 16),\n",
+       " ('AND', 15),\n",
+       " ('TEVA', 13),\n",
+       " ('CORP', 13),\n",
+       " ('INTL', 13),\n",
+       " ('ACTAVIS', 12),\n",
+       " ('THERAP', 12),\n",
+       " ('MYLAN', 12),\n",
+       " ('MEDCL', 11),\n",
+       " ('THERAPS', 10),\n",
+       " ('PERRIGO', 10),\n",
+       " ('VALEANT', 10),\n",
+       " ('AIR', 7),\n",
+       " ('LP', 7),\n",
+       " ('AMERICA', 7),\n",
+       " ('HOLDINGS', 7),\n",
+       " ('MEDICAL', 7),\n",
+       " ('RES', 7),\n",
+       " ('UNIV', 7),\n",
+       " ('NORTH', 7)]"
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "word_freq.most_common(30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[('Inc', 10371),\n",
+       " ('Inc.', 9261),\n",
+       " ('Ltd', 5618),\n",
+       " ('of', 3159),\n",
+       " ('Group', 2952),\n",
+       " ('LLC', 2800),\n",
+       " ('Corporation', 2723),\n",
+       " ('Limited', 2330),\n",
+       " ('Corp', 2239),\n",
+       " ('&', 2086),\n",
+       " ('Company', 1927),\n",
+       " ('Ltd.', 1895),\n",
+       " ('International', 1704),\n",
+       " ('Holdings', 1652),\n",
+       " ('PLC', 1527),\n",
+       " ('Co', 1508),\n",
+       " ('and', 1228),\n",
+       " ('Capital', 1222),\n",
+       " ('The', 1145),\n",
+       " ('Health', 1118),\n",
+       " ('Medical', 1076),\n",
+       " ('Corp.', 1069),\n",
+       " ('Bank', 1066),\n",
+       " ('SA', 1041),\n",
+       " ('University', 1018),\n",
+       " ('Technologies', 977),\n",
+       " ('Energy', 951),\n",
+       " ('AG', 922),\n",
+       " ('Association', 901),\n",
+       " ('Partners', 877)]"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dna_word_freq.most_common(30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "323"
+      ]
+     },
+     "execution_count": 39,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#This takes only the first word of the company name and adds to a list\n",
+    "abb_company = set()\n",
+    "for company in fda_sub['FDA Companies ']:\n",
+    "    abb_company.add(company.split(\" \", 1)[0])\n",
+    "    \n",
+    "\n",
+    "len(abb_company)\n",
+    "#fda_sub.head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "innov_comp = []\n",
+    "for name in dna['Description']:\n",
+    "    match = process.extractOne(name, abb_company)\n",
+    "    innov_comp.append(name)\n",
+    "    innov_comp.append(match)\n",
+    "#    if  fuzz.ratio(name, abb_company) > 85:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 53,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['AA PLC',\n",
+       " ('PLX', 60),\n",
+       " 'Emperial Americas, Inc.',\n",
+       " ('NCM', 72),\n",
+       " 'American Academy of Allergy, Asthma and Immunology',\n",
+       " ('MERIDIAN', 68),\n",
+       " 'Bird Studies Canada',\n",
+       " ('SECAN', 72),\n",
+       " 'Aesculap AG & Co. KG',\n",
+       " ('UCLA', 68),\n",
+       " 'AAA Cooper Transportation',\n",
+       " ('TAIHO', 72),\n",
+       " 'ARA Asset Management Limited',\n",
+       " ('TEDOR', 68),\n",
+       " 'Army and Air Force Exchange Service',\n",
+       " ('VANDA', 72),\n",
+       " 'AAA Foundation for Traffic Safety',\n",
+       " ('WATSON', 60),\n",
+       " 'Accreditation Association for Ambulatory Health Care',\n",
+       " ('RELIANT', 64),\n",
+       " 'Anhui Anli Material Technology Co Ltd',\n",
+       " ('MATRIX', 75),\n",
+       " 'AAA Mid-Atlantic Inc',\n",
+       " ('NCM', 72),\n",
+       " 'Cheniere Energy Partners, L.P.',\n",
+       " ('NEOS', 68),\n",
+       " 'A&A Pharmachem Inc',\n",
+       " ('PHARM', 90),\n",
+       " 'Assa Abloy Australia Pacific Pty Ltd',\n",
+       " ('PACIFIC', 90),\n",
+       " 'American Association of Advertising Agencies',\n",
+       " ('RISING', 75),\n",
+       " 'Al al-Bayt University',\n",
+       " ('UNIV', 90),\n",
+       " 'AABB',\n",
+       " ('MUSTAFA', 51),\n",
+       " 'AaB A/S',\n",
+       " ('SB', 60),\n",
+       " 'Kreditbanken A/S',\n",
+       " ('NEW', 60),\n",
+       " 'ABN Amro Bank (Luxembourg) S.A.',\n",
+       " ('TARO', 68),\n",
+       " 'Allison Abrasives Inc',\n",
+       " ('NCM', 72),\n",
+       " 'ARC Abrasives Inc.',\n",
+       " ('NCM', 72),\n",
+       " 'A & B Sound Inc',\n",
+       " ('NCM', 72),\n",
+       " 'American Association of Collegiate Registrars and Admissions Officers',\n",
+       " ('OC', 60),\n",
+       " 'AAC Technologies Holdings Incorporated',\n",
+       " ('MEDTECH', 74),\n",
+       " 'Advanced Accelerator Applications SA',\n",
+       " ('MEDAC', 72),\n",
+       " 'American Association for Clinical Chemistry',\n",
+       " ('MERIDIAN', 68),\n",
+       " 'American Association of Critical-Care Nurses',\n",
+       " ('MERIDIAN', 68),\n",
+       " 'Asset Acceptance Capital Corp',\n",
+       " ('ORPHAN', 60),\n",
+       " 'American Accounting Association',\n",
+       " ('MERCK', 72),\n",
+       " 'American Association of Clinical Endocrinologists',\n",
+       " ('MERIDIAN', 68),\n",
+       " 'Army Aviation Center Federal Credit Union',\n",
+       " ('WATSON', 60),\n",
+       " 'Menlo College',\n",
+       " ('QOL', 60),\n",
+       " 'AAC Holdings Inc',\n",
+       " ('NCM', 72),\n",
+       " 'AIDS Community Resources',\n",
+       " ('UNIV', 68),\n",
+       " 'AIDS Action Committee of Massachusetts, Inc.',\n",
+       " ('US', 60),\n",
+       " 'Armstrong Air Conditioning Inc',\n",
+       " ('SETON', 72),\n",
+       " 'A & A Consultants Inc',\n",
+       " ('NCM', 72),\n",
+       " 'All American Containers Inc.',\n",
+       " ('MERCK', 72),\n",
+       " 'American Association of Colleges of Nursing',\n",
+       " ('RISING', 75),\n",
+       " 'American Association of Community Colleges',\n",
+       " ('MERIDIAN', 68),\n",
+       " 'Airedale International Air Conditioning Ltd',\n",
+       " ('LIAONING', 68),\n",
+       " 'American Association of Colleges of Pharmacy',\n",
+       " ('PHARMA', 90),\n",
+       " 'American Association of Cardiovascular and Pulmonary Rehabilitation',\n",
+       " ('OC', 60),\n",
+       " 'Arms Acres Inc',\n",
+       " ('NCM', 72),\n",
+       " 'American Association for Cancer Research',\n",
+       " ('SPEAR', 72),\n",
+       " 'The Association to Advance Collegiate Schools of Business',\n",
+       " ('MIDATECH', 68),\n",
+       " 'AADCO Medical Inc.',\n",
+       " ('NCM', 72),\n",
+       " 'American Association of Diabetes Educators',\n",
+       " ('MERIDIAN', 68)]"
+      ]
+     },
+     "execution_count": 53,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "innov_comp[0:100]"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3.7",
+   "language": "python",
+   "name": "python37"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

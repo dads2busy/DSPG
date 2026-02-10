@@ -1,0 +1,115 @@
+---
+title: "09 TSE data format for sequence analysis"
+author:
+  "Crystal Zang"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    highlight: tango
+editor_options: 
+  chunk_output_type: console
+weight: 1
+draft: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+for (pkg in c("tidyverse",  "data.table", "R.utils", "maditr", "stringr", "stringi", "dplyr", "ggplot2", "lubridate", "gt", "DataExplorer", "TraMineR", "TraMineRextras", "cluster")) {
+  library(pkg, character.only = TRUE)
+}
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+bg_vet_job <-read_csv("~/git/dspg20career/data/04_bg_vet_job.csv")%>%
+  mutate(is_onet55 = if_else(str_detect(onet, "55-[0-9][0-9][0-9][0-9].[0-9][0-9]"), T, F))%>%
+  select(id,onet,is_onet55, onet_job_zone, startdate, enddate, start_year, end_year, onet_title, date_enter_job_market, job_duration_day)%>%
+  mutate(year_enter_job_market = year(date_enter_job_market))
+
+vet_endmilitary <- bg_vet_job%>%
+  mutate(date_end_onet55 = if_else(is_onet55==T, enddate, as.Date(NA)))%>%
+  filter(!is.na(date_end_onet55))%>%  #exluce people who don't have valid onet55 code
+  select(id, date_end_onet55) %>%
+  #keep the latest onet55 job
+  group_by(id)%>%   
+  arrange(desc(date_end_onet55))%>%
+  group_by(id)%>%
+  distinct(id, .keep_all = TRUE)
+
+bg_vet_job  <- inner_join(bg_vet_job, vet_endmilitary, by = "id")
+
+bg_vet_job_seq <- bg_vet_job %>%
+  select(id, end_year, onet_job_zone, startdate, enddate, job_duration_day, date_end_onet55, year_enter_job_market)%>%
+  filter(startdate > date_end_onet55)  %>% #find jobs that came after the date ended onet55 job
+  mutate(start_year = year(startdate))
+
+
+bg_vet_job_seq <- bg_vet_job_seq %>%
+  mutate(start_year = start_year - year_enter_job_market + 1)%>%
+  mutate(end_year = end_year - year_enter_job_market + 1)%>%
+  select(id, start_year, end_year, onet_job_zone)%>%
+  group_by(id)%>%
+  arrange(desc(onet_job_zone))%>%
+  group_by(id)%>%
+  distinct(id, start_year, end_year, .keep_all = TRUE)
+
+
+bg_vet_job_seq <- as.matrix(bg_vet_job_seq)
+bg_vet_job_seq <- as.data.frame(bg_vet_job_seq)
+class(bg_vet_job_seq)
+
+sts_vet <- seqformat(bg_vet_job_seq, from = "SPELL", to = "STS",
+                     id = "id",  begin = "start_year", end = "end_year", 
+                     status = "onet_job_zone", process = FALSE)
+vet.seq <- seqdef(sts_vet, left="DEL", gaps="unemployment", right="DEL",
+                  labels = c("1", "2", "3", "4", "5", "unknown"))
+transition <- seqetm(vet.seq, method = "transition")
+transition
+dim(transition)
+transition[1, 1:7] <- c("Begin", "Promotion", "Promotion", "Promotion", "Promotion", "Demotion", "NA")
+transition[2, 1:7] <- c("Demotion", "Begin", "Promotion", "Promotion", "Promotion", "Demotion", "NA")
+transition[3, 1:7] <- c("Demotion", "Demotion", "Begin", "Promotion", "Promotion", "Demotion", "NA")
+transition[4, 1:7] <- c("Demotion", "Demotion", "Demotion", "Begin", "Promotion", "Promotion", "NA")
+transition[5, 1:7] <- c("Demotion", "Demotion", "Demotion", "Demotion", "Begin", "Promotion", "NA")
+transition[6, 1:7] <- c("Promotion", "Promotion", "Promotion", "Promotion", "Promotion", "Begin", "NA")
+transition[7, 1:7] <- c("NA", "NA", "NA", "NA", "NA", "NA", "NA")
+
+
+
+transition
+
+
+vet.tse <- seqformat(sts_vet[1:100, ], from = "STS", to = "TSE", tevent = transition)
+
+vet.seq.tse <- seqecreate(id = vet.tse$id, timestamp = vet.tse$time, event = vet.tse$event)
+class(vet.seq.tse)
+vet.seq.tse[1]
+
+```
+
+# all veterans
+```{r}
+#searching for frequent event
+fsubseq <- seqefsub(vet.seq.tse, minSupport = 10) 
+fsubseq[1:5]
+
+plot(fsubseq[1:15], col = "cyan")
+```
+
+# veterans who have exited military for at least 10 yrs
+```{r}
+time.constraint <- seqeconstraint(ageMin = 10)
+fsubseq <- seqefsub(vet.seq.tse, pMinSupport = 0.01, constraint = time.constraint)
+fsubseq[1:5]
+
+plot(fsubseq[1:15], col = "cyan")
+```
+
+# 10 yrs exit military
+```{r}
+time.constraint <- seqeconstraint(ageMin = 0, ageMaxEnd = 10)
+fsubseq <- seqefsub(vet.seq.tse, pMinSupport = 0.01, constraint = time.constraint)
+fsubseq[1:5]
+
+plot(fsubseq[1:15], col = "cyan")
+```

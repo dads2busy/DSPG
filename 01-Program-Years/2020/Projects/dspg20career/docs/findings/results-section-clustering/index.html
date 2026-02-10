@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sequence Clustering</title>
+        <link rel="canonical" href="/dspg20career/findings/results-section-clustering/">
+        <style>
+
+    html body {
+        font-family: 'Oxygen', sans-serif;
+        background-color: #FFFFFF;
+    }
+
+    :root {
+        --accent: #232D4B;
+        --border-width:  0 ;
+    }
+
+</style>
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oxygen">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=VT323">
+
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/ascetic.min.css"> 
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css" integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="/dspg20career/css/main.css">
+
+
+
+
+ 
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+    
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+
+<script>$(document).on('click', function() { $('.collapse').collapse('hide'); })</script>
+
+
+<script>
+$(document).ready(function(){
+    
+  var input = $('#night-mode-toggle');
+  var container = $('#bigbody');
+  var stat = $('#button-status');
+  
+  container.toggleClass(localStorage.toggled);
+  stat.bootstrapToggle(localStorage.button).change();
+  
+  input.on('click', function() {
+      if (localStorage.toggled != "-nightmode" ) {
+          container.toggleClass("-nightmode", true );
+          localStorage.toggled = "-nightmode";
+          localStorage.button = "on";
+       } else {
+          container.toggleClass("-nightmode", false );
+          localStorage.toggled = "";
+          localStorage.button = "off"
+       }
+  })
+});
+</script>
+ <meta name="generator" content="Hugo 0.70.0" />
+        <link href="" rel="alternate" type="application/rss+xml" title="UVA Biocomplexity Institute" />
+        <link href="" rel="feed" type="application/rss+xml" title="UVA Biocomplexity Institute" />
+        
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/img/favicon/safari-pinned-tab.svg" color="#000000">
+    <link rel="shortcut icon" href="/img/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
+    
+    
+    <meta property="og:title" content="Sequence Clustering">
+    <meta property="og:type" content="article">
+      
+      <meta name="twitter:card" content="summary">
+      <meta name="twitter:image" content="/dspg20career/favicon/uva-dspg-logo.jpg" >
+      
+    <meta property="description" content="Clustering post-military veteran career sequences and exploring these results">
+    <meta property="og:description" content="Clustering post-military veteran career sequences and exploring these results">
+    
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:site" content="">
+    
+    </head>
+
+    
+    
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+
+    <style>
+      .container {
+      	text-align: center;
+      	border: 0px solid green;
+      }
+      .container ul {
+      	border: 0px solid red;
+      	display: inline-block;
+      	margin: 10px 0;
+      	padding: 2px;
+      }
+      .container li {
+      	display: inline-block;
+      	font-weight: bold;
+      }
+      .container li a {
+      	display: inline-block;
+      	color: #FFF;
+      	padding: 5px;
+      	text-decoration: none;
+      }
+
+    </style>
+
+    <body id = "bigbody">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container" style="width:800px; margin: auto;">
+                <div class="collapse navbar-collapse container">
+                    
+                        <ul class="nav">
+                          <li class="header_img">
+                            <img class="img-responsive" src="/dspg20career/img/AEMLogoGatesColors-11.png" alt="Whoopsies, this is my bad side!" style = "margin: 0 auto; height: 42px"></li>
+                            
+                                <li><a href="/dspg20career/" style="background-color: transparent;">Overview</a></li>
+                            
+                                <li><a href="/dspg20career/data/" style="background-color: transparent;">Data</a></li>
+                            
+                                <li><a href="/dspg20career/methods/" style="background-color: transparent;">Methods</a></li>
+                            
+                                <li><a href="/dspg20career/findings/" style="background-color: transparent;">Findings</a></li>
+                            
+                                <li><a href="/dspg20career/team/" style="background-color: transparent;">Team</a></li>
+                            
+                        </ul>
+                    
+                    
+                        <ul class="nav">
+                            
+                                <li class="navbar-icon"><a href="https://github.com/DSPG-Young-Scholars-Program/dspg20career" style="background-color: transparent;"><i class="fab fa-github"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="mailto:josh.goldstein@virginia.edu" style="background-color: transparent;"><i class="far fa-envelope"></i></a></li>
+                            
+                            
+                        </ul>
+                    
+                </div>
+            </div>
+        </nav>
+
+<main>
+
+    <div class="item">
+
+    
+    
+    
+
+    
+      
+      
+    
+
+    <h4><a href="/dspg20career/findings/results-section-clustering/">Sequence Clustering</a></h4>
+    
+    <h5>Clustering post-military veteran career sequences and exploring these results</h5>
+
+    
+    
+
+</div>
+
+
+    <br> <div class="text-justify">
+<script src="/dspg20career/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/dspg20career/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/dspg20career/rmarkdown-libs/jquery/jquery.min.js"></script>
+<link href="/dspg20career/rmarkdown-libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+<script src="/dspg20career/rmarkdown-libs/datatables-binding/datatables.js"></script>
+<link href="/dspg20career/rmarkdown-libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="/dspg20career/rmarkdown-libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="/dspg20career/rmarkdown-libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="/dspg20career/rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="/dspg20career/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
+
+
+<p>In the previous <strong>Sequence Exploration</strong>, we introduced the following sequence state naming system, shown in Table 1.</p>
+<p><div id="htmlwidget-1" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"filter":"none","data":[["Zone 1","Zone 2","Zone 3","Zone 4","Zone 5","Missing zone","Military","Military transition unemployed","Civilian unemployed","Retired"],["O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","O*NET SOC Code","seqdef() left =","seqdef() gaps =","seqdef() right ="],["Some of these occupations may require a high school diploma or GED certificate. Little or no previous work-related skill, knowledge, or experience is needed for these occupations","These occupations usually require a high school diploma. Some previous work-related skill, knowledge, or experience is usually needed.","Most occupations in this zone require training in vocational schools, related on-the-job experience, or an associate's degree. Previous work-related skill, knowledge, or experience is required for these occupations.","Most of these occupations require a four-year bachelor's degree. A considerable amount of work-related skill, knowledge, or experience is needed for these occupations.","Most of these occupations require graduate school. For example, they may require a master's degree, and some require a Ph.D., M.D., or J.D. (law degree). Extensive skill, knowledge, and experience are needed for these occupations.","A resume item that was missing an O*NET SOC code.","A resume item with O*NET SOC code for Military occupations.","Gaps after the last Military job resume item and before civilian jobs begin.","Gaps in between civilian jobs.","Gaps after the last civilian job."]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>State name<\/th>\n      <th>Source<\/th>\n      <th>Definition<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"500px","dom":"t","order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<span class="math display">\[\text{Table 1. Overview of Sequence States}\]</span></p>
+<div id="year-to-year-transition-matrix" class="section level3">
+<h3>Year-to-Year Transition Matrix</h3>
+<p>In the Burning Glass Technologies resume data, each career is represented by a sequential pattern of job states over time. Sequence analysis provides us with a method of computing distances between two careers. For example, we have two job state sequences and each sequence is composed of three states:
+<span class="math display">\[S_1 = \{ \text{zone 1, zone 2, zone 3} \}\]</span>
+<span class="math display">\[S_2 = \{ \text{zone 1, zone 1, zone 3} \}\]</span>
+The difference between <span class="math inline">\(S_1\)</span> and <span class="math inline">\(S_2\)</span> is at the second state where <span class="math inline">\(S_1\)</span> has zone 2 while <span class="math inline">\(S_2\)</span> has zone 1. To transform <span class="math inline">\(S_1\)</span> to <span class="math inline">\(S_2\)</span>, we substitute zone 2 with zone 1 at state 2. We describe the distance in terms of the minimum number of substitutions that are required to transform one sequence to another sequence to reflect the distance between these two sequences. This is known as an “indels” (insertion or deletion). However not all substitutions are the same: since promotions from job zone 1 directly to job zone 5 are rare, substituting zone 1 with zone 5 is way more costly than substituting zone 1 with zone 2. Therefore, we use transition rates between states observed in the data to estimate the cost to transform from one state to another state.</p>
+<p>The transition matrix is composed of transition rates between each pair of states. The transition matrix has dimension <span class="math inline">\(k \times k\)</span>, k being the number of job states. Since we have 9 job states, our transition matrix has dimension <span class="math inline">\(9 \times 9\)</span>.</p>
+<p>The darker the color, the higher the transition probability between two states. When looking at the transition rates from one year to the next year, the diagonals of the transition matrix, meaning no change in state, have the highest probability.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/figure-html/unnamed-chunk-4-1.png" width="960" /></p>
+<p><span class="math display">\[\text{Fig 1. Year-to-Year Transition Matrix}\]</span></p>
+</div>
+<div id="state-transition-matrix" class="section level3">
+<h3>State Transition Matrix</h3>
+<p>We also construct a state transition matrix where the diagonals are 0; that is, we only consider transitions from one state to another. This provides a better representation of change across time than the year-to-year transition rates above.</p>
+<p>For sequence clustering, our next step is to construct a substitution-cost matrix <span class="math inline">\(SC\)</span> that represents the relative cost of each substitution for determining the distance between sequences. The substitution-cost is a function of the state transition matrix using the formula
+<span class="math display">\[SC(i,j) = 2 -T(i,j) -T(j,i)\]</span></p>
+<p>The substitution-cost matrix reflects the cost for substituting a job state with another. <span class="math inline">\(SC(i,j)\)</span> represent the cost for changing from the current job state <span class="math inline">\(i\)</span> to the next job state <span class="math inline">\(j\)</span>, for <span class="math inline">\(i \in [1,9], j \in [1,9]\)</span>. We then use transition rate to construct substitution-cost matrix using the formula
+<span class="math display">\[SC(i, j) = \begin{cases}
+2-T(i,j)-T(j,i), &amp; i \neq j\\
+0, &amp; i=j
+\end{cases}\]</span></p>
+<p>The consequence for the diagnal to have large transition probability is the consistent cost between job state <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> that <span class="math inline">\(SC(i, j)\)</span> will be approximately 2. In order to make the difference between two different states more visible, we standardize the transition matrix by excluding the diagnal when constructing the transition matrix. Figure 2 shows the standardized transition matrix that reflects changes between states. Having diagnal as 0, we can better observe the difference of the transition probability between two different states.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/figure-html/unnamed-chunk-5-1.png" width="960" /></p>
+<p><span class="math display">\[\text{Fig 2. State Transition Matrix}\]</span></p>
+</div>
+<div id="clustering" class="section level3">
+<h3>Clustering</h3>
+<p>We identified 5185 post-military sequences, and there are 2113 (40.8%) distinct sequences. We identified 7 types of sequences identified as clusters according to the sequence analysis. As shown in Figure 3, Cluster 1, 2, 3 are mainly composed of veterans in job zone 4. Specifically, veterans in Cluster 1 had many years’ of Military Transitional Unemployment. Veterans in Cluster 2 worked for a short period of time in job zone 4 and retired. Veterans in Cluster 3 worked in zone-4 jobs for 10 years post-military.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/Fig3.png" style="width:80.0%" height="800" />
+<span class="math display">\[\text{Fig 3. Clusters Most Common in Job Zone 4}\]</span></p>
+<p>As shown in Figure 4, we observed that the majority of the veterans in Cluster 4 had a career promotion where they started in Zone 3 and went into Zone 4. We recognize some veterans in Cluster 4 experienced the Military Transitional Unemployment before their Zone-3 jobs. We also recognize a small proportion of these veterans had a demotion from job zone 5 to job zone 4.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/Fig4.png" style="width:80.0%" height="250" />
+<span class="math display">\[\text{Fig 4. Career Promotion Cluster}\]</span></p>
+<p>As shown in Figure 5, Clusters 5, 6, 7 do not exibit changes in post-military career. Clusters 5, 6, 7 are composed of jobs in Zone 5, Zone 2, and Zone 3 respectively. In Cluster 5, we also observed a short period of unemployment or jobs with a lower job zone before the Zone-5 jobs. In Cluster 6, we also observed veterans having Military Transitional Unemployment before their Zone-2 jobs and veterans retiring after their Zone-2 jobs. In Cluster 7, we are observing shorter period of Military Transitional Unemployment before their Zone-3 jobs and less retirement after their Zone-3 jobs.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/Fig5.png" style="width:80.0%" height="800" /></p>
+<p><span class="math display">\[\text{Fig 5. Clusters Most Common in Job Zone 2, 3, 5}\]</span></p>
+<p><br>
+<br>
+<br>
+<br>
+<br>
+<br></p>
+</div>
+<div id="is-veterans-education-background-associated-with-their-career-trajectory" class="section level3">
+<h3>Is veterans’ education background associated with their career trajectory?</h3>
+<p>To understand how veterans developed different career trajectories, we investigated whether gender and highest degree earned are associated with the career clusters.</p>
+<p>First, let’s take a look at a frequency plot shown in Figure 6. Here we are showing the number of veterans with different degrees in each of these 7 clusters. Since the majority of our veteran sample had a bachelor’s or a master’s degree, here we present the percentage of veterans in each of the eight clusters for each highest degree earned. Thus each row adds up to 1.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/Fig6.png" style="width:100.0%" height="430" /></p>
+<p><span class="math display">\[\text{Fig 6. Cluster Distribution by Different Levels of Education}\]</span></p>
+<p><br>
+<br></p>
+<p>###Association test
+To test whether the differences we observed before are statistically significant, we performed Pearson’s <span class="math inline">\(\chi^2\)</span>-test and Fisher’s exact test. These are formal test of association between two categorical variables. Specifically, Fisher’s exact test is used when at least a 20% of the expected cell counts are small (<span class="math inline">\(\leq\)</span> 5). First, we constructed a two-way frequency table as shown in Table 2. For example, there are 44 veterans who had a high school’s degree as their highest degree earned and were categorized in Cluster 2. The expected count is 34 assuming cluster and highest degree earned are independent. We are testing our hypothesis
+<span class="math display">\[H_0: \text{Odds Ratio} =1\]</span>
+<span class="math display">\[H_A: \text{Odds Ratio} \neq 1\]</span></p>
+<p><style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#kzcpczyokn .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#kzcpczyokn .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kzcpczyokn .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#kzcpczyokn .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#kzcpczyokn .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kzcpczyokn .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kzcpczyokn .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#kzcpczyokn .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#kzcpczyokn .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#kzcpczyokn .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#kzcpczyokn .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#kzcpczyokn .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#kzcpczyokn .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#kzcpczyokn .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#kzcpczyokn .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#kzcpczyokn .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#kzcpczyokn .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#kzcpczyokn .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kzcpczyokn .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#kzcpczyokn .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kzcpczyokn .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#kzcpczyokn .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#kzcpczyokn .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kzcpczyokn .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kzcpczyokn .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#kzcpczyokn .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kzcpczyokn .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#kzcpczyokn .gt_left {
+  text-align: left;
+}
+
+#kzcpczyokn .gt_center {
+  text-align: center;
+}
+
+#kzcpczyokn .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#kzcpczyokn .gt_font_normal {
+  font-weight: normal;
+}
+
+#kzcpczyokn .gt_font_bold {
+  font-weight: bold;
+}
+
+#kzcpczyokn .gt_font_italic {
+  font-style: italic;
+}
+
+#kzcpczyokn .gt_super {
+  font-size: 65%;
+}
+
+#kzcpczyokn .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="kzcpczyokn" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <th colspan="3" class="gt_heading gt_title gt_font_normal" style>Two-way Frequency Table</th>
+    </tr>
+    <tr>
+      <th colspan="3" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style></th>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Cluster 2</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">not Cluster 2</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left gt_stub">High School's degree</td>
+      <td class="gt_row gt_left">44 [34]</td>
+      <td class="gt_row gt_left">889 [899]</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Others</td>
+      <td class="gt_row gt_left">64 [74]</td>
+      <td class="gt_row gt_left">1958 [1948]</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+<span class="math display">\[\text{Table 2. Two-way Frequency Table}\]</span></p>
+<p>We conducted 49 hypothesis tests in total, having 7 different highest degree earned types and 7 clusters. Since we are conducting multiple hypothesis tests, a small p-value (&lt;0.05) might happen by chance, which increase the chance of Type I errors (false positives), rejecting the true null hypothesis. Therefore, we introduced two methods for multiple-test correction.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<span class="math display">\[\text{Fig 7. P-values from the Association Tests Before Correction for Multiple Tests}\]</span></p>
+<p>###Bonferroni correction
+First, we introduce a conservative approach for multiple tests correction.The Bonferroni correction for multiple comparisons is a single-step procedure that uses <span class="math inline">\(\alpha&#39; = \frac{\alpha}{m}\)</span>, for <span class="math inline">\(\alpha = 0.05\)</span> being the original significance level, <span class="math inline">\(\alpha&#39;\)</span> being the adjusted significance level, and <span class="math inline">\(m = 49\)</span> being the total number of hypothesis tests, since we conducted 49 hypothesis tests, having 7 different highest degree earned types and 7 clusters.</p>
+<p>We calculated the adjusted p-value for each test using Bonferroni correction, as shown in Figure 8. We are still observe that the highest degree earned within Clusters 5, 6, and 7 are statistically different from the others. Specifically, we are observe veterans with master’s or doctor’s degree are more likely to be in Cluster 5, which is composed of mostly zone-5 jobs 10-years post-military. Veterans with a high school’s, associate’s, or master’s degree are more likely to be in Cluster 6, which is composed of mostly level-2 jobs with some military transitional unemployment and retirement 10-years post-military. We are also observe that veterans with high school’s degree are more likely to be in Cluster 7, which is mostly composed of zone-3 jobs.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+<span class="math display">\[\text{Fig 8. P-values from the Association Tests with Bonferroni Correction}\]</span></p>
+<p>###Benjamini &amp; Hochberg correction
+Next, we introduce Benjamini &amp; Hochberg correction which is a less strict approach for multiple tests.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><span class="math display">\[\text{Fig 9. P-values from the Association Tests with Benjamini &amp; Hochberg Correction}\]</span></p>
+<p><br>
+<br>
+<br></p>
+</div>
+<div id="do-female-and-male-veterans-have-different-career-trajectory" class="section level3">
+<h3>Do Female and Male Veterans have different career trajectory?</h3>
+<p>In our sample, we have 15.9% (N=824) female veterans, 84.1% (N=3666) male veterans. We conducted <span class="math inline">\(\chi^2\)</span> test. Using 0.05 as the critical value, we conclude that female is statistically different from male only in cluster 2 (p &lt; 0.001) after using Bonferroni correction. Cluster 2 identified veterans who retired after exiting the military. According to our correlation test, we conclude that female veterans are more likely to retire or to exit the work force after the conclusion of their military career.</p>
+<p><img src="/dspg20career/findings/results-section-clustering_files/Fig10.png" style="width:100.0%" height="500" /></p>
+<p><span class="math display">\[\text{Fig 10. Cluster Distribution by Gender}\]</span></p>
+</div>
+</div>
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+</main>
+
+        <footer id = "bigfooter">
+            <div style = "padding:15px;">
+                <p>Powered by <a href="https://gohugo.io">Hugo</a>. Themed by <a href="https://github.com/nathancday/min_night">min_night_dspg</a>. <a href="https://biocomplexity.virginia.edu/social-decision-analytics">Website by University of Virginia Biocomplexity Institute.</a>
+                </p>
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/"
+                title="Creative Commons Attribution 4.0 International license">
+                <i class="fab fa-creative-commons" aria-hidden="true"></i> Attribution 4.0 International license
+                </a>
+            </div>
+        </footer>
+        
+        <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)};
+          gtag('js', new Date());
+          gtag('config', '');
+        </script>
+       
+       <script>
+           function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+           
+           function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
+            }
+            
+            var mytype = getUrlParam('type','Empty');
+            
+       
+           
+           
+           
+           var x = document.getElementsByClassName('header_img');
+           
+           if (mytype != 'economic') {
+             x[0].innerHTML = '<div><a href="https://datascienceforthepublicgood.org/events/symposium2020/poster-sessions">' +
+                              '<img src="/dspg20career/img/DSPG_white-01.png", alt="DSPG 2020 Symposium Proceedings", style="height:42px; margin-top:5px;">' +
+                              '</a></div>';
+                              
+             var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?type=dspg';
+             
+             window.history.pushState({path:newurl},'',newurl);
+           } else {
+             x[0].innerHTML = '<div><a href="https://datascienceforthepublicgood.org/economic-mobility/community-insights/case-studies">' +
+                              '<img src="/dspg20career/img/AEMLogoGatesColors-11.png", alt="Gates Economic Mobility Case Studies", style="height:42px; margin-top:5px;">' +
+                              '</a></div>';
+             
+             var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?type=economic';
+             
+             window.history.pushState({path:newurl},'',newurl);
+           }
+        </script>
+    </body>
+
+
+</html>
+

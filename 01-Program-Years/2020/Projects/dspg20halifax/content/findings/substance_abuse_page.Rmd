@@ -1,0 +1,452 @@
+---
+title: "Substance Abuse"
+description: "Comparing Halifax to its neighbors on opioid and alcohol use"
+weight: 5
+draft: false
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 15, fig.height = 10)
+#may not need 
+#add packages here
+options(knitr.duplicate.label = "allow")
+```
+
+### Background 
+
+Approximately three out of four state prisoners and four out of five federal prisoners are detained for alcohol and or drug related offenses[^2]. Additionally, 58% of state prisoners and 63% of sentenced jail inmates meet the criteria for substance abuse disorders (SUDs), compared to 5% of the general adult population[^3]. Not considered in these figures is the high rate of drug-related crime; for example, 17% of state prisoners and 18% of federal inmates committed their offense to obtain money to purchase drugs[^5]. 
+
+Effective substance abuse treatment has been linked with decreased rates of recidivism, but many inmates do not receive sufficient treatment, compounding their difficulties re-integrating into society after release. Unfortunately, 60-80% of drug offenders commit a new drug-related crime upon being released from prison[^1].
+
+Substance abuse intersects with incarceration at recidivism at various levels of the ecological model. Though stable housing is critical for recovery from SUDs, on an individual level, many people struggle to find places to live and become homeless. At the community level, support resources both for substance abuse disorders as well as other related factors, like mental health problems and family stressors may be lacking[^4]. Substance abuse can also have severe impacts on individuals' interpersonal relationships, distancing them from a support network that could otherwise provide important support while re-entering society after release. On the policy level, strict restrictions on eligibility for employment, housing, and various welfare benefits directly linked to past substance use may present significant obstacles for formerly incarcerated individuals to effectively re-enter society. Systemic racism baked into the criminal justice system also leads to vast racial disparities in substance related arrests, convictions, and felonies.
+
+In the United States, substance use and abuse has been thoroughly entangled with incarceration for decades, and remains a critical component of any comprehensive analysis of incarceration trends.
+
+### Main Findings 
+
+The prevailing opioid epidemic has been felt strongly in rural America, and data from the Centers for Disease Control provides mixed messages about the state of the epidemic in Halifax County. Halifax began with lower opioid prescription rates than Virginia and the U.S. from 2006 to 2011, yet went on to continuously surpass both from 2011 until 2018. While Halifax rates peaked in 2015 and have been sharply decreasing since, Halifax continues to be behind the United States and the state of Virginia. In fact, the state of Virginia consistently fares better than overall US rates. These data illustrate how strongly the county of Halifax has been affected by the opioid epidemic, with opioid prescription rates for 100 people still not lowering beyond 50.  
+
+Though it is encouraging to see prescription rates on a rapid decline overall, this trend likely tells only part of the story. Given the increased visibility of the epidemic in recent years, this decline is likely driven more by changes in prescribing practices rather than reduced dependence on the part of those using opioids. In fact, as prescription rates decline, many may turn to heroin or fentanyl, which may be more dangerous to obtain and use, and may also be treated more strictly by the criminal justice system.
+
+<br>
+
+```{r, results = "hide"}
+library(ggplot2)
+library(rvest)
+library(sf)
+library(tigris)
+library(leaflet)
+library(tidycensus)
+library(stringr)
+library(dplyr)
+library(here)
+library(BAMMtools)
+library(tidyr)
+library(leaflet.mapboxgl)
+
+#set the theme 
+theme_set(theme_minimal() +
+            theme(plot.title = element_text(hjust = 0.5, color = "gray10", size = 24),
+                  plot.subtitle = element_text(hjust = 0.5, color = "gray30", face = "italic", size = 20),
+                  axis.title = element_text(size = 20, color = "gray10"),
+                  axis.text = element_text(size = 18, color = "gray30"),
+                  strip.text = element_text(size = 22, color = "gray30"),
+                  panel.spacing = unit(4, "lines"),
+                  legend.key.size = unit(3, "line"),
+                  legend.text = element_text(size = 16, color = "gray30"),
+                  legend.title = element_text(size = 22, color = "gray10")))
+
+options(mapbox.accessToken = Sys.getenv("MAPBOX_TOKEN"))
+
+cbbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+halifax_border <- tigris::counties(state = "VA", cb = TRUE, resolution = "5m") %>% 
+  st_as_sf() %>% 
+  st_transform(crs = 4326) %>%
+  filter(GEOID == 51083)
+```
+
+```{r}
+#read CSV
+datasource <- readr::read_csv(here::here("data",
+                                         "original", "Substance_Abuse",
+                                         "CDC Opioid Prescription Data - Halifax.csv")) %>%
+  pivot_longer(cols = c(Halifax, `US Total`, VA))
+
+#plot the data
+ggplot(data = datasource, aes(x = Year, y = value, color = name)) +
+  #plot of Halifax and VA state over time
+  geom_line(lwd = 1.1) +
+  geom_point(size = 2) +
+  labs(title = 'Opioid Prescriptions per 100 People') +
+  #relabel the scale appropriately
+  scale_color_manual(name = "Location", labels = c("Halifax", "US", "VA"), values = cbbPalette) +
+  scale_x_continuous(labels = seq(2006, 2018), breaks = seq(2006, 2018)) +
+  theme(panel.grid.minor = element_blank(),
+        legend.title = element_blank(),
+        legend.position = "bottom",
+        axis.title = element_blank())
+```
+```{r, results = "hide"}
+#load VA border geographical data
+va_borders <- get_acs(table = "B01003", geography = "county", year = 2018, state = "VA",
+                      survey = "acs5", geometry = TRUE, cache_table = TRUE) %>% st_transform(crs = 4326)
+```
+
+A map of the same data provides a spatial context for Halifax’s opioid prescription rates compared to other Virginia counties, as well as the change in prescription rates over time for Virginia. We see that not all rural counties are necessarily at similar risk: counties in Southwest Virginia tend to have higher prescription rates than rural counties in Southside Virginia (where Halifax County is located). Note that even the lower ends of the scale exceed 100 prescriptions per 100 people, suggesting that many people are linked to multiple prescriptions and emphasizing the magnitude of the epidemic.
+
+<br>
+
+```{r, fig.height = 6}
+#get data from 2017 and 2018 separately bc it has a different format
+data_2018_and_2017 <-readr::read_csv(here::here("data",
+                                                "original", "Substance_Abuse",
+                                                "CDC Opioid Prescription Data - 2018 (1).csv"))
+
+#get the relevant data - merged with va borders data - to create maps for each year
+create.map <- function(year) {
+  link <- paste(paste("http://www.cdc.gov/drugoverdose/maps/rxcounty", year, sep = ""), ".html", sep = "")
+  rate_for_year <- html(link)
+  tables <- rate_for_year %>% html_table(fill = TRUE)
+  table_for_year <- tables[[1]]
+  rate_description <- paste(year, "Prescribing Rate")
+  table_for_year <- filter(table_for_year, State == 'VA')
+  #merge new_tbl with va_borders data
+  new_tbl <- merge(va_borders, table_for_year, by.x = "GEOID", by.y = "FIPS County Code")
+  column <- new_tbl[ ,8]
+  column$geometry = NULL
+  #conver the column containing opiod prescription rates to a numeric column instead of character
+  column <- as.numeric(sapply(column, noquote))
+  new_tbl <- mutate(new_tbl, 'Rate' = column)
+}
+
+#special create_maps function for 2017 and 2018
+create.map.special <- function(year, table) {
+  table_for_year <- filter(table, Year == year)
+  new_tbl <- merge(va_borders, table_for_year, by.x = "GEOID", by.y = "State/County FIPS Code", all.x = TRUE)
+  new_tbl <- rename(new_tbl, 'Rate' = 'Opiod Prescription Rate per 100')
+}
+
+#create corresponding maps for all the years
+mapping_2017 <- create.map.special("2017", data_2018_and_2017)
+mapping_2018 <- create.map.special("2018", data_2018_and_2017)
+mapping_2006 <- create.map("2006")
+mapping_2007 <- create.map("2007")
+mapping_2008 <- create.map("2008")
+mapping_2009 <- create.map("2009")
+mapping_2010 <- create.map("2010")
+mapping_2011 <- create.map("2011")
+mapping_2012 <- create.map("2012")
+mapping_2013 <- create.map("2013")
+mapping_2014 <- create.map("2014")
+mapping_2015 <- create.map("2015")
+mapping_2016 <- create.map("2016")
+
+#combine all possible rates from all years together into one dataset
+all_rates <- c(mapping_2006$Rate, mapping_2007$Rate, mapping_2008$Rate, mapping_2009$Rate,
+               mapping_2010$Rate, mapping_2011$Rate, mapping_2012$Rate, mapping_2013$Rate,
+               mapping_2014$Rate, mapping_2015$Rate, mapping_2016$Rate, mapping_2017$Rate,
+               mapping_2018$Rate)
+all_rates <- na.omit(all_rates)
+
+#use Jenks breaks to see ideal disribution of Opioid Prescription Rates for map scale
+generic_bins <-getJenksBreaks(all_rates, k = 6)
+generic_bins <- sapply(generic_bins, round)
+generic_palette <-colorBin("BuPu", domain = all_rates, bins = c(0, 60, 120, 200, 360, 580))
+
+#label function for each respective year and map
+generate.label <- function(year_mapping) {
+  my_label <- paste("<strong>", year_mapping$NAME,"<br/></strong>", "Rate: ", year_mapping$Rate, "<br/>",
+                    sep="") %>%
+    lapply(htmltools::HTML)
+}
+
+#create the leaflet
+leaflet(width = "100%") %>%
+  addMapboxGL(style = "mapbox://styles/mapbox/light-v9") %>%
+  addMapPane("border", zIndex = 410) %>%
+  #add polygon for each year with respective template, label, and data
+  addPolygons(data = mapping_2016, fillColor = ~generic_palette(mapping_2016$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2016',
+              label = generate.label(mapping_2016),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2015, fillColor = ~generic_palette(mapping_2015$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2015',
+              label = generate.label(mapping_2015),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2014, fillColor = ~generic_palette(mapping_2014$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2014',
+              label = generate.label(mapping_2014),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2013, fillColor = ~generic_palette(mapping_2013$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2013',
+              label = generate.label(mapping_2013),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2012, fillColor = ~generic_palette(mapping_2012$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2012',
+              label = generate.label(mapping_2012),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2011, fillColor = ~generic_palette(mapping_2011$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2011',
+              label = generate.label(mapping_2011),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2010, fillColor = ~generic_palette(mapping_2010$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2010',
+              label = generate.label(mapping_2010),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2009, fillColor = ~generic_palette(mapping_2009$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2009',
+              label = generate.label(mapping_2009),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2008, fillColor = ~generic_palette(mapping_2008$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2008',
+              label = generate.label(mapping_2008),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2007, fillColor = ~generic_palette(mapping_2007$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2007',
+              label = generate.label(mapping_2007),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2006, fillColor = ~generic_palette(mapping_2006$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2006',
+              label = generate.label(mapping_2006),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2017, fillColor = ~generic_palette(mapping_2017$Rate),
+              weight = 1, color =  "#444444", fillOpacity = 0.7, group = '2017',
+              label = generate.label(mapping_2017),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addPolygons(data = mapping_2018, fillColor = ~generic_palette(mapping_2018$Rate),
+              weight = 1, color = "#444444", fillOpacity = 0.7, group = '2018',
+              label = generate.label(mapping_2018),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addLegend(pal = generic_palette, values = generic_bins,
+            title = paste("Opiod Prescription Rate per 100 People"), position = "bottomright") %>%
+  #layer for each year
+  addLayersControl(baseGroups = c("2006", "2007", "2008", "2009", "2010",
+                                  "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018"),
+                   options = list(collapsed = FALSE)) %>%
+    addPolylines(data = halifax_border,
+               color = "#FC4444",
+               opacity = 0.9,
+               weight = 2,
+               options = pathOptions(pane = "border"))
+```
+<br>
+
+The Virginia Department of Health Office of Epidemiology provides further insight into substance abuse in Halifax county. Data on unintentional drug overdose in Halifax indicate that the majority of overdoses are due to opioids, followed by other types of drugs and with the smallest portion being heroin related[^8]. As noted before, it will be interesting to see if the relative proportion of heroin overdoses continues to increase as prescription rates decline. If so, this could represent an important issue for Halifax to target given both the potential health and criminal consequences involved in heroin use.
+
+<br>
+```{r}
+#read in data source
+datasource <- readr::read_csv(here::here("data",
+                                         "original", "Substance_Abuse",
+                                         "Ed Data VDH - Copy of Halifax.csv")) %>%
+  mutate(Drug = ifelse(Drug == "Opiod", "Opioid", Drug))
+
+# ggplot for the data
+ggplot(datasource, aes(x =Year, y =Count, fill=Drug))+
+  geom_area(alpha = 0.7) + 
+  scale_fill_manual(values = cbbPalette) +
+  labs(x = "Year", y = "ED Overdose Visits") +
+  ggtitle("Emergency Department Overdose Visits in Halifax, VA") +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom",
+        axis.title = element_blank())
+```
+<br>
+
+Another important aspect of substance abuse is alcohol related abuse and overdose. According to data from the National Center for Health Statistics[^9], the percentage of adults reporting heavy or binge drinking has increased steadily since 2011. This trend parallels that of Virginia as a whole, which consistently has a higher excessive drinking rate than Halifax. 
+
+<br>
+
+```{r}
+#load the data source from the CSV
+datasource <- readr::read_csv(here::here("data", "original", "Substance_Abuse",
+                                         "Excessive Drinking and Alcohol-Impaired Driving Deaths - Halifax (1).csv"))
+
+#grab the '% Excessive Drinking' column for Halifax
+list <- c(14, 14, 14, 13, 13, 10 ,10, 11, 8, 8)
+#grab the '% Excessive Drinking' column for VA in general
+va <- c(17, 17, 17, 17, 17, 16, 16, 16, 16, 16)
+ggplot(data = datasource, aes(x = X1)) +
+  #add geom_lines for each location
+  geom_line(aes(y = list, colour = "#CC6666"), lwd = 1.1) +
+  geom_line(aes(y = va, colour = "#9999CC"), lwd = 1.1) +
+  labs(x = 'Year', y = '% Excessive Drinking', title = "Excessive Drinking Rates") + scale_x_continuous(breaks = seq(2011, 2020, 2), lim = c(2011, 2020)) +
+  #add relevant scaling for y axis
+  scale_y_continuous(breaks = seq(5, 20, 5), lim = c(5, 20))  +
+  #relabel the scale appropriately
+  scale_color_manual(labels = c("VA", "Halifax, VA"), values = c(cbbPalette[2], cbbPalette[1])) +
+  guides(color=guide_legend("Location")) +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom",
+        axis.title.x = element_blank())
+```
+
+```{r}
+# datasource <- readr::read_csv(here::here("data",
+#                                          "original", "Substance_Abuse",
+#                                          "Excessive Drinking and Alcohol-Impaired Driving Deaths - Excessive Drinking.csv"))
+# 
+# #create map for each year (respectively) by filtering by year and merging with va_borders data
+# create.map <- function(year) {
+#   datasource <- filter(datasource, Year == year)
+#   new_tbl <- merge(va_borders, datasource, by.x = "GEOID", by.y = "FIPS")
+# }
+# 
+# #create relevant map for each year
+# mapping_2011 <- create.map('2011')
+# mapping_2012 <- create.map('2012')
+# mapping_2013 <- create.map('2013')
+# mapping_2014 <- create.map('2014')
+# mapping_2015 <- create.map('2015')
+# mapping_2016 <- create.map('2016')
+# mapping_2017 <- create.map('2017')
+# mapping_2018 <- create.map('2018')
+# mapping_2019 <- create.map('2019')
+# mapping_2020 <- create.map('2020')
+# 
+# #generate label on map for each respective year
+# generate.label <- function(year_mapping) {
+#   my_label <- paste("County: ", year_mapping$County,"<br/>", "Rate: ", paste(year_mapping$'% Excessive Drinking', '%',
+#                                                                            sep = ""), "<br/>",
+#                     sep="") %>%
+#     lapply(htmltools::HTML)
+# }
+# 
+# #generate bins using Jenks Breaks and palette for all the maps
+# general_bins <- getJenksBreaks(datasource$`% Excessive Drinking`, k = 6)
+# general_palette <- colorBin("BuPu", domain = datasource$'`% Excessive Drinking`', bins = general_bins)
+# 
+# #leaflet code to plot all the mpas data
+# leaflet() %>%
+#   addMapboxGL(style = "mapbox://styles/mapbox/light-v9") %>%
+#   addPolygons(data = mapping_2020, fillColor = ~general_palette(mapping_2020$'% Excessive Drinking'),
+#               weight = 1, color = "#444444", fillOpacity = 0.7, group = "2020",
+#               label = generate.label(mapping_2020),
+#               labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                           textsize = "13px", direction = "auto")) %>%
+#     addPolygons(data = mapping_2019, fillColor = ~general_palette(mapping_2019$'% Excessive Drinking'),
+#                 weight = 1, color = "#444444", fillOpacity = 0.7, group = "2019",
+#                 label = generate.label(mapping_2019),
+#                 labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                             textsize = "13px", direction = "auto")) %>%
+#   addPolygons(data = mapping_2018, fillColor = ~general_palette(mapping_2018$'% Excessive Drinking'),
+#               weight = 1, color = "#444444", fillOpacity = 0.7, group = "2018",
+#               label = generate.label(mapping_2018),
+#               labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                           textsize = "13px", direction = "auto")) %>%
+#   addPolygons(data = mapping_2017, fillColor = ~general_palette(mapping_2017$'% Excessive Drinking'),
+#               weight = 1, color = "#444444", fillOpacity = 0.7, group = "2017",
+#               label = generate.label(mapping_2017),
+#               labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                           textsize = "13px", direction = "auto")) %>%
+#   addPolygons(data = mapping_2016, fillColor = ~general_palette(mapping_2016$'% Excessive Drinking'),
+#               weight = 1, color = "#444444", fillOpacity = 0.7, group = "2016",
+#               label = generate.label(mapping_2016),
+#               labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                           textsize = "13px", direction = "auto")) %>%
+#   addPolygons(data = mapping_2015, fillColor = ~general_palette(mapping_2015$'% Excessive Drinking'),
+#               weight = 1, color = "#444444", fillOpacity = 0.7, group = "2015",
+#               label = generate.label(mapping_2015),
+#               labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                           textsize = "13px", direction = "auto")) %>%
+#   addPolygons(data = mapping_2014, fillColor = ~general_palette(mapping_2014$'% Excessive Drinking'),
+#               weight = 1, color = "#444444", fillOpacity = 0.7, group = "2014",
+#               label = generate.label(mapping_2014),
+#               labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                           textsize = "13px", direction = "auto")) %>%
+#   addPolygons(data = mapping_2013, fillColor = ~general_palette(mapping_2013$'% Excessive Drinking'),
+#               weight = 1, color = "#444444", fillOpacity = 0.7, group = "2013",
+#               label = generate.label(mapping_2013),
+#               labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                           textsize = "13px", direction = "auto")) %>%
+#   addPolygons(data = mapping_2012, fillColor = ~general_palette(mapping_2012$'% Excessive Drinking'),
+#               weight = 1, color = "#444444", fillOpacity = 0.7, group = "2012",
+#               label = generate.label(mapping_2012),
+#               labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                           textsize = "13px", direction = "auto")) %>%
+#   addPolygons(data = mapping_2011, fillColor = ~general_palette(mapping_2011$'% Excessive Drinking'),
+#               weight = 1, color = "#444444", fillOpacity = 0.7, group = "2011",
+#               label = generate.label(mapping_2011),
+#               labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+#                                           textsize = "13px", direction = "auto")) %>%
+#     addLegend(pal = general_palette, values = general_bins,
+#               title = "Percentage of Adults Reporting Heavy or Binge Drinking", position = "bottomright") %>%
+#     addLayersControl(baseGroups = c("2011", "2012", "2013", "2014", "2015", "2016", "2017",
+#                                     "2018", "2019", "2020"),
+#                      options = layersControlOptions(collapsed = FALSE))
+```
+
+Lastly, it is important to understand substance abuse and its relationship with incarceration through the community and policy level of the ecological model. The historical legacy of War on Drugs policies (for instance, the differentiation between crack and powder cocaine) combined with over-policing of communities of color have helped to fuel the racial disparities seen in the criminal justice system. Data from the American Civil Liberties Union (ACLU) indicate the racial disparities in marijuana arrests between Black and White individuals (per 100k people). In Virginia, Black people are 3.4 times more likely to be arrested for marijuana possession than White people, a gap that has steadily widened from 2010 to 2018. In Halifax, Black people are 2.9 times more likely to be arrested for marijuana possession[^7]. While this pattern is indicative of concerning racial disparities, it is difficult to disentangle these figures from the complex interplay of crime, poverty, and other social determinants of incarceration.
+
+```{r, fig.height = 6}
+datasource <- readr::read_csv(here::here("data",
+                                         "original", "Substance_Abuse",
+                                         "Racial Disparities in Marijuana Arrests by VA County - 2018 (1).csv"))
+
+va_borders <- get_acs(table = "B01003", geography = "county", year = 2018, state = "VA",
+                      survey = "acs5", geometry = TRUE, cache_table = TRUE) %>% st_transform(crs = 4326)
+datasource <- merge(va_borders, datasource, by.x = "GEOID", by.y = "FIPS Code")
+unstable <- filter(datasource, `Meets Population & Reporting Thresholds` == "No")
+stable <- filter(datasource, `Meets Population & Reporting Thresholds` == "Yes")
+
+quantile_summary <- quantile(stable$`Times more likely Black person arrested in 2018`, k = 6)
+# general_bins <- getJenksBreaks(stable$`Times more likely Black person arrested in 2018`, k = 6)
+general_bins <- sapply(quantile_summary, round)
+#general_bins
+
+general_palette <- colorBin("BuPu", domain = datasource$`Times more likely Black person arrested in 2018`, bins = general_bins)
+label <- paste("County: ", datasource$County,"<br/>", "Rate: ",
+               paste(datasource$`Times more likely Black person arrested in 2018`, 'x',
+                     sep = ""), "<br/>",
+               sep="") %>%
+  lapply(htmltools::HTML)
+
+leaflet(width = "100%") %>%
+  addMapboxGL(style = "mapbox://styles/mapbox/light-v9") %>%
+  addMapPane("border", zIndex = 410) %>%
+  addPolygons(data = datasource, 
+              fillColor = ~general_palette(datasource$`Times more likely Black person arrested in 2018`),
+              weight = 1, color = "#444444", fillOpacity = 0.7,
+              label = label,
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "13px", direction = "auto")) %>%
+  addLegend(pal = general_palette, values = general_bins,
+            title = "Rates of Black vs White arrests <br>for marijuana possession (100k people)", position = "bottomright") %>%
+  addPolylines(data = halifax_border,
+               color = "#FC4444",
+               opacity = 0.9,
+               weight = 2,
+               options = pathOptions(pane = "border"))
+```
+
+<br>
+
+### Conclusion and Policy Implications 
+
+
+To better understand the relationship between substance abuse, incarceration, recidivism, particularly in Halifax Virginia, it would be helpful to have additional data sources. To understand the social determinants of substance abuse related crime, it would be helpful to examine sources that magnify various aspects of substance abuse's ecological model. For example - on the individual level - data on housing outcomes for individuals with SUD-related offenses, such as how many such individuals are homeless or struggling to find stable housing? In that vein, it would be helpful to have information about how receptive and inclusive public housing programs in the county are to formerly incarcerated individuals with drug offenses. Furthermore, data on job outcomes and prospects for individuals with SUD-related offenses would be particularly illuminating, such as how many individuals are unemployed or unable to find a permanent job. Though we have geographic data for substance abuse related treatment and help centers in Halifax County, it would be helpful to have data about the outcomes for individuals who seek out such resources. 
+
+[^1]: 5 Startling Facts About Drug Abuse in US Prisons. (2017, July 10). Retrieved August 1, 2020, from https://www.confirmbiosciences.com/knowledge/blog/5-startling-facts-drug-abuse-us-prisons/
+[^2]: Bales, W. D., Slyke, S. V., & Blomberg, T. G. (2006). Substance Abuse Treatment in Prison and Community Reentry: Breaking the Cycle of Drugs, Crime, Incarceration, and Recidivism. Georgetown Journal on Poverty Law & Policy, 8(2).
+[^3]: Bronson, J., Stroop, J., Zimmer, S., & Berzofsky, M. (2017, June). Drug Use, Dependence, and Abuse Among State Prisoners and Jail Inmates, 2007-2009 (Rep.). Retrieved https://www.bjs.gov/content/pub/pdf/dudaspji0709.pdf
+[^4]: Drug Misuse and Addiction. (2020, July 13). Retrieved from https://www.drugabuse.gov/publications/drugs-brains-behavior-science-addiction/drug-misuse-addiction
+[^5]: Drug use and crime. (n.d.). Retrieved August 1, 2020, from https://www.bjs.gov/content/dcf/duc.cfm
+[^6]: U.S. Opioid Prescribing Rate Maps. (2020, March 05). Retrieved from https://www.cdc.gov/drugoverdose/maps/rxrate-maps.html
+[^7]: Virginia. (n.d.). Retrieved from https://graphics.aclu.org/marijuana-arrest-report/VA
+[^8]: Virginia Department of Health. (n.d.). Retrieved from https://www.vdh.virginia.gov/opioid-data/emergency-department/
+[^9]: Virginia Rankings Data. (n.d.). Retrieved from https://www.countyhealthrankings.org/app/virginia/2020/downloads

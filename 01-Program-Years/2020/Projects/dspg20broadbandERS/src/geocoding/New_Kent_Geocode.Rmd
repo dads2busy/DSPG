@@ -1,0 +1,58 @@
+---
+title: "New Kent Geocode"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+library(tidygeocoder)
+library(dplyr)
+library(stringr)
+
+new_kent <- read_excel("~/Data.xlsx")
+
+ 
+new_kent$addr <- paste0(
+                   new_kent$`Property Location`, ", ",
+
+                   new_kent$City, ", ",
+                   
+                     new_kent$State, ", ",
+                     new_kent$Zip)
+
+
+new_kent$addr
+ 
+
+nk_latlon_na <- filter(new_kent, is.na(City))
+
+test_1 <- head(new_kent, 1000)
+
+new_kent %>% distinct()
+
+nk_geo_census <- tidygeocoder::geocode(test_1, addr, method = "census")
+table(is.na(nk_geo_census$lat))
+table(is.na(nk_geo_census$long))
+
+data_list = list()
+for (i in 1:nrow(test_1)) {
+  #to see whether geocode in census works
+  lat_long <- tidygeocoder::geocode(nk_geo_census[i, c("addr", "PID #")], addr, method = "census") %>%
+    mutate(method = "census")
+  # if lat, long is NA
+  if (is.na(lat_long$lat)) {
+    lat_long <- tidygeocoder::geocode(nk_geo_census[i, c("addr", "PID #")], addr, method = "osm") %>%
+    mutate(method = ifelse(is.na(lat), "none", "osm"))
+  }
+data_list[[i]] <- lat_long
+
+}
+nk_geo_data <- do.call(rbind, data_list)
+
+
+```
+

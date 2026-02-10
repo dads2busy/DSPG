@@ -1,0 +1,188 @@
+---
+title: "Vatsala_missing_value_comparison"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+con <- get_db_conn()
+
+ 
+
+nk_allyears <- DBI::dbGetQuery(con, statement = paste(
+  "SELECT fips_code, apn__parcel_number_unformatted_, apn_sequence_number, original_apn, census_tract, legal_lot_number, township, municipality_code,
+  property_indicator_code, assessed_total_value, market_total_value, tax_amount, tax_year, assessed_year, 
+  acres, land_square_footage, building_square_feet, living_square_feet, year_built, effective_year_built, 
+  bedrooms, total_baths, full_baths, half_baths, parcel_level_latitude, parcel_level_longitude, block_level_latitude, block_level_longitude,
+  situs_house_number, situs_street_name, situs_mode, situs_city, situs_state, situs_zip_code",
+  "FROM corelogic_sdad.tax_hist_2_51",
+  "WHERE fips_code='51127'"))
+
+ 
+
+DBI::dbDisconnect(con)
+
+ 
+
+nk_2018 <- nk_allyears[nk_allyears$tax_year == '2018',]
+```
+
+```{r libraries, include=FALSE, message=FALSE, echo=FALSE, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FALSE)
+# install.packages("dplyr")
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(sf)  
+library(venn)
+library(ggthemes)
+library(DataExplorer)
+library(maditr)
+library(readxl)
+library(readr)
+library(gridExtra)
+```
+
+```{r}
+ffx_sub <-  ffx_2018 %>%
+  select(legal_lot_number, assessed_total_value, year_built, land_square_footage, building_square_feet, living_square_feet, bedrooms, half_baths, full_baths)
+ffx_val <- ffx_2018 %>%
+  select(legal_lot_number, assessed_total_value, year_built)
+ffx_land <- ffx_2018 %>%
+  select(land_square_footage, building_square_feet, living_square_feet)
+ffx_bb <- ffx_2018 %>%
+  select(bedrooms, half_baths, full_baths)
+
+new_kent <- read_excel("~/Data.xlsx")
+nk_sub <- new_kent %>%
+  select(Legal, `Year Built`, Land, 'Building Area (Effective)', 'Building Area (Gross)', 'Land Area (Acres)', '# of Bedrooms', '# of Baths', '# of Half Baths')
+nk_val <- new_kent %>%
+  select(Legal, `Year Built`, Land)
+nk_land <- new_kent %>%
+  select('Building Area (Effective)', 'Building Area (Gross)', 'Land Area (Acres)')      
+nk_bb <- new_kent %>%
+  select('# of Bedrooms', '# of Baths', '# of Half Baths')
+
+fairfax_housing_2018_geo <- read_csv("~/git/dspg20broadbandERS/data/fairfax-data/fairfax_housing_2018_geo.csv")
+fairfax_sub <- fairfax_housing_2018_geo %>%
+  select(YEAR_BUILT, VALUE_TOTAL, LIVING_AREA, BEDROOMS, BATHROOMS)
+fairfax_val <- fairfax_housing_2018_geo %>%
+  select(YEAR_BUILT, VALUE_TOTAL)
+fairfax_land <- fairfax_housing_2018_geo %>%
+  select(LIVING_AREA)
+fairfax_bb <- fairfax_housing_2018_geo %>%
+  select(BEDROOMS, BATHROOMS)
+
+sub_nk_cl <- nk_2018 %>%
+  select(legal_lot_number, assessed_total_value, year_built, land_square_footage, building_square_feet, living_square_feet, bedrooms, half_baths, full_baths)
+```
+
+```{r functions, include=FALSE}
+
+check_calc <- function(vec) {
+  blanks <- 0L
+  true_na <- 0L
+  written_na <- 0L
+  len <- length(x = vec)
+  for (elem in vec) {
+    if (is.na(x = elem)) {
+      true_na <- true_na + 1L
+    } else if (elem == "na") {
+      written_na <- written_na + 1L
+    } else if (elem == "") {
+      blanks <- blanks + 1L
+    }
+  }
+  percent_complete <- (len - (blanks + true_na + written_na)) / len
+  unique_values <- length(unique(vec))
+  tibble(blanks = blanks,
+         true_na = true_na,
+         written_na = written_na,
+         percent_complete = percent_complete,
+         unique_values = unique_values)
+}
+check_complete <- function(df) {
+  z <- deparse(substitute(df))
+  map_df(.x = df, .f = check_calc) %>%
+    mutate(column = colnames(df)) %>%
+    mutate(set = print(z))  %>%
+    select(set, column, blanks, true_na, written_na, percent_complete, unique_values)
+}
+```
+
+```{r}
+#completeness of variables
+check_complete(ffx_sub) %>% knitr::kable()
+```
+
+```{r}
+#completeness of variables
+check_complete(fairfax_sub) %>% knitr::kable()
+```
+
+```{r}
+#completeness of variables
+check_complete(nk_sub) %>% knitr::kable()
+```
+
+```{r}
+plot_missing_2 <-
+function (data, group = list(Good = 0.05, Okay = 0.4, Poor = 0.8, 
+  Scarce =  1), geom_label_args = list(), title = NULL, ggtheme = theme_classic(), 
+theme_config = list(legend.position = c("bottom"))) 
+{
+  pct_missing <- Band <- NULL
+  missing_value <- data.table(profile_missing(data))
+  group <- group[sort.list(unlist(group))]
+  invisible(lapply(seq_along(group), function(i) {
+    if (i == 1) {
+      missing_value[pct_missing <= group[[i]], `:=`(Band,
+         names(group)[i])]
+    } else {
+  missing_value[pct_missing > group[[i - 1]] & pct_missing <= 
+     group[[i]], `:=`(Band, names(group)[i])]
+    }
+}))
+  output <- ggplot(missing_value, aes_string(x = "feature", 
+    y = "num_missing", fill = "Band")) + geom_bar(stat = "identity") + 
+   scale_fill_manual("Band", values = c("Good"="#0E879C","Okay"="#E57200","Poor"="#03AC13","Scarce"="#D9E12B")) + coord_flip() + xlab("Features") + 
+   ylab("Missing Rows")
+  geom_label_args_list <- list(mapping = aes(label = paste0(round(100 * 
+    pct_missing, 2), "%")))
+  output <- output + do.call("geom_label", c(geom_label_args_list, 
+     geom_label_args))
+  class(output) <- c("single", class(output))
+  plotDataExplorer(plot_obj = output, title = title, ggtheme = ggtheme, 
+   theme_config = theme_config)
+}
+```
+
+```{r}
+plot_1a <- plot_missing(ffx_val)
+plot_2a <- plot_missing(fairfax_val)
+plot_3a <- plot_missing(nk_val)
+
+plot_1b <- plot_missing(ffx_land)
+plot_2b <- plot_missing(fairfax_land)
+plot_3b <- plot_missing(nk_land)
+
+plot_1c <- plot_missing(ffx_bb)
+plot_2c <- plot_missing(fairfax_bb)
+plot_3c <- plot_missing(nk_bb)
+
+grid.arrange(plot_1a, plot_2a, plot_3a, ncol = 3)
+
+grid.arrange(plot_1b, plot_2b, plot_3b, ncol = 3)
+
+grid.arrange(plot_1c, plot_2c, plot_3c, ncol = 3)
+
+
+plot_1 <- plot_missing_2(ffx_sub, title = "Missing values in the CoreLogic Fairfax County data set", ggtheme = theme_classic()) 
+plot_2 <- plot_missing_2(fairfax_sub, title = "Missing values in the Fairfax County data set", ggtheme = theme_classic())
+plot_3 <- plot_missing_2(nk_sub, title = "Missing values in the New Kent County data set", ggtheme = theme_classic())
+plot_4 <- plot_missing_2(sub_nk_cl, title = "Missing values in the CoreLogic New Kent County data set", ggtheme = theme_classic())
+```
+
+
+

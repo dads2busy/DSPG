@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on UVA Biocomplexity Institute</title>
+    <link>/DSPG2020_ARI2/tags/</link>
+    <description>Recent content in Tags on UVA Biocomplexity Institute</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/DSPG2020_ARI2/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>biterms</title>
+      <link>/DSPG2020_ARI2/tags/biterms/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/DSPG2020_ARI2/tags/biterms/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>BTM</title>
+      <link>/DSPG2020_ARI2/tags/btm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/DSPG2020_ARI2/tags/btm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LDA</title>
+      <link>/DSPG2020_ARI2/tags/lda/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/DSPG2020_ARI2/tags/lda/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>R</title>
+      <link>/DSPG2020_ARI2/tags/r/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/DSPG2020_ARI2/tags/r/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sentiment</title>
+      <link>/DSPG2020_ARI2/tags/sentiment/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/DSPG2020_ARI2/tags/sentiment/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>text analysis</title>
+      <link>/DSPG2020_ARI2/tags/text-analysis/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/DSPG2020_ARI2/tags/text-analysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tidytext</title>
+      <link>/DSPG2020_ARI2/tags/tidytext/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/DSPG2020_ARI2/tags/tidytext/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>topic models</title>
+      <link>/DSPG2020_ARI2/tags/topic-models/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/DSPG2020_ARI2/tags/topic-models/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

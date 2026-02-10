@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Results Overview</title>
+        <link rel="canonical" href="/dspg20career/findings/general-overview/">
+        <style>
+
+    html body {
+        font-family: 'Oxygen', sans-serif;
+        background-color: #FFFFFF;
+    }
+
+    :root {
+        --accent: #232D4B;
+        --border-width:  0 ;
+    }
+
+</style>
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oxygen">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=VT323">
+
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/ascetic.min.css"> 
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css" integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="/dspg20career/css/main.css">
+
+
+
+
+ 
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+    
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+
+<script>$(document).on('click', function() { $('.collapse').collapse('hide'); })</script>
+
+
+<script>
+$(document).ready(function(){
+    
+  var input = $('#night-mode-toggle');
+  var container = $('#bigbody');
+  var stat = $('#button-status');
+  
+  container.toggleClass(localStorage.toggled);
+  stat.bootstrapToggle(localStorage.button).change();
+  
+  input.on('click', function() {
+      if (localStorage.toggled != "-nightmode" ) {
+          container.toggleClass("-nightmode", true );
+          localStorage.toggled = "-nightmode";
+          localStorage.button = "on";
+       } else {
+          container.toggleClass("-nightmode", false );
+          localStorage.toggled = "";
+          localStorage.button = "off"
+       }
+  })
+});
+</script>
+ <meta name="generator" content="Hugo 0.70.0" />
+        <link href="" rel="alternate" type="application/rss+xml" title="UVA Biocomplexity Institute" />
+        <link href="" rel="feed" type="application/rss+xml" title="UVA Biocomplexity Institute" />
+        
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/img/favicon/safari-pinned-tab.svg" color="#000000">
+    <link rel="shortcut icon" href="/img/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
+    
+    
+    <meta property="og:title" content="Results Overview">
+    <meta property="og:type" content="article">
+      
+      <meta name="twitter:card" content="summary">
+      <meta name="twitter:image" content="/dspg20career/favicon/uva-dspg-logo.jpg" >
+      
+    <meta property="description" content="Outline of main findings">
+    <meta property="og:description" content="Outline of main findings">
+    
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:site" content="">
+    
+    </head>
+
+    
+    
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+
+    <style>
+      .container {
+      	text-align: center;
+      	border: 0px solid green;
+      }
+      .container ul {
+      	border: 0px solid red;
+      	display: inline-block;
+      	margin: 10px 0;
+      	padding: 2px;
+      }
+      .container li {
+      	display: inline-block;
+      	font-weight: bold;
+      }
+      .container li a {
+      	display: inline-block;
+      	color: #FFF;
+      	padding: 5px;
+      	text-decoration: none;
+      }
+
+    </style>
+
+    <body id = "bigbody">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container" style="width:800px; margin: auto;">
+                <div class="collapse navbar-collapse container">
+                    
+                        <ul class="nav">
+                          <li class="header_img">
+                            <img class="img-responsive" src="/dspg20career/img/AEMLogoGatesColors-11.png" alt="Whoopsies, this is my bad side!" style = "margin: 0 auto; height: 42px"></li>
+                            
+                                <li><a href="/dspg20career/" style="background-color: transparent;">Overview</a></li>
+                            
+                                <li><a href="/dspg20career/data/" style="background-color: transparent;">Data</a></li>
+                            
+                                <li><a href="/dspg20career/methods/" style="background-color: transparent;">Methods</a></li>
+                            
+                                <li><a href="/dspg20career/findings/" style="background-color: transparent;">Findings</a></li>
+                            
+                                <li><a href="/dspg20career/team/" style="background-color: transparent;">Team</a></li>
+                            
+                        </ul>
+                    
+                    
+                        <ul class="nav">
+                            
+                                <li class="navbar-icon"><a href="https://github.com/DSPG-Young-Scholars-Program/dspg20career" style="background-color: transparent;"><i class="fab fa-github"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="mailto:josh.goldstein@virginia.edu" style="background-color: transparent;"><i class="far fa-envelope"></i></a></li>
+                            
+                            
+                        </ul>
+                    
+                </div>
+            </div>
+        </nav>
+
+<main>
+
+    <div class="item">
+
+    
+    
+    
+
+    
+      
+      
+    
+
+    <h4><a href="/dspg20career/findings/general-overview/">Results Overview</a></h4>
+    
+    <h5>Outline of main findings</h5>
+
+    
+    
+
+</div>
+
+
+    <br> <div class="text-justify">
+<script src="/dspg20career/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<style>
+.imgContainer{
+    float:left;
+}
+</style>
+<div id="main-findings" class="section level3">
+<h3>Main Findings</h3>
+<p>From our research, we have come to several major findings.</p>
+<div id="data-profiling-benchmarking-and-exploration." class="section level4">
+<h4>Data profiling, benchmarking, and exploration.</h4>
+<div id="bgt-resume-data-overrepresents-young-and-white-collar-veterans." class="section level5">
+<h5>1. BGT resume data overrepresents young and white collar veterans.</h5>
+<center>
+<figure>
+<img src="/dspg20career/findings/general-overview_files/brfss-acs-bgt.png" width="700"/>
+<img src="/dspg20career/findings/general-overview_files/veo-bgt.png" width="700"/>
+<figcaption>
+Figure 1. Results from data benchmarking using Behavioral Risk Factor Surveillance System, American Community Survey, Veterans Employment Outcomes, and BGT Resume data. In both graphs, BGT observations are in orange. These findings show BGT over estimates white collar veterans by comparison, for both education and industry variables.
+</figcaption>
+</figure>
+</center>
+<p><br/></p>
+</div>
+</div>
+<div id="sequence-analysis" class="section level4">
+<h4>Sequence analysis</h4>
+<div id="while-there-is-some-evidence-to-support-career-mobility-for-veterans-over-the-entire-career-there-is-little-evidence-to-support-career-mobility-for-veterans-as-a-group-in-the-first-ten-years-after-they-exit-the-military." class="section level5">
+<h5>2. While there is some evidence to support career mobility for veterans over the entire career, there is little evidence to support career mobility for veterans as a group in the first ten years after they exit the military.</h5>
+</div>
+<div id="almost-half-of-veterans-are-in-a-state-of-unemployment-in-the-first-and-tenth-years-after-they-exit-the-military." class="section level5">
+<h5>3. Almost half of veterans are in a state of unemployment in the first and tenth years after they exit the military.</h5>
+</center>
+<figure>
+<img src="/dspg20career/findings/general-overview_files/dcompare.png" width="700"/>
+<figcaption>
+Figure 2. Results of exploratory sequence analysis comparing, for veterans overall, whole career pathways and the first ten years after military exit.
+</figcaption>
+</figure>
+</center>
+<p>In Figure 2, we define career mobility as a change towards higher job zone. Looking at the width of job zone bands, higher job zones increase over time for the whole career but stay relatively even in the first ten years. This suggests veteran careers are not very mobile in the first ten years after military exit.</p>
+<p>Figure 2 also shows high proportions of unemployment for veterans in the first and tenth years after military exit. In the first year, almost half of veterans are in a state of military transitional unemployment. In the tenth year, almost half are retired or have exited the labor force.</p>
+<p><br></p>
+</div>
+</div>
+<div id="clustering-of-sequences" class="section level4">
+<h4>Clustering of sequences</h4>
+<div id="sequence-clusters-characterized-by-a-higher-average-job-zone-also-contain-more-advanced-degree-earners." class="section level5">
+<h5>4. Sequence clusters characterized by a higher average job zone also contain more advanced degree earners.</h5>
+<center>
+<table>
+<caption>
+Figure 3. Results of clustering compared with frequencies of highest degree earned. The plot on the right shows sequences in cluster five, which are characterized by a high frequency of job zone 5. Looking to the column for cluster five in the left-hand plot, we can see that there are a large number of veterans with Doctorates in this cluster.
+</caption>
+<tr>
+<td>
+<img src="/dspg20career/findings/general-overview_files/Fig6.png" style="width: 400px;"/>
+</td>
+<td>
+<img src="/dspg20career/findings/general-overview_files/zone5.png" style="width: 400px;"/>
+</td>
+</tr>
+</table>
+</center>
+</div>
+<div id="female-veterans-are-more-likely-to-retire-or-to-exit-the-work-force-after-the-conclusion-of-their-military-careers." class="section level5">
+<h5>5. Female veterans are more likely to retire or to exit the work force after the conclusion of their military careers.</h5>
+<center>
+<table>
+<caption>
+Figure 4. Results of clustering compared with frequencies of gender. The plot on the right shows sequences in cluster two, which are characterized by retirement or exit of the workforce by the end of the sequence. Looking to the column for cluster two in the left-hand plot, we can see that there are a high number of female veterans are in this cluster.
+</caption>
+<tr>
+<td>
+<img src="/dspg20career/findings/general-overview_files/Fig10.png" style="width: 400px;"/>
+</td>
+<td>
+<img src="/dspg20career/findings/general-overview_files/retiredcluster.png" style="width: 400px;"/>
+</td>
+</tr>
+</table>
+</center>
+<p><br></p>
+</div>
+</div>
+<div id="tournament-theory-hypothesis" class="section level4">
+<h4>Tournament theory hypothesis</h4>
+<div id="promotion-in-the-first-two-years-after-military-exit-affects-later-employment-outcomes-being-associated-with-future-employment." class="section level5">
+<h5>6. Promotion in the first two years after military exit affects later employment outcomes, being associated with future employment.</h5>
+</div>
+<div id="military-transitional-unemployment-in-the-first-two-years-after-military-exit-affects-later-employment-outcomes-being-associated-with-future-unemployment-and-finishing-in-a-lower-job-zone." class="section level5">
+<h5>7. Military transitional unemployment in the first two years after military exit affects later employment outcomes, being associated with future unemployment and finishing in a lower job zone.</h5>
+</div>
+</div>
+<div id="future-work" class="section level4">
+<h4>Future work</h4>
+<ul>
+<li>Explore employment outcomes of non-veterans in DC for a point of comparison.</li>
+<li>Analyze other geographic areas.</li>
+<li>Implement new methods or techniques.</li>
+</ul>
+</div>
+</div>
+</div>
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+</main>
+
+        <footer id = "bigfooter">
+            <div style = "padding:15px;">
+                <p>Powered by <a href="https://gohugo.io">Hugo</a>. Themed by <a href="https://github.com/nathancday/min_night">min_night_dspg</a>. <a href="https://biocomplexity.virginia.edu/social-decision-analytics">Website by University of Virginia Biocomplexity Institute.</a>
+                </p>
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/"
+                title="Creative Commons Attribution 4.0 International license">
+                <i class="fab fa-creative-commons" aria-hidden="true"></i> Attribution 4.0 International license
+                </a>
+            </div>
+        </footer>
+        
+        <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)};
+          gtag('js', new Date());
+          gtag('config', '');
+        </script>
+       
+       <script>
+           function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+           
+           function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
+            }
+            
+            var mytype = getUrlParam('type','Empty');
+            
+       
+           
+           
+           
+           var x = document.getElementsByClassName('header_img');
+           
+           if (mytype != 'economic') {
+             x[0].innerHTML = '<div><a href="https://datascienceforthepublicgood.org/events/symposium2020/poster-sessions">' +
+                              '<img src="/dspg20career/img/DSPG_white-01.png", alt="DSPG 2020 Symposium Proceedings", style="height:42px; margin-top:5px;">' +
+                              '</a></div>';
+                              
+             var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?type=dspg';
+             
+             window.history.pushState({path:newurl},'',newurl);
+           } else {
+             x[0].innerHTML = '<div><a href="https://datascienceforthepublicgood.org/economic-mobility/community-insights/case-studies">' +
+                              '<img src="/dspg20career/img/AEMLogoGatesColors-11.png", alt="Gates Economic Mobility Case Studies", style="height:42px; margin-top:5px;">' +
+                              '</a></div>';
+             
+             var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?type=economic';
+             
+             window.history.pushState({path:newurl},'',newurl);
+           }
+        </script>
+    </body>
+
+
+</html>
+

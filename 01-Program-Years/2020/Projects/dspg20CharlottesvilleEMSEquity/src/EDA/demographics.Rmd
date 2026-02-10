@@ -1,0 +1,161 @@
+---
+title: "descriptive_stats"
+author: "Saimun"
+date: "7/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(data.table)
+library(naniar)
+library(stringr)
+library(viridis)
+library(here)
+
+# source(here::here("src","Profiling","joining_albemarle_charlottesville.R"))
+ems_full <-read.csv(here::here("data", "final", "ems_clean_data.csv"))
+cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#CC79A7", "#F0E442", "#0072B2", "#D55E00")
+theme_set(theme_minimal() +
+            theme(plot.title = element_text(hjust = 0.5, color = "gray10", size = 24),
+                  plot.subtitle = element_text(hjust = 0.5, color = "gray30", face = "italic", size = 20),
+                  axis.title = element_text(size = 20, color = "gray10"),
+                  axis.text = element_text(size = 18, color = "gray30"),
+                  strip.text = element_text(size = 22, color = "gray30"),
+                  panel.spacing = unit(4, "lines"),
+                  legend.key.size = unit(3, "line"),
+                  legend.text = element_text(size = 16, color = "gray30"),
+                  legend.title = element_text(size = 22, color = "gray10")))
+
+```
+
+```{r functions}
+#https://stackoverflow.com/questions/35717353/split-violin-plot-with-ggplot2
+GeomSplitViolin <- ggproto("GeomSplitViolin", GeomViolin, 
+                           draw_group = function(self, data, ..., draw_quantiles = NULL) {
+  data <- transform(data, xminv = x - violinwidth * (x - xmin), xmaxv = x + violinwidth * (xmax - x))
+  grp <- data[1, "group"]
+  newdata <- plyr::arrange(transform(data, x = if (grp %% 2 == 1) xminv else xmaxv), if (grp %% 2 == 1) y else -y)
+  newdata <- rbind(newdata[1, ], newdata, newdata[nrow(newdata), ], newdata[1, ])
+  newdata[c(1, nrow(newdata) - 1, nrow(newdata)), "x"] <- round(newdata[1, "x"])
+
+  if (length(draw_quantiles) > 0 & !scales::zero_range(range(data$y))) {
+    stopifnot(all(draw_quantiles >= 0), all(draw_quantiles <=
+      1))
+    quantiles <- ggplot2:::create_quantile_segment_frame(data, draw_quantiles)
+    aesthetics <- data[rep(1, nrow(quantiles)), setdiff(names(data), c("x", "y")), drop = FALSE]
+    aesthetics$alpha <- rep(1, nrow(quantiles))
+    both <- cbind(quantiles, aesthetics)
+    quantile_grob <- GeomPath$draw_panel(both, ...)
+    ggplot2:::ggname("geom_split_violin", grid::grobTree(GeomPolygon$draw_panel(newdata, ...), quantile_grob))
+  }
+  else {
+    ggplot2:::ggname("geom_split_violin", GeomPolygon$draw_panel(newdata, ...))
+  }
+})
+
+geom_split_violin <- function(mapping = NULL, data = NULL, stat = "ydensity", position = "identity", ..., 
+                              draw_quantiles = NULL, trim = TRUE, scale = "area", na.rm = FALSE, 
+                              show.legend = NA, inherit.aes = TRUE) {
+  layer(data = data, mapping = mapping, stat = stat, geom = GeomSplitViolin, 
+        position = position, show.legend = show.legend, inherit.aes = inherit.aes, 
+        params = list(trim = trim, scale = scale, draw_quantiles = draw_quantiles, na.rm = na.rm, ...))
+}
+
+plot_theme <- theme(plot.title = element_text(hjust = 0.5, size = 22),
+                    axis.text = element_text(size = 16),
+                    axis.title = element_text(size = 20),
+                    strip.text = element_text(size = 18),
+                    legend.key = element_blank(),
+                    legend.text = element_text(size = 16),
+                    legend.title = element_text(size = 18))
+```
+
+
+## Race
+Plot shows distribution of patient ages broken up by they're gender and race for the incidents in Charlottesville. We see that most of the patients are White or Black and in these two populations there is a bump in patients who are male and around 55 years of age. However, for women in these races their distribution of ages seems to be flatter and more uniform throughout. In comparison, there aren't many patients who are of other racial identities. In both Asians and Hispanics we see a greater density of patients who are in their 20s, these incidents might be contributed by students attending UVA.
+```{r race, fig.width=10, fig.height=8}
+#takes the first lsited race of people who were listed as multiple races
+ems_full$patient_race_list = gsub("(.*?)\\|.*", "\\1", ems_full$patient_race_list)
+ems_full$patient_race_list  = factor(ems_full$patient_race_list,
+                    levels = c('white',"black or african american","american indian or alaska native" ,
+                               "asian","native hawaiian or other pacific islander"),
+                    labels = c('White', "Black", 'Amer. Indian', "Asian",
+                               "Native Hawaiian"))
+
+ems_full %>% 
+  replace_with_na(replace = list(patient_race_list = c("Not Recorded", "Not Applicable"))) %>% # groups not recorded, etc. into NAs
+ggplot(aes(patient_race_list)) +
+  geom_bar(na.rm = T) +
+  scale_x_discrete(expand=c(0, 0) ,labels = function(x) str_wrap(x, width = 10))+
+  labs(title = "Distribution of Race", x = "Race", y = "Count")
+
+
+ems_full %>% 
+  replace_with_na(replace = list(patient_race_list = c("Not Recorded", "Not Applicable"), 
+                                 patient_gender = c("Not Applicable", "Unknown (Unable to Determine)") )) %>% # groups not recorded, etc. into NAs
+  filter(!patient_race_list %in% NA) %>%
+ggplot(aes(patient_race_list, as.numeric(patient_age))) +
+  geom_violin()+
+  # geom_boxplot(width = 0.2)+
+   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  labs(title= "Violin Plot of Age Distribution of Races", x = "Race", y = "Ages")+
+  geom_jitter(height = 0, width = 0.1, alpha = .1)
+
+char_race_gen_na = ems_full %>% 
+  replace_with_na(replace = list(patient_race_list = c("Not Recorded", "Not Applicable"), 
+                                 patient_gender = c("Not Applicable", "unknown (unable to determine)") )) %>% # groups not recorded, etc. into NAs
+  filter(!patient_race_list %in% NA) %>%
+  filter(!patient_gender %in% NA)
+
+char_race_gen_na %>%
+ggplot(aes(patient_race_list, as.numeric(patient_age), fill = patient_gender)) +
+  geom_split_violin()+
+    labs(title= "Violin Plot of Age Distribution of Races", x = "Race", y = "Ages", fill = "Gender")+
+     scale_x_discrete(expand=c(0, 0) ,labels = function(x) str_wrap(x, width = 10))+
+  scale_fill_manual(values = cbPalette, name = "Sex", labels = c("Female", "Male"))+
+  geom_jitter(data =  sample_n(char_race_gen_na,7500) ,position = position_jitter(.1), size = .7, alpha =.25, shape = 15)
+  ggsave(here("output", "Violin_Plot_of_Age_Distribution_of_Races.png"), height = 6, width = 8)
+
+```
+
+##  Age
+Looking at Race dist over Ages, age dist of gender as well.
+```{r age, echo=FALSE}
+ems_full %>% 
+  replace_with_na(replace = list(patient_race_list = c("Not Recorded", "Not Applicable"))) %>% # groups not recorded, etc. into NAs
+ggplot(aes(as.numeric(patient_age), fill  = patient_race_list)) +
+  geom_bar(position = "fill", binwidth=10) +
+    scale_x_binned()+
+  labs(title = "Proportion of Race by Age", x = "Ages", y = "Count", fill = "Race")
+
+ems_full %>% 
+  replace_with_na(replace = list(patient_race_list = c("Not Recorded", "Not Applicable"))) %>% 
+ggplot(aes(as.numeric(patient_age))) +
+  geom_bar(binwidth=10) +
+    scale_x_binned()+
+  labs(title = "Distribution of Age", x = "Ages", y = "Count", fill = "Race")
+
+
+char_race_gen_na %>% 
+ggplot(aes(as.numeric(patient_age), fill  = patient_gender)) +
+  geom_bar(binwidth=10) +
+    scale_x_binned()+
+  labs(title = "Distribution of Age Proportioned by Gender", x = "Ages", y = "Count", fill = "Gender")
+```
+
+```{r, gender}
+char_race_gen_na %>%
+ggplot(aes(patient_gender, as.numeric(patient_age), fill = patient_gender)) +
+  geom_violin()+
+  labs(title= "Violin Plot of Age Distribution of Genders", x = "Sex", y = "Ages", fill = "Gender")+
+  scale_x_discrete(expand=c(0, 0) ,labels = function(x) str_wrap(x, width = 10))+
+  scale_fill_manual(values = cbPalette)+ 
+  geom_boxplot(aes(patient_gender, as.numeric(patient_age)),width =.1, inherit.aes = F)+
+  scale_fill_manual(values = cbPalette, name = "Sex", labels = c("Female", "Male"))+
+  ggsave(here("output", "Violin_Plot_of_Age_Distribution_of_Gender.png"), height = 6, width = 8)
+
+```
+

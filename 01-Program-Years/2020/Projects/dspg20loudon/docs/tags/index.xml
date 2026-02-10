@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on DSPG 2020</title>
+    <link>/dspg20loudon/tags/</link>
+    <description>Recent content in Tags on DSPG 2020</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/dspg20loudon/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Factor Analysis</title>
+      <link>/dspg20loudon/tags/factor-analysis/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20loudon/tags/factor-analysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ggmap</title>
+      <link>/dspg20loudon/tags/ggmap/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20loudon/tags/ggmap/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>R</title>
+      <link>/dspg20loudon/tags/r/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20loudon/tags/r/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tidycensus</title>
+      <link>/dspg20loudon/tags/tidycensus/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/dspg20loudon/tags/tidycensus/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,81 @@
+---
+title: "Results Overview"
+description: "Outline of main findings"
+weight: 1
+draft: false
+output: html_document
+---
+<style>
+.imgContainer{
+    float:left;
+}
+</style>
+
+
+### Main Findings 
+
+From our research, we have come to several major findings.
+
+#### Data profiling, benchmarking, and exploration.
+##### 1. BGT resume data overrepresents young and white collar veterans.
+
+<center>
+<figure>
+<img src="/dspg20career/findings/general-overview_files/brfss-acs-bgt.png" width="700"/>
+<img src="/dspg20career/findings/general-overview_files/veo-bgt.png" width="700"/>
+<figcaption> Figure 1. Results from data benchmarking using Behavioral Risk Factor Surveillance System, American Community Survey, Veterans Employment Outcomes, and BGT Resume data. In both graphs, BGT observations are in orange. These findings show BGT over estimates white collar veterans by comparison, for both education and industry variables. </figcaption>
+</figure>
+</center>
+
+<br/>
+
+#### Sequence analysis
+##### 2. While there is some evidence to support career mobility for veterans over the entire career, there is little evidence to support career mobility for veterans as a group in the first ten years after they exit the military.
+##### 3. Almost half of veterans are in a state of unemployment in the first and tenth years after they exit the military.
+
+</center>
+<figure>
+<img src="/dspg20career/findings/general-overview_files/dcompare.png" width="700"/>
+<figcaption> Figure 2. Results of exploratory sequence analysis comparing, for veterans overall, whole career pathways and the first ten years after military exit. </figcaption>
+</figure>
+</center>
+
+In Figure 2, we define career mobility as a change towards higher job zone. Looking at the width of job zone bands, higher job zones increase over time for the whole career but stay relatively even in the first ten years. This suggests veteran careers are not very mobile in the first ten years after military exit.
+
+Figure 2 also shows high proportions of unemployment for veterans in the first and tenth years after military exit. In the first year, almost half of veterans are in a state of military transitional unemployment. In the tenth year, almost half are retired or have exited the labor force.
+
+<br>
+
+#### Clustering of sequences
+##### 4. Sequence clusters characterized by a higher average job zone also contain more advanced degree earners.
+<center>
+<table>
+<caption> Figure 3. Results of clustering compared with frequencies of highest degree earned. The plot on the right shows sequences in cluster five, which are characterized by a high frequency of job zone 5. Looking to the column for cluster five in the left-hand plot, we can see that there are a large number of veterans with Doctorates in this cluster. </caption>
+<tr>
+<td> <img src="/dspg20career/findings/general-overview_files/Fig6.png" style="width: 400px;"/> </td>
+<td> <img src="/dspg20career/findings/general-overview_files/zone5.png" style="width: 400px;"/> </td>
+</tr></table>
+</center>
+
+##### 5. Female veterans are more likely to retire or to exit the work force after the conclusion of their military careers.
+
+<center>
+<table>
+<caption> Figure 4. Results of clustering compared with frequencies of gender. The plot on the right shows sequences in cluster two, which are characterized by retirement or exit of the workforce by the end of the sequence. Looking to the column for cluster two in the left-hand plot, we can see that there are a high number of female veterans are in this cluster. </caption>
+<tr>
+<td> <img src="/dspg20career/findings/general-overview_files/Fig10.png" style="width: 400px;"/> </td>
+<td> <img src="/dspg20career/findings/general-overview_files/retiredcluster.png" style="width: 400px;"/> </td>
+</tr></table>
+</center>
+
+
+<br>
+
+#### Tournament theory hypothesis
+##### 6. Promotion in the first two years after military exit affects later employment outcomes, being associated with future employment.
+##### 7. Military transitional unemployment in the first two years after military exit affects later employment outcomes, being associated with future unemployment and finishing in a lower job zone.
+
+#### Future work
+- Explore employment outcomes of non-veterans in DC for a point of comparison.
+- Analyze other geographic areas.
+- Implement new methods or techniques.

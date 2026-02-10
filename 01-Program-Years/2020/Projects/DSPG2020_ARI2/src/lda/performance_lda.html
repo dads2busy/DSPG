@@ -1,0 +1,55 @@
+---
+title: "Latent Dirichlet Allocation Modeling of Performance Scales"
+description: "A summary  of our approach to using LDA to uncover the themes of performance scales."
+tags: ["R", "text analysis", "topic models", "LDA"]
+weight: 2
+draft: false
+output: html_document
+---
+
+<script src="/DSPG2020_ARI2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/DSPG2020_ARI2/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/DSPG2020_ARI2/rmarkdown-libs/jquery/jquery.min.js"></script>
+<link href="/DSPG2020_ARI2/rmarkdown-libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+<script src="/DSPG2020_ARI2/rmarkdown-libs/datatables-binding/datatables.js"></script>
+<link href="/DSPG2020_ARI2/rmarkdown-libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="/DSPG2020_ARI2/rmarkdown-libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="/DSPG2020_ARI2/rmarkdown-libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="/DSPG2020_ARI2/rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="/DSPG2020_ARI2/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
+
+
+<style type="text/css">
+/* this chunk of code centers all of the headings */
+h1, h2, h3 {
+  text-align: center;
+}
+</style>
+<div id="approach" class="section level2">
+<h2>Approach</h2>
+<p>Once we gathered a sufficient number of scales from a variety of sources, we analyzed these scales using topic modeling to identify underlying themes from across the corpus. Latent Dirichlet Allocation (LDA) is a probabilistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words. Using Dirichlet probability distribution, the model draws out the implicit themes across a set of documents. We choose LDA because it is a commonly used topic modeling process. We implemented LDA using the <a href="https://cran.r-project.org/web/packages/stm/vignettes/stmVignette.pdf">STM package in R</a>. The goal was to see if the latent topics identified by the model were related to performance or the indicators of performance as outlined in <a href="https://www.researchgate.net/publication/51508445_Conceptual_Frameworks_of_Individual_Work_Performance">Koopmans et al</a>.</p>
+</div>
+<div id="choosing-our-parameters" class="section level2">
+<h2>Choosing our Parameters</h2>
+<p>LDA works best with larger data sets, which presented a challenge for us. We took steps to optimize the size of our corpus for analysis. Typically, a standard set of stop words are removed from the corpus. Stop words are extremely common words which help to form the structure of sentences but do not inform the content. We did not remove these standard stop words for two reasons. First, to maximize our corpus. Second, because including pronouns such as “I” and “You” provides valuable conceptual information about the scale items, such as the level of analysis. Instead, we constructed a custom stop words list by examining the most frequent words in our data set.</p>
+<p><div id="htmlwidget-1" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47"],["the","to","i","of","my","work","you","job","in","your","how","do","a","and","is","with","or","on","are","have","this","for","that","feel","about","me","at","does","am","as","people","what","organization","well","be","think","when","can","from","not","would","get","supervisor","time","following","much","things"],[1260,1029,963,900,877,815,681,598,558,514,429,413,400,381,376,330,306,302,277,272,262,259,255,221,206,187,179,163,161,151,151,151,150,141,138,123,120,119,113,111,109,108,108,105,102,102,102]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>word<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><img src="/DSPG2020_ARI2/findings/performance_lda_files/figure-html/word-frequencies-2.png" width="672" /></p>
+<p>Along with the most frequently occurring words, we also removed words that referred to specific jobs(e.g., nurse) and locations (e.g. Britain, Newfoundland).</p>
+<p>##Number of Topics</p>
+<p>In LDA topic modeling, the user inputs the number of topics for the model. Choosing this number of topics can be difficult, but the STM package provides guidance and tools for making this decision. The main measure of model strength and the desired number of topics is semantic coherence. Semantic coherence “is maximized when the most probable words in a given topic frequently
+co-occur together” ( <a href="https://cran.r-project.org/web/packages/stm/vignettes/stmVignette.pdf">Roberts et al</a>). In addition to semantic coherence, STM also recommends using held-out likelihood, residuals, and exclusivity as measures of model fit. These graphs show the values of those variables on 10 LDA models, with the number of topics ranging from six to 24.</p>
+<p><img src="/DSPG2020_ARI2/findings/performance_lda_files/figure-html/kresult-plot-1.png" width="672" /><img src="/DSPG2020_ARI2/findings/performance_lda_files/figure-html/kresult-plot-2.png" width="672" /></p>
+<p>An ideal model would have a high held-out likelihood, a low level of residuals, and a combination of high semantic coherence and exclusivity. STM recommends looking at semantic coherence by exclusivity because semantic coherence can be “artificially” achieved with very common words among topics. This analysis suggests 12 as the optimal number of topics.</p>
+<p>##Fitting the model</p>
+<p>STM recommends running a model selection process for LDA models. Utilizing 12 topics, we produced multiple LDA topic models to find the most ideal model based again on semantic coherence and exclusivity of topics.</p>
+<p><img src="/DSPG2020_ARI2/findings/performance_lda_files/figure-html/model-select-output-1.png" width="672" /></p>
+<p>The model with the highest exclusivity and semantic coherence appears closest to the top right corner of the graph indicating model 1 is the best to continue with visualization.</p>
+<p>##Visualizations of the Topic Model</p>
+<p>The outputs from the topic model reveal some of the latent themes in the job performance scales. We see themes related to ideal job characteristics, feelings about supervisors, satisfaction, and working in groups.</p>
+<p><div id="htmlwidget-2" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2">{"x":{"filter":"none","data":[["phrases","past","caused","feel","member","felt","workgroup","whole","ask","characteristic","euro","climate"],["think","days","explains","chance","occur","spouse","occupation","itself","try","ideally","quota","considerations"],["describe","did","group","about","environment","area","department","firm","myself","profession","products","ideal"],["words","health","lets","my","simply","were","im","opportunity","project","organization","customer","relation"],["each","rate","his","way","yourself","bothered","behaviors","requires","sure","would","ethics","superior"],["following","many","members","make","performing","disability","plan","piece","team","really","ethnical","lack"],["well","miss","her","job","opportunities","responsibility","months","jobs","challenging","leaving","families","ability"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>V1<\/th>\n      <th>V2<\/th>\n      <th>V3<\/th>\n      <th>V4<\/th>\n      <th>V5<\/th>\n      <th>V6<\/th>\n      <th>V7<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><img src="/DSPG2020_ARI2/findings/performance_lda_files/figure-html/model-output-2.png" width="672" /></p>
+<p>One way to visualize and understand topics in through word clouds. The graphs below represent word cloud clusters for each of the topics. The size of the word relates to how frequently it is represented in the topic.</p>
+<p><img src="/DSPG2020_ARI2/findings/performance_lda_files/figure-html/wordclouds-1.png" width="672" /><img src="/DSPG2020_ARI2/findings/performance_lda_files/figure-html/wordclouds-2.png" width="672" /><img src="/DSPG2020_ARI2/findings/performance_lda_files/figure-html/wordclouds-3.png" width="672" /></p>
+<p>##Conclusion</p>
+<p>Although we do not necessarily see all aspects of our conceptual job performance framework in every topic, some do emerge from our analysis. With the further compilation of scales and the growth of the data set, this approach will likely yield valuable insights into the development of a framework of job performance specifically for the Army.</p>
+</div>
