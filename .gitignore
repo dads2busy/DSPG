@@ -22,6 +22,8 @@
 *.mkv
 *.mp3
 *.wav
+*.mp4.gz
+*.m4a.gz
 # *.pdf
 # *.xlsx
 # *.xls
