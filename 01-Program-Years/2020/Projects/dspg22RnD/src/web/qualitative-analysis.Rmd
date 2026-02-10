@@ -1,9 +1,0 @@
----
-title: "Text Vectorization"
-output: html_document
----
-#TF-IDF  
-
-#Doc2Vec  
-
-

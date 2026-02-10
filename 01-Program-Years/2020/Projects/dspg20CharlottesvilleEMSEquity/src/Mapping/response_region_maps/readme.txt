@@ -1,1 +1,0 @@
-These maps were created using the updated shapefile data that Damon sent us.

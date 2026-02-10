@@ -1,2 +1,0 @@
-# hotline
-DSPG Hotline Project
