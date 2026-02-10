@@ -1,0 +1,75 @@
+---
+title: "R&D Emerging Digitalization Trends"
+output:
+  html_document:
+    includes:
+      in_header: hero-image.html
+---
+<font size="3">
+
+<br />
+
+### **Project Background**  
+Research and development (R&D) is commonly defined as work undertaken to increase knowledge and new applications of previous knowledge. R&D spending increased $21 billion annually between 2010 and 2017 in the United States. A common metric for measuring a nation's R&D is the ratio of national R&D spending to national gross domestic product (GDP). In the U.S. this has been steadily rising since the mid-1990's. The federal government currently provides 21% of all U.S. R&D funding (Boroush, National Center for Science and Engineering Statistics [NCSES], 2021). [However] there is little data indicating the specific R&D areas that this funding supports.  
+
+
+```{r, echo=FALSE, out.width="30%", out.extra='style="float:right; padding:5px; text-align: center"'}
+knitr::include_graphics("www/big-data-2.jpg")
+```
+
+In this work, our aim was to analyze federally funded R&D about digitalization.  As this field is incredibly broad, we narrowed our focus to big data, a sub-theme of digitalization.  Specifically, our research was guided by the following questions.
+
+<font size="1"> Graphic Source: https://www.learntek.org/blog/importance-big-data-analytics/</font>
+
+<br />
+
+### **Research Questions**
+* How can we characterize federally funded R&D about digitalization? What trends exist in the digitalization research area?  
+* Given the broadness of digitalization, how can we characterize federally funded R&D about big data? What trends exist in the big data research area?  
+* How can we determine if a text document is related to big data?
+
+<br />
+
+### **Sponsor** 
+
+```{r, echo=FALSE, out.width="25%", out.extra='style="float:left; padding:10px"'}
+knitr::include_graphics("www/nsf.png")
+```
+
+This project is part of on-going work sponsored by the National Center for Science and Engineering Statistics (NCSES), a principal statistical agency located within the National Science Foundation. The project stakeholders from NCSES are John Jankowski, Senior Economic Advisor, and Audrey Kindlon, Survey Statistician.
+
+<br />
+
+### **Data**  
+We used Federal RePORTER, a publicly available database of federally funded R&D grants, which contains common scientific award data such as project title, abstract, and funding amount. This database was designed to be “a repository of data and tools” that “promote[d] transparency and engage[d] the public, the research community, and agencies to describe federal science research investments and provide empirical data for science policy” (U.S. Department of Health and Human Services, 2020). Federal RePORTER contains more than 1 million grants from science and technology federal agencies beginning in fiscal year (FY) 2000; large scale project reporting began in FY 2008.  
+  
+<br />
+
+### **Process**  
+* We conducted a literature review on the topic of digitalization to research what digitalization is and includes.  From this literature review we produced a definition of digitalization and decided to narrow our focus to the digitalization sub-theme of big data.  We also found a definition for big data.
+* We conducted a second literature review to research supervised methods for text classification, in which a text passage can be tagged to belong to a certain category (e.g. big data or not big data). We decided to begin with a k-nearest neighbors (KNN) classifier, which we used to predict if each abstract from Federal RePORTER is big data related or not.
+* We utilized the definition of big data in the creation of a training set, a small subset of Federal RePORTER grant abstracts that we manually labeled as about big data or not.  We trained the KNN classifier using this set.
+* We identified the grant abstracts from Federal RePORTER that are big data related by using our trained KNN classifier. 
+* We applied a topic model to the abstracts identified as big data related in order to identify prominent big data research areas.  We used linear regression to analyze these topic trends over time.  
+
+<br />
+
+
+### **Results**  
+
+Almost all research areas were identified as using big data and contributing to the development of big data as a method. A non- numegative matrix factorization method with 30 topics was used to assess the trends in the research area covered by federal funding research to big data. The main research areas were identified as clinical trials, systems analysis, brain neuron imaging, infections, vaccines, social behavior, protein, cells, genes, and cancer.  
+
+The analysis of trends shows that the use of big data has been declining in research areas related to protein, crop & plant production, cells, and genes. Research areas related to administrative & investigative centers, clinical trials, brain neuron, and statistical analysis are receiving more funding in projects utilizing big data. The area of statistical analysis has maintained a constant funding in projects using big data from 2008- 2020.   
+
+
+
+<br />
+
+
+### **Sources**
+Boroush M; National Center for Science and Engineering Statistics (NCSES). 2021. U.S. R&D Increased by \$51 Billion in 2018, to \$606 Billion; Estimate for 2019 Indicates a Further Rise to $656 Billion. NSF 21-324. Alexandria, VA: National Science Foundation. Available at https://ncses.nsf.gov/pubs/nsf21324/.
+
+
+U.S. Department of Health and Human Services. (2020, March 6). STAR METRICS Federal Re- PORTER FAQS. Retrieved September 19, 2021 from https://federalreporter.nih.gov/Home/FAQ.
+  
+[![ ](www/black-logo.png)](https://biocomplexity.virginia.edu/event/data-science-public-good-symposium-2022)
